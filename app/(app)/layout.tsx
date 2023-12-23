@@ -21,11 +21,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <div>
           <div className="drawer lg:drawer-open">
-            <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col items-center justify-center">
+            <input id="app-drawer" type="checkbox" className="drawer-toggle" />
+            <div className="drawer-content flex flex-col items-center">
               <MainView>{children}</MainView>
               <label
-                htmlFor="my-drawer-2"
+                htmlFor="app-drawer"
                 className="btn btn-primary drawer-button lg:hidden"
               >
                 Open drawer

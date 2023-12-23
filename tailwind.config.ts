@@ -10,7 +10,7 @@ const config: Config = {
     // your theme configurations
   },
   daisyui: {
-    themes: ['light', 'dark'],
+    themes: ['wireframe','light', 'dark'],
   },
   plugins: [require('daisyui')],
 }

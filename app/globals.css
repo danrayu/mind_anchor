@@ -12,5 +12,19 @@
   }
 }
 
-body {
+@layer components {
+  .input {
+    @apply h-10;
+  }
+  .btn {
+    @apply h-10 min-h-fit;
+  }
+  .btn-outline.btn-clicked {
+    @apply text-white bg-slate-600;
+  }
+  .btn-outline.btn-clicked {
+    &:hover {
+      @apply bg-black;
+    }
+  }
 }

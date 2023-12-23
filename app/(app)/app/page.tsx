@@ -1,11 +1,13 @@
+'use client'
+
 import React from "react";
 
-function hello() {
+function MindscapePage() {
   return (
     <h3>
-      my app is so feaured
+      my app is so feaured, because we have mindscapes
     </h3>
   );
 }
 
-export default hello;
+export default MindscapePage;

@@ -1,7 +1,0 @@
-@tailwind components;
-
-@layer components {
-  .brand-title {
-    @apply font-bold text-md mt-1
-  }
-}
