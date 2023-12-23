@@ -1,54 +1,91 @@
-'use client'
-import React, { useState } from 'react'
-import SearchSidebar from '../components/sidebar/SearchSidebar'
-import SortSelector from './components/SortSelector';
+"use client";
+import React, { useEffect, useState } from "react";
+import SearchSidebar from "../components/sidebar/SearchSidebar";
+import FilterSelector from "./components/FilterSelector";
 
-export type SortState = {
+export type FilterState = {
   favorited: boolean;
-  unfavorited: boolean,
-  categories: [],
-}
+  unfavorited: boolean;
+  categories: [];
+};
 
-const defaultSortState: SortState = {
+const defaultFilterState: FilterState = {
   favorited: false,
   unfavorited: false,
-  categories: []
-}
+  categories: [],
+};
 
 function MemesPage() {
-  const [sortState, setSort] = useState<SortState>(defaultSortState);
-  const [sorting, setSorting] = useState(false);
+  const [filterState, setFilter] = useState<FilterState>(defaultFilterState);
+  const [filtering, setFiltering] = useState(false);
 
-  function toggleSort() {
-    setSorting(!sorting);
+  const [memes, setMemes] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:3000/api/memes")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setMemes(data);
+      });
+  }, []);
+
+  useEffect(filterMemes, [filterState, memes]);
+
+  function filterMemes() {
+    if (!filterState.favorited && !filterState.unfavorited) {
+      setFilteredMemes([...memes]);
+    }
+    else if (filterState.favorited) {
+      let cp = [...memes];
+      setFilteredMemes(cp.filter((meme) => meme["favorite"]));
+    }
+    else if (filterState.unfavorited) {
+      let cp = [...memes];
+      setFilteredMemes(cp.filter((meme) => !meme["favorite"]));
+    }
+    
   }
-  
+
+  const [filteredMemes, setFilteredMemes] = useState<any[]>([ ...memes ]);
+
+  function toggleFilter() {
+    setFiltering(!filtering);
+  }
+
   return (
     <div>
       <div className="mt-10">
-      <div>
         <h1 className="text-[35px] font-bold">Memes</h1>
-      </div>
-      <div className="flex flex-wrap">
-        <div className='mr-auto w-full max-w-[600px]'>
-          <SearchSidebar />
+        <div className="flex flex-wrap">
+          <div className="mr-auto w-full max-w-[600px]">
+            <SearchSidebar />
+          </div>
+          <div className="my-auto">
+            <button className="btn btn-outline h-10">Search</button>
+          </div>
         </div>
-        <div className='my-auto'>
-          <button className="btn btn-outline h-10">Search</button>
-        </div>
-      </div>
-      <div>
         <div>
-          <button className={'btn btn-outline ' + (sorting && "btn-clicked")} onClick={toggleSort}>
-            Show Sort
+          <button
+            className={"btn btn-outline " + (filtering && "btn-clicked")}
+            onClick={toggleFilter}
+          >
+            Show Filter
           </button>
-          { sorting && <SortSelector categories={""} sortState={sortState} setSort={setSort}/> }
+          {filtering && (
+            <FilterSelector
+              categories={""}
+              filterState={filterState}
+              setFilter={setFilter}
+            />
+          )}
         </div>
+        {filteredMemes.map((meme) => {
+          return <h3 key={meme['id']}>{meme['title']}</h3>
+        })}
       </div>
-
     </div>
-    </div>
-  )
+  );
 }
 
-export default MemesPage
+export default MemesPage;
