@@ -1,29 +1,45 @@
-import React from 'react';
+import React from "react";
 
 interface FilterItemProps {
   onAdd: () => any;
   onRemove: () => any;
-  adding: boolean;
-  removing: boolean;
+  state: number;
   name: string;
 }
 
-function FilterItem({onAdd, onRemove, adding, removing, name}: FilterItemProps) {
-  const styleBtn = 'px-2 font-semibold rounded focus:outline-none focus:ring-2 focus:ring-opacity-50';
+function FilterItem({ onAdd, onRemove, state, name }: FilterItemProps) {
+  const styleBtn =
+    "font-semibold rounded p-1 px-2.5  rounded-xl focus:outline-none focus:ring-0";
+  const styleAddSelected = " text-green-600 ";
+  const styleRemoveSelected = " text-red-600 join-item ";
   return (
-    <div className='flex items-center space-x-2'>
-      <button 
-        className={styleBtn+ ' hover:text-white hover:bg-green-600 focus:ring-green-700'} 
-        onClick={onAdd}>
+    <div className={`flex items-center badge badge-outline border-slate-500 py-4 my-1 space-x-1`}>
+      <button
+        className={
+          styleBtn +
+          (state === 1 && styleAddSelected) +
+          " hover:text-white hover:bg-green-700 "
+        }
+        onClick={onAdd}
+      >
         +
       </button>
-      <span 
-        className={`font-medium ${adding ? "text-green-700" : ''} ${removing ? "text-red-700" : ''}`}>
+      <span
+        className={`font-medium rounded text-sm ${
+          state === 1 && "text-green-700 font-bold"
+        } ${state === -1 && "text-red-700 font-bold"}
+        ${state === 0 && "pr-[2.5px]"}`}
+      >
         {name}
       </span>
-      <button 
-        className={styleBtn + ' hover:text-white hover:bg-red-600 focus:ring-red-700'}
-        onClick={onRemove}>
+      <button
+        className={
+          styleBtn +
+          (state === -1 && styleRemoveSelected) +
+          " hover:text-white hover:bg-red-700 "
+        }
+        onClick={onRemove}
+      >
         -
       </button>
     </div>

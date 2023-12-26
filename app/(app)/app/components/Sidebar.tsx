@@ -2,9 +2,8 @@
 import React from "react";
 import Brand from "./sidebar/Brand";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SearchSidebar from "./sidebar/SearchSidebar";
+import Searchbar from "./Searchbar";
 function Sidebar() {
   const router = useRouter();
 
@@ -17,7 +16,7 @@ function Sidebar() {
       ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
         <Brand />
-        <SearchSidebar/>
+        <Searchbar />
         <li className="mt-2">
           <details open>
             <summary className="group">
@@ -28,9 +27,12 @@ function Sidebar() {
               Mindscapes
             </summary>
             <ul>
-              <li className="group" onClick={() => {
+              <li
+                className="group"
+                onClick={() => {
                   router.push("/app/mindscapes/new");
-                }}>
+                }}
+              >
                 <span>+ New</span>
               </li>
               <li className="group">
@@ -52,9 +54,12 @@ function Sidebar() {
               Memes
             </summary>
             <ul>
-              <li className="group" onClick={() => {
+              <li
+                className="group"
+                onClick={() => {
                   router.push("/app/memes/new");
-                }}>
+                }}
+              >
                 <span>+ New</span>
               </li>
               <li
@@ -78,9 +83,12 @@ function Sidebar() {
               Categories
             </summary>
             <ul>
-              <li className="group" onClick={() => {
+              <li
+                className="group"
+                onClick={() => {
                   router.push("/app/categories/new");
-                }}>
+                }}
+              >
                 <span>+ New</span>
               </li>
               <li
