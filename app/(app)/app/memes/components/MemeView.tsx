@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import FilterSelector from "./FilterSelector";
 import MemeContainer from "./Meme";
 import Searchbar from "../../components/Searchbar";
+import { useRouter } from "next/router";
 
 interface MemeViewProps {
   categories: Category[];
@@ -25,6 +26,8 @@ const defaultFilterState: MemeFilter = {
 };
 
 function MemeView({ categories, memes }: MemeViewProps) {
+  const router = useRouter();
+
   const [filterState, setFilter] = useState<MemeFilter>(
     setupFilterState(categories)
   );
@@ -44,10 +47,9 @@ function MemeView({ categories, memes }: MemeViewProps) {
     return fState;
   }
 
-  useEffect(filterMemes, [filterState]);
+  useEffect(filterByFavorites, [filterState]);
 
-  function filterMemes() {
-    console.log("filter memes");
+  function filterByFavorites() {
     switch (filterState.favoritedState) {
       case 0:
         setFilteredMemes([...memes]);
@@ -60,6 +62,18 @@ function MemeView({ categories, memes }: MemeViewProps) {
         break;
     }
   }
+
+  useEffect(() => {
+    // Function to apply filters based on URL query parameters
+    const applyFilters = () => {
+      const query = router.query;
+      // Extract and apply filters from query parameters
+      // Example: Check for favoritedState in query and filter memes accordingly
+      // Update your filter logic based on how you structure query parameters
+    };
+
+    applyFilters();
+  }, [router.query, memes]);
 
   return (
     <div className="mt-10">

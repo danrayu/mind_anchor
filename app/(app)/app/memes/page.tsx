@@ -1,22 +1,13 @@
 import MemeView from "./components/MemeView";
 
 async function MemesPage() {
-  let memes: Meme[] = [];
-  let categories: Category[] = [];
-  await fetch("http://localhost:3000/api/memes")
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      memes = data;
-    });
-  await fetch("http://localhost:3000/api/categories")
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      categories = data;
-    });
+  const [memesResponse, categoriesResponse] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/memes/?wCats`),
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`)
+  ]);
+
+  const memes = await memesResponse.json();
+  const categories = await categoriesResponse.json();
 
   return <MemeView categories={categories} memes={memes}/>;
 }

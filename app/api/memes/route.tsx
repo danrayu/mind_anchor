@@ -6,35 +6,36 @@ export async function GET(
   request: NextRequest,
   {params}: {params: {id: number}}
 ) {
-  const memes = await prisma.meme.findMany()
+  const wCats = request.nextUrl.searchParams.has('wCats');
+  const memes = await prisma.meme.findMany({
+    include: {
+      categories: wCats,
+    }
+  });
   return NextResponse.json(memes);
 }
 
 export async function POST(request: NextRequest) {
   const { title, description, authorId, favorite, categoryIds } = await request.json();
-  if (title.length === 0) {
-    return NextResponse.json('Error: Meme name not valid.', {status: 403});
-  }
-  if (!title || !description || !authorId || !categoryIds || !favorite) {
-    return NextResponse.json('Error: Meme data undefined.', {status: 403});
+ 
+  if (!title || !description || !authorId || !categoryIds || favorite === undefined) {
+    return NextResponse.json('Error: Meme data undefined.', {status: 400});
   }
 
-  const createdMeme = await prisma.meme.create({
-    data: {
-      title: title,
-      description: description,
-      favorite: favorite,
-      author: {
-        connect: { id: authorId }, // Connect to an existing author
+  try {
+    const updatedMeme = await prisma.meme.create({
+      data: {
+        title,
+        description,
+        favorite,
+        author: { connect: { id: authorId } },
+        categories: {connect: categoryIds.map((id:number) => ({ id })) },
       },
-      categories: {
-        connect: categoryIds.map((id: number) => ({ id })), // Connect to existing categories
-      },
-    },
-    include: {
-      author: true,
-      categories: true,
-    },
-  });
-  return NextResponse.json(createdMeme);
+      include: { author: true, categories: true },
+    });
+    return NextResponse.json(updatedMeme);
+  } catch (error) {
+    // Handle specific errors (e.g., non-existing meme)
+    return NextResponse.json({ error: 'Error: Could not create Meme.' }, {status: 500});
+  }
 }

@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import FilterItem from "../../components/utility/FilterItem";
 import { MemeFilter } from "./MemeView";
+import { useRouter } from "next/router";
 
 interface FilterSelectorProps {
   filterState: MemeFilter;
@@ -13,8 +14,19 @@ function FilterSelector({
   filterState,
   setFilter,
 }: FilterSelectorProps) {
-  let filter = { ...filterState };
 
+  const router = useRouter();
+  const updateFilter = (newFilterState: any) => {
+    // Update the URL query parameters with the new filter state
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, ...newFilterState },
+    }, undefined, { shallow: true });
+  };
+
+  
+
+  let filter = { ...filterState };
   function favoritedClicked() {
     if (filterState.favoritedState === 1) filter.favoritedState = 0;
     else filter.favoritedState = 1;
@@ -67,6 +79,8 @@ function FilterSelector({
   function toggleFilter() {
     setFilterOpen(!filterOpen);
   }
+
+  
 
   return (
     <div className="mt-2 pt-2 flex flex-nowrap align-items-stretch">

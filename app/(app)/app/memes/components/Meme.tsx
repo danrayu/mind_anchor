@@ -19,7 +19,7 @@ function MemeContainer({ meme }: MemeProps) {
 
   return (
     <div className="outline mb-4 rounded-xl">
-      <div className="flex p-4 justify-between items-center hover:bg-slate-50" onClick={toggleOpen}>
+      <div className="flex p-4 justify-between items-center hover:bg-slate-100" onClick={toggleOpen}>
         <div className="space-x-3 ">
           <span className={!isOpen ? "ml-[3px]" : ''}>{isOpen ? "▼" : ">"}</span>
           <span>{meme.title}</span>

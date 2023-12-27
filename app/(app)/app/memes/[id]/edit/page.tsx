@@ -1,28 +1,30 @@
 import React from "react";
-import EditMeme from "./components/EditMeme";
+import MemeEdit from "../../../components/MemeEdit";
+
 interface EditMemePageProps {
   params: { id: number };
 }
+
 async function EditMemePage({ params: { id } }: EditMemePageProps) {
-  let meme: Meme = await fetch("http://localhost:3000/api/memes/" + id)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      return data;
-    });
-  let categories: Category[] = await fetch(
-    "http://localhost:3000/api/categories"
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      return data;
-    });
+  const [memeResponse, categoriesResponse] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/memes/${id}`),
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`),
+  ]);
+
+  const meme = await memeResponse.json();
+  console.log(memeResponse.statusText);
+  if (!memeResponse.ok) {
+    return (
+      <div className="text-center">
+        <h3>{meme}</h3>
+      </div>
+    );
+  }
+  const categories = await categoriesResponse.json();
+
   return (
     <div>
-      <EditMeme meme={meme} categories={categories} />
+      <MemeEdit meme={meme} categories={categories} />
     </div>
   );
 }
