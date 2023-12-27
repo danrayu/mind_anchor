@@ -1,7 +1,8 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import FilterItem from "../../components/utility/FilterItem";
-import { MemeFilter } from "./MemeView";
-import { useRouter } from "next/router";
+import { AddQueryCategories, MemeFilter } from "./MemeView";
+import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface FilterSelectorProps {
   filterState: MemeFilter;
@@ -14,49 +15,54 @@ function FilterSelector({
   filterState,
   setFilter,
 }: FilterSelectorProps) {
-
+  const pathname = usePathname();
+  const params = useSearchParams();
   const router = useRouter();
-  const updateFilter = (newFilterState: any) => {
-    // Update the URL query parameters with the new filter state
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, ...newFilterState },
-    }, undefined, { shallow: true });
+
+  const setFavParam = () => {
+    console.log('setFavParam', filterState.favoritedState, )
+    let val = parseInt(params.get('favs') || '0');
+    setFilter({ ...filterState, favoritedState: val });
+  }
+
+  useEffect(setFavParam, [params]);
+
+  const updateFavParam = (newFilterState: number) => {
+    const paramsNew = new URLSearchParams(params)
+    paramsNew.set('favs', newFilterState.toString());
   };
 
-  
+  const favoritedClicked = () => {
+    const newFavoritedState = filterState.favoritedState === 1 ? 0 : 1;
+    setFilter({ ...filterState, favoritedState: newFavoritedState });
+    updateFavParam(newFavoritedState);
 
-  let filter = { ...filterState };
-  function favoritedClicked() {
-    if (filterState.favoritedState === 1) filter.favoritedState = 0;
-    else filter.favoritedState = 1;
-    setFilter(filter);
-  }
-  function unFavoritedClicked() {
-    if (filterState.favoritedState === -1) filter.favoritedState = 0;
-    else filter.favoritedState = -1;
-    setFilter(filter);
-  }
+  };
+  const unFavoritedClicked = () => {
+    const newFavoritedState = filterState.favoritedState === -1 ? 0 : -1;
+    setFilter({ ...filterState, favoritedState: newFavoritedState });
+    updateFavParam(newFavoritedState);
+  };
 
-  // function catFilterState()
 
   function onCategoryFilter(id: number, keepCategoryPressed: boolean) {
     let prevStateIndex = filterState.categories.findIndex(
       (state) => state.id === id
     );
     let prevState = filterState.categories[prevStateIndex];
+    let result = 0;
     switch (prevState.state) {
       case 0:
-        filter.categories[prevStateIndex].state = keepCategoryPressed ? 1 : -1;
+        result = keepCategoryPressed ? 1 : -1;
         break;
       case 1:
-        filter.categories[prevStateIndex].state = keepCategoryPressed ? 0 : -1;
+        result = keepCategoryPressed ? 0 : -1;
         break;
       case -1:
-        filter.categories[prevStateIndex].state = keepCategoryPressed ? 1 : 0;
+        result = keepCategoryPressed ? 1 : 0;
         break;
     }
-    setFilter(filter);
+    setFilter({ ...filterState, favoritedState: result });
   }
 
   function FilterCategory(category: Category) {

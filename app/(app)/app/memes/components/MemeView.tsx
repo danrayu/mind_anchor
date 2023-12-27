@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import FilterSelector from "./FilterSelector";
 import MemeContainer from "./Meme";
 import Searchbar from "../../components/Searchbar";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface MemeViewProps {
   categories: Category[];
@@ -25,8 +25,25 @@ const defaultFilterState: MemeFilter = {
   categories: [],
 };
 
+const catStringToIds = (catString: string | null): number[] => {
+  if (catString === null) {
+    return [];
+  }
+  return catString.split(',').map(catId => parseInt(catId));
+}
+
+export const AddQueryCategories = 
+  (params: URLSearchParams, categoryIds: number[]) => {
+    const catString = params.get('cats') ;
+    let ids = [...catStringToIds(catString), ...categoryIds]
+
+    const paramsNew = new URLSearchParams(params)
+    paramsNew.set('cats', ids.join(','))
+    return params.toString()
+  }
+
 function MemeView({ categories, memes }: MemeViewProps) {
-  const router = useRouter();
+  const params = useSearchParams();
 
   const [filterState, setFilter] = useState<MemeFilter>(
     setupFilterState(categories)
@@ -66,14 +83,15 @@ function MemeView({ categories, memes }: MemeViewProps) {
   useEffect(() => {
     // Function to apply filters based on URL query parameters
     const applyFilters = () => {
-      const query = router.query;
+      let ids = filterState.categories.map(cat => cat.id);
+      AddQueryCategories(params, ids)
       // Extract and apply filters from query parameters
       // Example: Check for favoritedState in query and filter memes accordingly
       // Update your filter logic based on how you structure query parameters
     };
 
     applyFilters();
-  }, [router.query, memes]);
+  }, [params, memes]);
 
   return (
     <div className="mt-10">
