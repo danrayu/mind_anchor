@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import FilterItem from "../../components/utility/FilterItem";
-import { AddQueryCategories, MemeFilter } from "./MemeView";
+import { MemeFilter } from "./MemeView";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 
@@ -20,49 +20,49 @@ function FilterSelector({
   const router = useRouter();
 
   const setFavParam = () => {
-    console.log('setFavParam', filterState.favoritedState, )
-    let val = parseInt(params.get('favs') || '0');
+    let val = parseInt(params.get("favs") || "0");
     setFilter({ ...filterState, favoritedState: val });
-  }
+  };
 
   useEffect(setFavParam, [params]);
 
   const updateFavParam = (newFilterState: number) => {
-    const paramsNew = new URLSearchParams(params)
-    paramsNew.set('favs', newFilterState.toString());
+    const paramsNew = new URLSearchParams(params);
+    paramsNew.set("favs", newFilterState.toString());
+    router.push(pathname + "?" + paramsNew.toString());
   };
 
-  const favoritedClicked = () => {
-    const newFavoritedState = filterState.favoritedState === 1 ? 0 : 1;
-    setFilter({ ...filterState, favoritedState: newFavoritedState });
-    updateFavParam(newFavoritedState);
-
-  };
-  const unFavoritedClicked = () => {
-    const newFavoritedState = filterState.favoritedState === -1 ? 0 : -1;
+  const favoritedChanged = (keepClicked: boolean) => {
+    const keepState = keepClicked ? 1 : -1;
+    const newFavoritedState =
+      filterState.favoritedState === keepState ? 0 : keepState;
     setFilter({ ...filterState, favoritedState: newFavoritedState });
     updateFavParam(newFavoritedState);
   };
-
 
   function onCategoryFilter(id: number, keepCategoryPressed: boolean) {
     let prevStateIndex = filterState.categories.findIndex(
       (state) => state.id === id
     );
     let prevState = filterState.categories[prevStateIndex];
-    let result = 0;
+    let catState = [...filterState.categories];
+    let val = 0;
     switch (prevState.state) {
       case 0:
-        result = keepCategoryPressed ? 1 : -1;
+        val = keepCategoryPressed ? 1 : -1;
         break;
       case 1:
-        result = keepCategoryPressed ? 0 : -1;
+        val = keepCategoryPressed ? 0 : -1;
         break;
       case -1:
-        result = keepCategoryPressed ? 1 : 0;
+        val = keepCategoryPressed ? 1 : 0;
         break;
     }
-    setFilter({ ...filterState, favoritedState: result });
+    catState[prevStateIndex].state = val;
+    setFilter({
+      ...filterState,
+      categories: [...catState],
+    });
   }
 
   function FilterCategory(category: Category) {
@@ -86,8 +86,6 @@ function FilterSelector({
     setFilterOpen(!filterOpen);
   }
 
-  
-
   return (
     <div className="mt-2 pt-2 flex flex-nowrap align-items-stretch">
       {filterOpen && <div className="max-w-[1px] flex-1 bg-slate-400" />}
@@ -104,8 +102,8 @@ function FilterSelector({
               <h5 className="mt-2">Favorites</h5>
               <div className="flex flex-wrap">
                 <FilterItem
-                  onAdd={favoritedClicked}
-                  onRemove={unFavoritedClicked}
+                  onAdd={() => favoritedChanged(true)}
+                  onRemove={() => favoritedChanged(false)}
                   state={filterState.favoritedState}
                   name="Favorites"
                 />
@@ -122,5 +120,4 @@ function FilterSelector({
     </div>
   );
 }
-
 export default FilterSelector;

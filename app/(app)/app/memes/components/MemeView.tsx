@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import FilterSelector from "./FilterSelector";
 import MemeContainer from "./Meme";
 import Searchbar from "../../components/Searchbar";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface MemeViewProps {
   categories: Category[];
@@ -25,25 +25,44 @@ const defaultFilterState: MemeFilter = {
   categories: [],
 };
 
-const catStringToIds = (catString: string | null): number[] => {
-  if (catString === null) {
-    return [];
-  }
-  return catString.split(',').map(catId => parseInt(catId));
-}
+const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
+  let activated = false;
+  catStates.forEach((cat) => {
+    if (cat.state === 1) activated = true;
+  });
+  return activated;
+};
 
-export const AddQueryCategories = 
-  (params: URLSearchParams, categoryIds: number[]) => {
-    const catString = params.get('cats') ;
-    let ids = [...catStringToIds(catString), ...categoryIds]
+const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
+  let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
+  return cp.join(",");
+};
+const decodeURICategories = (param: string): CategoryFilterState[] => {
+  if (!param) return [];
+  let catsString = param.split(",");
+  return catsString.map((cat: string) => {
+    const [id, st] = cat.split(":")!;
+    return { id: parseInt(id), state: parseInt(st) };
+  });
+};
 
-    const paramsNew = new URLSearchParams(params)
-    paramsNew.set('cats', ids.join(','))
-    return params.toString()
-  }
+export const setQueryCategories = (
+  params: URLSearchParams,
+  categoryStates: CategoryFilterState[]
+) => {
+  let cats = categoryStates.filter(
+    (state) => state.state === 1 || state.state === -1
+  );
+
+  const paramsNew = new URLSearchParams(params);
+  paramsNew.set("cats", encodeURICategories(cats));
+  return paramsNew.toString();
+};
 
 function MemeView({ categories, memes }: MemeViewProps) {
+  const pathname = usePathname();
   const params = useSearchParams();
+  const router = useRouter();
 
   const [filterState, setFilter] = useState<MemeFilter>(
     setupFilterState(categories)
@@ -52,46 +71,63 @@ function MemeView({ categories, memes }: MemeViewProps) {
 
   // TODO make not overwrite state if one exists
   function setupFilterState(categories: Category[]) {
-    console.log("setup state");
-
-    let fState = { ...defaultFilterState };
+    const dataArray: CategoryFilterState[] = decodeURICategories(
+      params.get("cats")!
+    );
+    let fState = {
+      ...defaultFilterState,
+      categories: [...defaultFilterState.categories],
+    };
     categories.forEach((cat: Category) => {
-      fState.categories.push({
-        id: cat.id,
-        state: 0,
-      });
+      let catQuery = dataArray.find((item) => cat.id === item.id);
+      if (catQuery !== undefined) {
+        fState.categories.push(catQuery);
+      } else {
+        fState.categories.push({
+          id: cat.id,
+          state: 0,
+        });
+      }
     });
     return fState;
   }
 
-  useEffect(filterByFavorites, [filterState]);
-
-  function filterByFavorites() {
-    switch (filterState.favoritedState) {
-      case 0:
-        setFilteredMemes([...memes]);
-        break;
-      case 1:
-        setFilteredMemes(memes.filter((meme) => meme["favorite"]));
-        break;
-      case -1:
-        setFilteredMemes(memes.filter((meme) => !meme["favorite"]));
-        break;
-    }
-  }
+  useEffect(() => {
+    setFilteredMemes(filterByFavorites(filterByCategories([...memes])));
+  }, [filterState]);
 
   useEffect(() => {
-    // Function to apply filters based on URL query parameters
-    const applyFilters = () => {
-      let ids = filterState.categories.map(cat => cat.id);
-      AddQueryCategories(params, ids)
-      // Extract and apply filters from query parameters
-      // Example: Check for favoritedState in query and filter memes accordingly
-      // Update your filter logic based on how you structure query parameters
-    };
+    router.push(
+      pathname + "?" + setQueryCategories(params, filterState.categories)
+    );
+  }, [filterState.categories]);
 
-    applyFilters();
-  }, [params, memes]);
+  function filterByFavorites(memes: Meme[]): Meme[] {
+    switch (filterState.favoritedState) {
+      case 1:
+        return memes.filter((meme) => meme["favorite"]);
+      case -1:
+        return memes.filter((meme) => !meme["favorite"]);
+      default:
+        return memes;
+    }
+  }
+  function filterByCategories(memes: Meme[]): Meme[] {
+    const catAllowedIds = new Set(filterState.categories.filter(cat => cat.state === 1).map(cat => cat.id));
+    const catForbiddenIds = new Set(filterState.categories.filter(cat => cat.state === -1).map(cat => cat.id));
+    
+    let pFilter = positiveFilterActivated(filterState.categories);
+    return memes.filter((meme) => {
+      const memeCatIds = meme.categories.map(cat => cat.id);
+
+      const isForbidden = memeCatIds.some(id => catForbiddenIds.has(id));
+      if (isForbidden) return false;
+
+      if (!pFilter) return true;
+      const isAllowed = memeCatIds.some(id => catAllowedIds.has(id));
+      return isAllowed;
+    });
+  }
 
   return (
     <div className="mt-10">
