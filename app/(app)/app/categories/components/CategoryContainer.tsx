@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 interface CategoryContainerProps {
@@ -14,34 +13,20 @@ function CategoryContainer({ category }: CategoryContainerProps) {
     router.push("/app/memes?" + paramsNew.toString());
   };
 
-  const deleteCat = async () => {
-    var proceed = confirm(
-      `Are you sure you want to delete category ${category.name}?`
-    );
-    if (proceed) {
-      await fetchToDelete(category.id);
-      router.refresh();
-    }
+  const editCategory = () => {
+    router.push("/app/categories/" + category.id);
   };
 
-  async function fetchToDelete(id: number) {
-    return await fetch("/api/categories/" + id, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
   return (
     <div className="outline mb-4 outline-slate-350 rounded-xl">
       <div className="flex p-4 justify-between items-center">
         <span className="font-semibold text-[17px] ml-4">{category.name}</span>
-        <div className="space-x-8">
+        <div className="space-x-2">
           <button
-            className="btn btn-link text-error-content font-normal text-sm p-0"
-            onClick={deleteCat}
+            className="btn btn-link font-normal text-sm"
+            onClick={editCategory}
           >
-            Delete
+            Edit
           </button>
           <button className="btn btn-primary " onClick={viewMemes}>
             View Memes

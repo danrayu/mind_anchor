@@ -14,8 +14,6 @@ export type CategoryState = {
 
 const EditMeme = ({ meme, categories }: EditMemeProps) => {
   const [categoriesState, setCategoriesState] = useState<CategoryState[]>([]);
-  const [title, setFavoriteChecked] = useState(meme.favorite);
-  const [favoriteChecked, setFavoriteChecked] = useState(meme.favorite);
   const [favoriteChecked, setFavoriteChecked] = useState(meme.favorite);
 
   const generateCategoriesState = () => {

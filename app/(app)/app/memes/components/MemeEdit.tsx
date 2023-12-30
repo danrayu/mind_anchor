@@ -108,10 +108,15 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
 
   const deleteMeme = async () => {
     try {
-      const response = await fetchToDelete(meme.id);
-      console.log("Meme deleted", response);
-      // navigate back to meme page when deleted
-      window.location.href = "/app/memes";
+      var proceed = confirm(
+        `Are you sure you want to delete meme ${meme!.title}?`
+      );
+      if (proceed) {
+        const response = await fetchToDelete(meme.id);
+        console.log("Meme deleted", response);
+        // navigate back to meme page when deleted
+        window.location.href = "/app/memes";
+      }
     } catch (error) {
       console.error("Error deleting meme:", error);
     }
