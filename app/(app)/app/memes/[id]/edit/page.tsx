@@ -1,5 +1,5 @@
 import React from "react";
-import MemeEdit from "../../../components/MemeEdit";
+import MemeEdit from "../../components/MemeEdit";
 
 interface EditMemePageProps {
   params: { id: number };

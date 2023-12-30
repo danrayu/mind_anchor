@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import SwitchCategory from "./utility/SwitchCategory";
+import SwitchCategory from "../../components/utility/SwitchCategory";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -115,7 +115,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     } catch (error) {
       console.error("Error deleting meme:", error);
     }
-  }
+  };
 
   return (
     <>

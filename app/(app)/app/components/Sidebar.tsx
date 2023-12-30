@@ -4,13 +4,14 @@ import Brand from "./sidebar/Brand";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Searchbar from "./Searchbar";
+
 function Sidebar() {
   const router = useRouter();
 
   return (
     <div className="drawer-side">
       <label
-        htmlFor="my-drawer-2"
+        htmlFor="app-drawer"
         aria-label="close sidebar"
         className="drawer-overlay"
       ></label>

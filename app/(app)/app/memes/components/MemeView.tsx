@@ -18,11 +18,13 @@ type CategoryFilterState = {
 export type MemeFilter = {
   favoritedState: number;
   categories: CategoryFilterState[];
+  searchString: string;
 };
 
 const defaultFilterState: MemeFilter = {
   favoritedState: 0,
   categories: [],
+  searchString: "",
 };
 
 const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
@@ -92,8 +94,27 @@ function MemeView({ categories, memes }: MemeViewProps) {
     return fState;
   }
 
+  const onSearchbarChange = (value: string) => {
+    setFilter({...filterState, searchString: value});
+  };
+
+  const filterBySearchString = (
+    memes: Meme[],
+    searchString: string
+  ): Meme[] => {
+    return memes.filter(
+      (meme) =>
+        meme.title.toLowerCase().includes(searchString.toLowerCase()) ||
+        meme.description.toLowerCase().includes(searchString.toLowerCase())
+    );
+  };
+
+  const filter = () => {
+    setFilteredMemes(filterBySearchString(filterByFavorites(filterByCategories([...memes])), filterState.searchString));
+  };
+
   useEffect(() => {
-    setFilteredMemes(filterByFavorites(filterByCategories([...memes])));
+    filter();
   }, [filterState]);
 
   useEffect(() => {
@@ -113,18 +134,26 @@ function MemeView({ categories, memes }: MemeViewProps) {
     }
   }
   function filterByCategories(memes: Meme[]): Meme[] {
-    const catAllowedIds = new Set(filterState.categories.filter(cat => cat.state === 1).map(cat => cat.id));
-    const catForbiddenIds = new Set(filterState.categories.filter(cat => cat.state === -1).map(cat => cat.id));
-    
+    const catAllowedIds = new Set(
+      filterState.categories
+        .filter((cat) => cat.state === 1)
+        .map((cat) => cat.id)
+    );
+    const catForbiddenIds = new Set(
+      filterState.categories
+        .filter((cat) => cat.state === -1)
+        .map((cat) => cat.id)
+    );
+
     let pFilter = positiveFilterActivated(filterState.categories);
     return memes.filter((meme) => {
-      const memeCatIds = meme.categories.map(cat => cat.id);
+      const memeCatIds = meme.categories.map((cat) => cat.id);
 
-      const isForbidden = memeCatIds.some(id => catForbiddenIds.has(id));
+      const isForbidden = memeCatIds.some((id) => catForbiddenIds.has(id));
       if (isForbidden) return false;
 
       if (!pFilter) return true;
-      const isAllowed = memeCatIds.some(id => catAllowedIds.has(id));
+      const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
       return isAllowed;
     });
   }
@@ -134,7 +163,7 @@ function MemeView({ categories, memes }: MemeViewProps) {
       <h1 className="text-[35px] font-bold">Memes</h1>
       <div className="flex flex-wrap">
         <div className="mr-auto w-full max-w-[600px]">
-          <Searchbar />
+          <Searchbar onChange={onSearchbarChange}/>
         </div>
         <div className="my-auto">
           <button className="btn btn-outline h-10">Search</button>
@@ -150,6 +179,11 @@ function MemeView({ categories, memes }: MemeViewProps) {
         {filteredMemes.map((meme) => {
           return <MemeContainer key={meme.id} meme={meme} />;
         })}
+        {filteredMemes.length === 0 && (
+          <div className="mt-7">
+            <span className="text-lg">No memes were found</span>
+          </div>
+        )}
       </div>
     </div>
   );

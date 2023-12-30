@@ -31,6 +31,13 @@
 
 @layer base {
   .outline {
-    @apply outline-1;
+    @apply outline-1 outline-slate-400;
+  } 
+  
+}
+
+@layer components {
+  .btn-outline {
+    @apply border-slate-400;
   }
 }
