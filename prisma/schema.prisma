@@ -11,19 +11,20 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  role  Role   @default(USER)
-  Meme  Meme[]
-  Map   Mindscape[]
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  name       String
+  role       Role        @default(USER)
+  Memes      Meme[]
+  Categorys  Category[]
+  Mindscapes Mindscape[]
 }
 
 model Meme {
   id          Int        @id @default(autoincrement())
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
-  title       String     
+  title       String
   description String
   author      User       @relation(fields: [authorId], references: [id])
   authorId    Int
@@ -32,19 +33,21 @@ model Meme {
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  name  String
-  memes Meme[]
+  id       Int    @id @default(autoincrement())
+  name     String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId Int
+  memes    Meme[]
 }
 
 model Mindscape {
-  id       Int    @id @default(autoincrement())
-  title    String @unique
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
   description String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    Int
 }
 
 enum Role {

@@ -13,15 +13,34 @@ function CategoryContainer({ category }: CategoryContainerProps) {
     paramsNew.set("cats", `${category.id}:${1}`);
     router.push("/app/memes?" + paramsNew.toString());
   };
-  const deleteCat = () => {
 
+  const deleteCat = async () => {
+    var proceed = confirm(
+      `Are you sure you want to delete category ${category.name}?`
+    );
+    if (proceed) {
+      await fetchToDelete(category.id);
+      router.refresh();
+    }
+  };
+
+  async function fetchToDelete(id: number) {
+    return await fetch("/api/categories/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
   return (
     <div className="outline mb-4 outline-slate-350 rounded-xl">
       <div className="flex p-4 justify-between items-center">
         <span className="font-semibold text-[17px] ml-4">{category.name}</span>
         <div className="space-x-8">
-          <button className="btn btn-link text-error-content font-normal text-sm p-0" onClick={deleteCat}>
+          <button
+            className="btn btn-link text-error-content font-normal text-sm p-0"
+            onClick={deleteCat}
+          >
             Delete
           </button>
           <button className="btn btn-primary " onClick={viewMemes}>

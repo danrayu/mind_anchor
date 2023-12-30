@@ -2,6 +2,7 @@ declare global {
   type Category = {
     id: number;
     name: string;
+    authorId: number;
   };
   type Meme = {
     id: number;
