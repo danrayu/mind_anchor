@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-
-function CategoryEdit() {
+interface CategoryEditProps {
+  category?: Category
+}
+function CategoryEdit({category}: CategoryEditProps) {
   const [categoryName, setCategoryName] = useState("");
+  const isNew = category == undefined;
+
+  if (!isNew) {
+    setCategoryName(category.name);
+  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -10,14 +17,16 @@ function CategoryEdit() {
       return;
     }
 
-    const newCategory = {
-      name: categoryName,
-      authorId: 1,
-    };
-
-    await fetchToNew(newCategory);
-
-    setCategoryName("");
+    if (isNew) {
+      const newCategory = {
+        name: categoryName,
+        authorId: 1,
+      };
+      await fetchToNew(newCategory);
+      setCategoryName("");
+    } else {
+      await fetchToUpdate(category.id, {name: categoryName});
+    }
   };
 
   return (
@@ -34,7 +43,7 @@ function CategoryEdit() {
       </div>
 
       <button className="btn btn-primary" type="submit">
-        Add Category
+        Save Category
       </button>
     </form>
   );
@@ -47,6 +56,15 @@ async function fetchToNew(catData: any) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(catData),
+  });
+}
+
+async function fetchToUpdate(id: number, catData: any) {
+  return await fetch("/api/categories/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
 
