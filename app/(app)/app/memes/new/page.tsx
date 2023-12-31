@@ -11,7 +11,11 @@ async function NewMemePage() {
     .then((data) => {
       return data;
     });
-  return <MemeEdit categories={categories} />;
+  return (
+    <div className="mt-10">
+      <MemeEdit categories={categories} />
+    </div>
+  )
 }
 
 export default NewMemePage;

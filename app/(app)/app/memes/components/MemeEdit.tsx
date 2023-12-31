@@ -155,6 +155,8 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       )}
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
+          <h1 className="text-[35px] font-bold mb-4">{newMeme && "Add"} {!newMeme && "Edit"} meme</h1>
+
           <div className="mb-4">
             <label htmlFor="title" className="block font-medium text-gray-700">
               Title
@@ -183,7 +185,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               value={meme.description}
               onChange={changedDescription}
               placeholder="Description"
-              className="mt-1 p-2 block rounded outline w-full"
+              className="mt-1 p-2 block rounded outline w-full h-40"
             ></textarea>
           </div>
 

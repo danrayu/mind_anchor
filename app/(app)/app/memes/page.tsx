@@ -103,7 +103,8 @@ function MemesPage() {
     return memes.filter(
       (meme) =>
         meme.title.toLowerCase().includes(searchString.toLowerCase()) ||
-        meme.description.toLowerCase().includes(searchString.toLowerCase())
+        meme.description.toLowerCase().includes(searchString.toLowerCase()) ||
+        meme.categories.map(cat => cat.name).join("").toLowerCase().includes(searchString.toLowerCase())
     );
   };
 

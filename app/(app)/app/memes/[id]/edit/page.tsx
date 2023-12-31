@@ -24,7 +24,7 @@ async function EditMemePage({ params: { id } }: EditMemePageProps) {
   const categories = await categoriesResponse.json();
 
   return (
-    <div>
+    <div className="mt-10">
       <MemeEdit meme={meme} categories={categories} />
     </div>
   );

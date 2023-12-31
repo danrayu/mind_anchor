@@ -70,7 +70,7 @@ function Sidebar() {
                   router.push("/app/memes");
                 }}
               >
-                <span>Manage</span>
+                <span>View All</span>
               </li>
             </ul>
           </details>
