@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import SwitchCategory from "../../components/utility/SwitchCategory";
+import {
+  fetchCreateMeme,
+  fetchDeleteMeme,
+  fetchUpdateMeme,
+} from "@/app/fetchActions";
+import { useAppDispatch } from "@/app/store/hooks";
+import { fetchMemes } from "@/app/store/actions";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -26,7 +33,7 @@ function createEmptyMeme(): Meme {
 }
 
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
-  // Check if this is a new meme, or if one is being edited
+  const dispatch = useAppDispatch();
   let newMeme = false;
   if (initialMeme === undefined) {
     newMeme = true;
@@ -38,7 +45,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    await updateMeme(meme);
+    await saveMeme(meme);
   };
 
   const changedTitle = (event: any) => {
@@ -78,7 +85,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     }
   };
 
-  const updateMeme = async (meme: Meme) => {
+  const saveMeme = async (meme: Meme) => {
     let memeData = {
       id: meme.id,
       title: meme.title,
@@ -87,18 +94,21 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       authorId: meme.authorId,
       categoryIds: meme.categories.map((cat: Category) => cat.id),
     };
-    const request = newMeme ? fetchToNew : fetchToExisting;
+    const request = newMeme ? fetchCreateMeme : fetchUpdateMeme;
     try {
       const response = await request(memeData);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(
+          `HTTP error status: ${response.status} - ${response.statusText}`
+        );
+      } else {
+        dispatch(fetchMemes());
+        const data = await response.json();
+        console.log("Meme saved:", data);
+        setUpdateSuccess(true);
+        setTimeout(() => setUpdateSuccess(false), 3000);
       }
-
-      const data = await response.json();
-      console.log("Meme saved:", data);
-      setUpdateSuccess(true);
-      setTimeout(() => setUpdateSuccess(false), 3000);
     } catch (error) {
       console.error("Error saving meme:", error);
       setUpdateSuccess(false);
@@ -111,10 +121,12 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         `Are you sure you want to delete meme ${meme!.title}?`
       );
       if (proceed) {
-        const response = await fetchToDelete(meme.id);
-        console.log("Meme deleted", response);
-        // navigate back to meme page when deleted
-        window.location.href = "/app/memes";
+        const response = await fetchDeleteMeme(meme.id);
+        if (response.ok) {
+          dispatch(fetchMemes());
+          console.log("Meme deleted", response);
+          window.location.href = "/app/memes";
+        }
       }
     } catch (error) {
       console.error("Error deleting meme:", error);
@@ -217,35 +229,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       </div>
     </>
   );
-}
-
-async function fetchToNew(memeData: any) {
-  return await fetch("/api/memes", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(memeData),
-  });
-}
-
-async function fetchToExisting(memeData: any) {
-  return await fetch("/api/memes/" + memeData.id, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(memeData),
-  });
-}
-
-async function fetchToDelete(id: number) {
-  return await fetch("/api/memes/" + id, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 }
 
 export default MemeEdit;

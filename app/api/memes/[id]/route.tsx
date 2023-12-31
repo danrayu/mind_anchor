@@ -25,16 +25,6 @@ export async function PUT(
   const { title, description, authorId, favorite, categoryIds } =
     await request.json();
 
-  if (
-    !title ||
-    !description ||
-    !authorId ||
-    !categoryIds ||
-    favorite === undefined
-  ) {
-    return NextResponse.json("Error: Meme data undefined.", { status: 400 });
-  }
-
   try {
     const updatedMeme = await prisma.meme.update({
       where: { id: parseInt(params.id) },
@@ -54,9 +44,8 @@ export async function PUT(
     });
     return NextResponse.json(updatedMeme);
   } catch (error) {
-    // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(
-      { error: "Error updating the Meme." },
+      { error: "Error updating the Meme: " + error },
       { status: 500 }
     );
   }

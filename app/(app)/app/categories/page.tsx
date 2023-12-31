@@ -1,15 +1,12 @@
 'use client'
 import React from "react";
 import CategoriesView from "./components/CategoriesView";
+import { useAppSelector } from "@/app/store/hooks";
 
-async function CategoriesPage() {
-  const categoriesResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`
-  );
+function CategoriesPage() {
+  var cats = useAppSelector(state => state.categories.categories);
 
-  const categories = await categoriesResponse.json();
-
-  return <CategoriesView categories={categories}></CategoriesView>;
+  return <CategoriesView categories={cats}></CategoriesView>;
 }
 
 export default CategoriesPage;

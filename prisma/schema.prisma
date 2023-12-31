@@ -25,7 +25,7 @@ model Meme {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
   title       String
-  description String
+  description String     @db.Text
   author      User       @relation(fields: [authorId], references: [id])
   authorId    Int
   favorite    Boolean

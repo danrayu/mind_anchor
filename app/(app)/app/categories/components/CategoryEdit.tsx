@@ -1,3 +1,4 @@
+import { fetchCreateCategory, fetchDeleteCategory, fetchUpdateCategory } from "@/app/fetchActions";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 interface CategoryEditProps {
@@ -25,10 +26,10 @@ function CategoryEdit({ category }: CategoryEditProps) {
         name: categoryName,
         authorId: 1,
       };
-      await fetchToNew(newCategory);
+      await fetchCreateCategory(newCategory);
       setCategoryName("");
     } else {
-      await fetchToUpdate(category.id, { name: categoryName });
+      await fetchUpdateCategory(category.id, { name: categoryName });
     }
   };
 
@@ -37,7 +38,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
       `Are you sure you want to delete category ${category!.name}?`
     );
     if (proceed) {
-      await fetchToDelete(category!.id);
+      await fetchDeleteCategory(category!.id);
       router.push("/app/categories");
     }
   };
@@ -71,34 +72,6 @@ function CategoryEdit({ category }: CategoryEditProps) {
       </div>
     </form>
   );
-}
-
-async function fetchToNew(catData: any) {
-  return await fetch("/api/categories", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(catData),
-  });
-}
-
-async function fetchToUpdate(id: number, catData: any) {
-  return await fetch("/api/categories/" + id, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
-
-async function fetchToDelete(id: number) {
-  return await fetch("/api/categories/" + id, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 }
 
 export default CategoryEdit;
