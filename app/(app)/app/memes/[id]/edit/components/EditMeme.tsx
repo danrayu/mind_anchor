@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import SwitchCategory from './SwitchCategory';
 // Import additional libraries as needed, e.g., for fetching and updating data

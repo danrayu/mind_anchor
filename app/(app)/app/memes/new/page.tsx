@@ -1,3 +1,4 @@
+'use client'
 import MemeEdit from "../components/MemeEdit";
 
 async function NewMemePage() {

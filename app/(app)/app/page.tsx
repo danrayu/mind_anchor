@@ -1,8 +1,8 @@
 'use client'
 
-import React from "react";
+function AppPage() {
 
-function MindscapePage() {
+  
   return (
     <h3>
       my app is so feaured, because we have mindscapes
@@ -10,4 +10,4 @@ function MindscapePage() {
   );
 }
 
-export default MindscapePage;
+export default AppPage;
