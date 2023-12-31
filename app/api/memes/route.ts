@@ -18,7 +18,7 @@ export async function GET(
 export async function POST(request: NextRequest) {
   const { title, description, authorId, favorite, categoryIds } = await request.json();
  
-  if (!title || !description || !authorId || !categoryIds || favorite === undefined) {
+  if (!title || !authorId || !categoryIds || favorite === undefined) {
     return NextResponse.json('Error: Meme data undefined.', {status: 400});
   }
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const updatedMeme = await prisma.meme.create({
       data: {
         title,
-        description,
+        description: description ? description : "",
         favorite,
         author: { connect: { id: authorId } },
         categories: {connect: categoryIds.map((id:number) => ({ id })) },

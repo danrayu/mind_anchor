@@ -125,7 +125,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         if (response.ok) {
           dispatch(fetchMemes());
           console.log("Meme deleted", response);
-          window.location.href = "/app/memes";
+          //window.location.href = "/app/memes";
         }
       }
     } catch (error) {
@@ -154,12 +154,9 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         </div>
       )}
       <div className="container mx-auto p-4 mt-6">
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+        <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
           <div className="mb-4">
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="title" className="block font-medium text-gray-700">
               Title
             </label>
             <input
@@ -168,14 +165,15 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="title"
               value={meme.title}
               onChange={changedTitle}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Title"
+              className="mt-1 p-2 block rounded outline w-full"
             />
           </div>
 
           <div className="mb-4">
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-medium text-gray-700"
             >
               Description
             </label>
@@ -184,14 +182,15 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="description"
               value={meme.description}
               onChange={changedDescription}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Description"
+              className="mt-1 p-2 block rounded outline w-full"
             ></textarea>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 flex space-x-4 items-center">
             <label
               htmlFor="favorite"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-medium text-gray-700 mt-1"
             >
               Favorite
             </label>
@@ -201,10 +200,14 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="favorite"
               checked={meme.favorite}
               onChange={changedFavorite}
-              className="mt-1"
+              className="mt-1 checkbox border-slate-400"
             />
           </div>
-          <div className="flex flex-wrap space-x-1">
+          <label
+              htmlFor="categories"
+              className="block font-medium text-gray-700"
+            >Categories</label>
+          <div id="categories" className="flex flex-wrap space-x-1">
             {categories.map((cat: Category) => {
               return (
                 <SwitchCategory
@@ -216,16 +219,21 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               );
             })}
           </div>
-
-          <button type="submit" className="mt-2 btn btn-primary">
-            Save
-          </button>
+          <div className={"mt-4 flex " + (!newMeme ? "justify-between" : "justify-end")}>
+            {!newMeme && (
+              <button
+                className="mt-2 btn btn-link font-normal text-red-700"
+                type="button"
+                onClick={deleteMeme}
+              >
+                Delete
+              </button>
+            )}
+            <button type="submit" className="mt-2 btn btn-primary">
+              Save
+            </button>
+          </div>
         </form>
-        {!newMeme && (
-          <button className="mt-2 btn btn-warning" onClick={deleteMeme}>
-            Delete
-          </button>
-        )}
       </div>
     </>
   );

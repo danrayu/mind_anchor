@@ -1,21 +1,190 @@
 'use client'
-
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/app/store/hooks";
-import MemeView from "./components/MemeView";
+import Searchbar from "../components/Searchbar";
+import FilterSelector from "./components/FilterSelector";
+import MemeContainer from "./components/Meme";
 
+type CategoryFilterState = {
+  id: number;
+  state: number;
+};
+
+export type MemeFilter = {
+  favoritedState: number;
+  categories: CategoryFilterState[];
+  searchString: string;
+};
+
+const defaultFilterState: MemeFilter = {
+  favoritedState: 0,
+  categories: [],
+  searchString: "",
+};
+
+const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
+  let activated = false;
+  catStates.forEach((cat) => {
+    if (cat.state === 1) activated = true;
+  });
+  return activated;
+};
+
+const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
+  let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
+  return cp.join(",");
+};
+const decodeURICategories = (param: string): CategoryFilterState[] => {
+  if (!param) return [];
+  let catsString = param.split(",");
+  return catsString.map((cat: string) => {
+    const [id, st] = cat.split(":")!;
+    return { id: parseInt(id), state: parseInt(st) };
+  });
+};
+
+export const setQueryCategories = (
+  params: URLSearchParams,
+  categoryStates: CategoryFilterState[]
+) => {
+  let cats = categoryStates.filter(
+    (state) => state.state === 1 || state.state === -1
+  );
+
+  const paramsNew = new URLSearchParams(params);
+  paramsNew.set("cats", encodeURICategories(cats));
+  return paramsNew.toString();
+};
 function MemesPage() {
-  // const [memesResponse, categoriesResponse] = await Promise.all([
-  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/memes/?wCats`),
-  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`)
-  // ]);
-  // const memes = await memesResponse.json();
-  // const categories = await categoriesResponse.json();
-
   var memes = useAppSelector(state => state.memes.memes);
-  var cats = useAppSelector(state => state.categories.categories);
-  
+  var categories = useAppSelector(state => state.categories.categories);
 
-  return <MemeView categories={cats} memes={memes}/>;
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const router = useRouter();
+
+  const [filterState, setFilter] = useState<MemeFilter>(
+    setupFilterState(categories)
+  );
+  const [filteredMemes, setFilteredMemes] = useState<any[]>([...memes]);
+
+  // TODO make not overwrite state if one exists
+  function setupFilterState(categories: Category[]) {
+    const dataArray: CategoryFilterState[] = decodeURICategories(
+      params.get("cats")!
+    );
+    let fState = {
+      ...defaultFilterState,
+      categories: [...defaultFilterState.categories],
+    };
+    categories.forEach((cat: Category) => {
+      let catQuery = dataArray.find((item) => cat.id === item.id);
+      if (catQuery !== undefined) {
+        fState.categories.push(catQuery);
+      } else {
+        fState.categories.push({
+          id: cat.id,
+          state: 0,
+        });
+      }
+    });
+    return fState;
+  }
+
+  const onSearchbarChange = (value: string) => {
+    setFilter({...filterState, searchString: value});
+  };
+
+  const filterBySearchString = (
+    memes: Meme[],
+    searchString: string
+  ): Meme[] => {
+    return memes.filter(
+      (meme) =>
+        meme.title.toLowerCase().includes(searchString.toLowerCase()) ||
+        meme.description.toLowerCase().includes(searchString.toLowerCase())
+    );
+  };
+
+  const filter = () => {
+    setFilteredMemes(filterBySearchString(filterByFavorites(filterByCategories([...memes])), filterState.searchString));
+  };
+
+  useEffect(() => {
+    filter();
+  }, [filterState]);
+
+  useEffect(() => {
+    router.push(
+      pathname + "?" + setQueryCategories(params, filterState.categories)
+    );
+  }, [filterState.categories]);
+
+  function filterByFavorites(memes: Meme[]): Meme[] {
+    switch (filterState.favoritedState) {
+      case 1:
+        return memes.filter((meme) => meme["favorite"]);
+      case -1:
+        return memes.filter((meme) => !meme["favorite"]);
+      default:
+        return memes;
+    }
+  }
+  function filterByCategories(memes: Meme[]): Meme[] {
+    const catAllowedIds = new Set(
+      filterState.categories
+        .filter((cat) => cat.state === 1)
+        .map((cat) => cat.id)
+    );
+    const catForbiddenIds = new Set(
+      filterState.categories
+        .filter((cat) => cat.state === -1)
+        .map((cat) => cat.id)
+    );
+
+    let pFilter = positiveFilterActivated(filterState.categories);
+    return memes.filter((meme) => {
+      const memeCatIds = meme.categories.map((cat) => cat.id);
+
+      const isForbidden = memeCatIds.some((id) => catForbiddenIds.has(id));
+      if (isForbidden) return false;
+
+      if (!pFilter) return true;
+      const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
+      return isAllowed;
+    });
+  }
+
+  return (
+    <div className="mt-10">
+      <h1 className="text-[35px] font-bold">Memes</h1>
+      <div className="flex flex-wrap">
+        <div className="mr-auto w-full max-w-[600px]">
+          <Searchbar onChange={onSearchbarChange}/>
+        </div>
+        <div className="my-auto">
+          <button className="btn btn-outline h-10">Search</button>
+        </div>
+      </div>
+      <FilterSelector
+        categories={categories}
+        filterState={filterState}
+        setFilter={setFilter}
+      />
+
+      <div className="mt-4">
+        {filteredMemes.map((meme) => {
+          return <MemeContainer key={meme.id} meme={meme} />;
+        })}
+        {filteredMemes.length === 0 && (
+          <div className="mt-7">
+            <span className="text-lg">No memes were found</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default MemesPage;

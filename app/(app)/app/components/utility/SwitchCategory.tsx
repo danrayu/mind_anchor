@@ -13,7 +13,7 @@ function SwitchCategory(props: SwitchItemProps) {
     return (props.state.categories.findIndex(cat => cat.id === props.category.id) !== -1);
   }
   return (
-    <div className={"mt-2 btn p-3 " + (isActive() ? "btn-primary " : " bg-slate-200 hover:bg-slate-400 ")} onClick={onSwitch}>
+    <div className={"mt-2 btn p-3 " + (isActive() ? "btn-accent " : " bg-slate-200 hover:bg-slate-400 ")} onClick={onSwitch}>
       <div>
         <span>{props.category.name}</span>
       </div>
