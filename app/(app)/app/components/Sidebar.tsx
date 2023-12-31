@@ -4,6 +4,7 @@ import Brand from "./sidebar/Brand";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Searchbar from "./Searchbar";
+import Link from "next/link";
 
 function Sidebar() {
   const router = useRouter();
@@ -103,6 +104,7 @@ function Sidebar() {
             </ul>
           </details>
         </li>
+        <Link className="bottom-0 m-4" href={"/api/auth/signin"}>Login</Link>
       </ul>
     </div>
   );

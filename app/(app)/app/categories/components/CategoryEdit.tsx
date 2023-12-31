@@ -1,10 +1,18 @@
-import { fetchCreateCategory, fetchDeleteCategory, fetchUpdateCategory } from "@/app/fetchActions";
+import {
+  fetchCreateCategory,
+  fetchDeleteCategory,
+  fetchUpdateCategory,
+} from "@/app/fetchActions";
+import { fetchCats } from "@/app/store/actions";
+import { useAppDispatch } from "@/app/store/hooks";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+
 interface CategoryEditProps {
   category?: Category;
 }
 function CategoryEdit({ category }: CategoryEditProps) {
+  const dispatch = useAppDispatch();
   var catName = "";
   const isNew = category == undefined;
 
@@ -26,8 +34,11 @@ function CategoryEdit({ category }: CategoryEditProps) {
         name: categoryName,
         authorId: 1,
       };
-      await fetchCreateCategory(newCategory);
-      setCategoryName("");
+      const response = await fetchCreateCategory(newCategory);
+      if (response.ok) {
+        setCategoryName("");
+        dispatch(fetchCats());
+      }
     } else {
       await fetchUpdateCategory(category.id, { name: categoryName });
     }
@@ -38,8 +49,11 @@ function CategoryEdit({ category }: CategoryEditProps) {
       `Are you sure you want to delete category ${category!.name}?`
     );
     if (proceed) {
-      await fetchDeleteCategory(category!.id);
-      router.push("/app/categories");
+      const response = await fetchDeleteCategory(category!.id);
+      if (response.ok) {
+        dispatch(fetchCats());
+        router.push("/app/categories");
+      }
     }
   };
 

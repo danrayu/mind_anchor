@@ -1,4 +1,4 @@
-import { Action, Dispatch, ThunkAction, UnknownAction } from "@reduxjs/toolkit";
+import { Action, Dispatch, ThunkAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 export const fetchMemes = (): ThunkAction<void, RootState, undefined, Action<string>> => {
