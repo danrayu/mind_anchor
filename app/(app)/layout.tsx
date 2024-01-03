@@ -5,6 +5,7 @@ import Sidebar from "./app/components/Sidebar";
 import MainView from "./app/components/Main";
 import StateProvider from "./app/components/StateProvider";
 import StoreInitializer from "./app/components/StoreInitializer";
+import AuthProvider from "./app/components/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,31 +28,33 @@ export default async function RootLayout({
 
   return (
     <StateProvider>
-      <StoreInitializer memes={memes} categories={cats}>
-        <html lang="en" data-theme="light">
-          <body className={inter.className}>
-            <div>
-              <div className="drawer lg:drawer-open">
-                <input
-                  id="app-drawer"
-                  type="checkbox"
-                  className="drawer-toggle"
-                />
-                <div className="drawer-content flex flex-col items-center">
-                  <MainView>{children}</MainView>
-                  <label
-                    htmlFor="app-drawer"
-                    className="btn btn-primary drawer-button lg:hidden"
-                  >
-                    Open drawer
-                  </label>
+      <AuthProvider>
+        <StoreInitializer memes={memes} categories={cats}>
+          <html lang="en" data-theme="light">
+            <body className={inter.className}>
+              <div>
+                <div className="drawer lg:drawer-open">
+                  <input
+                    id="app-drawer"
+                    type="checkbox"
+                    className="drawer-toggle"
+                  />
+                  <div className="drawer-content flex flex-col items-center">
+                    <MainView>{children}</MainView>
+                    <label
+                      htmlFor="app-drawer"
+                      className="btn btn-primary drawer-button lg:hidden"
+                    >
+                      Open drawer
+                    </label>
+                  </div>
+                  <Sidebar />
                 </div>
-                <Sidebar />
               </div>
-            </div>
-          </body>
-        </html>
-      </StoreInitializer>
+            </body>
+          </html>
+        </StoreInitializer>
+      </AuthProvider>
     </StateProvider>
   );
 }
