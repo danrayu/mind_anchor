@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import FilterItem from "../../components/utility/FilterItem";
-import { MemeFilter } from "./MemeView";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { MemeFilter } from "../page";
 
 interface FilterSelectorProps {
   filterState: MemeFilter;

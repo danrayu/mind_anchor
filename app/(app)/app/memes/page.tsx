@@ -44,7 +44,7 @@ const decodeURICategories = (param: string): CategoryFilterState[] => {
   });
 };
 
-export const setQueryCategories = (
+const setQueryCategories = (
   params: URLSearchParams,
   categoryStates: CategoryFilterState[]
 ) => {
