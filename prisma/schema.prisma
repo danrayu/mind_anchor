@@ -11,25 +11,36 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  email      String      @unique
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
   name       String
-  role       Role        @default(USER)
+  role       Role         @default(USER)
   Memes      Meme[]
   Categorys  Category[]
   Mindscapes Mindscape[]
+  Collection Collection[]
 }
 
 model Meme {
-  id          Int        @id @default(autoincrement())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
-  title       String
-  description String     @db.Text
-  author      User       @relation(fields: [authorId], references: [id])
-  authorId    Int
-  favorite    Boolean
-  categories  Category[]
+  id           Int         @id @default(autoincrement())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now()) @updatedAt
+  title        String
+  description  String      @db.Text
+  author       User        @relation(fields: [authorId], references: [id])
+  authorId     Int
+  favorite     Boolean
+  categories   Category[]
+  collectionId Int? // Foreign key, optional if a meme might not belong to a collection
+  Collection   Collection? @relation(fields: [collectionId], references: [id])
+}
+
+model Collection {
+  id       Int    @id @default(autoincrement())
+  name     String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId Int
+  Memes    Meme[]
 }
 
 model Category {
