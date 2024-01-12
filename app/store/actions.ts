@@ -49,3 +49,30 @@ export const fetchCats = () => {
       });
   };
 };
+
+export const fetchAll = (): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  Action<string>
+> => {
+  return async (dispatch: Dispatch): Promise<void> => {
+    dispatch({ type: "FETCH_MEMES_START" });
+
+    const response = await fetch(`/api/memes/?wCats`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch({ type: "FETCH_MEMES_FAILURE", error: errorData.error });
+      return;
+    }
+    response.json()
+      .then((data) => {
+        dispatch({ type: "FETCH_MEMES_SUCCESS", payload: data });
+        console.log("dispatch finished");
+      })
+      .catch((error) => {
+        dispatch({ type: "FETCH_MEMES_FAILURE", error });
+      });
+  };
+};

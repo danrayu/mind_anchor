@@ -82,10 +82,8 @@ function MemesPage() {
     const dataArray: CategoryFilterState[] = decodeURICategories(
       params.get("cats")!
     );
-    let fState = {
-      ...defaultFilterState,
-      categories: [...defaultFilterState.categories],
-    };
+    console.log(dataArray);
+    let fState = JSON.parse(JSON.stringify(defaultFilterState));
     categories.forEach((cat: Category) => {
       let catQuery = dataArray.find((item) => cat.id === item.id);
       if (catQuery !== undefined) {
