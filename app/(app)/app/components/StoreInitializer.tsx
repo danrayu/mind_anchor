@@ -1,17 +1,16 @@
 'use client'
+import { fetchCats, fetchMemes } from '@/app/store/actions';
+import { useAppDispatch } from '@/app/store/hooks';
 import React from 'react'
-import { useDispatch } from 'react-redux'
 interface StoreInitializerProps {
-  memes: Meme[],
-  categories: Category[],
   children: React.ReactNode,
 }
 
-function StoreInitializer({memes, categories, children}: StoreInitializerProps) {
-  const dispatch = useDispatch();
-  dispatch({ type: 'SET_MEMES', payload: memes });
-  dispatch({ type: 'SET_CATS', payload: categories });
+function StoreInitializer({children}: StoreInitializerProps) {
+  // const dispatch = useAppDispatch();
 
+  // dispatch(fetchMemes());
+  // dispatch(fetchCats());
   return (
     <>{children}</>
   )

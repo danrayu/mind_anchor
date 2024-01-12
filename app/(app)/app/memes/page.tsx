@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppSelector } from "@/app/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import Searchbar from "../components/Searchbar";
 import FilterSelector from "./components/FilterSelector";
 import MemeContainer from "./components/Meme";
+import { fetchMemes } from "@/app/store/actions";
 
 type CategoryFilterState = {
   id: number;
@@ -57,13 +58,20 @@ const setQueryCategories = (
   return paramsNew.toString();
 };
 function MemesPage() {
-  var memes = useAppSelector(state => state.memes.memes);
-  var categories = useAppSelector(state => state.categories.categories);
+  var memesState = useAppSelector((state) => state.memes);
+  var categories = useAppSelector((state) => state.categories.categories);
+  const memes = useAppSelector((state) => state.memes.memes);
+
+  console.log("logging from main page");
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchMemes());
+  }, []);
 
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
-
   const [filterState, setFilter] = useState<MemeFilter>(
     setupFilterState(categories)
   );
@@ -93,7 +101,7 @@ function MemesPage() {
   }
 
   const onSearchbarChange = (value: string) => {
-    setFilter({...filterState, searchString: value});
+    setFilter({ ...filterState, searchString: value });
   };
 
   const filterBySearchString = (
@@ -104,17 +112,29 @@ function MemesPage() {
       (meme) =>
         meme.title.toLowerCase().includes(searchString.toLowerCase()) ||
         meme.description.toLowerCase().includes(searchString.toLowerCase()) ||
-        meme.categories.map(cat => cat.name).join("").toLowerCase().includes(searchString.toLowerCase())
+        meme.categories
+          .map((cat) => cat.name)
+          .join("")
+          .toLowerCase()
+          .includes(searchString.toLowerCase())
     );
   };
 
   const filter = () => {
-    setFilteredMemes(filterBySearchString(filterByFavorites(filterByCategories([...memes])), filterState.searchString));
+    if (memes.length !== 0) {
+      console.log("filtered");
+      setFilteredMemes(
+        filterBySearchString(
+          filterByFavorites(filterByCategories([...memes])),
+          filterState.searchString
+        )
+      );
+    }
   };
 
   useEffect(() => {
     filter();
-  }, [filterState]);
+  }, [filterState, memes]);
 
   useEffect(() => {
     router.push(
@@ -162,7 +182,7 @@ function MemesPage() {
       <h1 className="text-[35px] font-bold">Memes</h1>
       <div className="flex flex-wrap">
         <div className="mr-auto w-full max-w-[600px]">
-          <Searchbar onChange={onSearchbarChange}/>
+          <Searchbar onChange={onSearchbarChange} />
         </div>
         <div className="my-auto">
           <button className="btn btn-outline h-10">Search</button>
@@ -178,9 +198,14 @@ function MemesPage() {
         {filteredMemes.map((meme) => {
           return <MemeContainer key={meme.id} meme={meme} />;
         })}
-        {filteredMemes.length === 0 && (
+        {filteredMemes.length === 0 && !memesState.loading && (
           <div className="mt-7">
             <span className="text-lg">No memes were found</span>
+          </div>
+        )}
+        {memesState.loading && (
+          <div className="mt-7">
+            <span className="text-lg">Loading memes...</span>
           </div>
         )}
       </div>

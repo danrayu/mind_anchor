@@ -1,11 +1,16 @@
 'use client'
-import { useAppSelector } from "@/app/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import Searchbar from "../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
+import { useEffect } from "react";
+import { fetchCats } from "@/app/store/actions";
 
 function CategoriesPage() {
   var categories = useAppSelector(state => state.categories.categories);
-
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchCats())
+  }, [])
   return (
     <div className="mt-10">
       <h1 className="text-[35px] font-bold">Categories</h1>

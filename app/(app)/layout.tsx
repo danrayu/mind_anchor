@@ -14,22 +14,17 @@ export const metadata: Metadata = {
   description: "MindAnchor: Secure and revisit your core beliefs",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [memesResponse, categoriesResponse] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/memes/?wCats`),
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`),
-  ]);
-  var memes = await memesResponse.json();
-  var cats = await categoriesResponse.json();
+
 
   return (
     <StateProvider>
       <AuthProvider>
-        <StoreInitializer memes={memes} categories={cats}>
+        <StoreInitializer>
           <html lang="en" data-theme="light">
             <body className={inter.className}>
               <div>

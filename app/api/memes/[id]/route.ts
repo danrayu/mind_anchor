@@ -1,21 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/authOptions";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const meme = await prisma.meme.findUnique({
-    where: { id: parseInt(params.id) },
-    include: {
-      categories: true, // this will include the categories in the result
-    },
-  });
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email)
+    return NextResponse.json("Not authenticated", { status: 401 });
 
-  if (!meme) {
-    return NextResponse.json("Meme not found.", { status: 404 });
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session!.user!.email!,
+      },
+    });
+    if (!user) {
+      return NextResponse.json("User not found", { status: 404 });
+    }
+    const meme = await prisma.meme.findUnique({
+      where: { id: parseInt(params.id), authorId: user.id },
+      include: {
+        categories: true, // this will include the categories in the result
+      },
+    });
+  
+    if (!meme) {
+      return NextResponse.json("Meme not found.", { status: 404 });
+    }
+    return NextResponse.json(meme);
+  } catch {
+    return NextResponse.json(
+      { error: "Could not get Meme: Server error: " },
+      { status: 500 }
+    );
   }
-  return NextResponse.json(meme);
 }
 
 export async function PUT(
@@ -24,10 +45,22 @@ export async function PUT(
 ) {
   const { title, description, authorId, favorite, categoryIds } =
     await request.json();
+    const session = await getServerSession(authOptions);
+  if (!session?.user?.email)
+    return NextResponse.json("Not authenticated", { status: 401 });
+
 
   try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session!.user!.email!,
+      },
+    });
+    if (!user) {
+      return NextResponse.json("User not found", { status: 404 });
+    }
     const updatedMeme = await prisma.meme.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(params.id), authorId: user.id },
       data: {
         ...(title && { title }),
         ...(description && { description }),
@@ -58,18 +91,21 @@ export async function DELETE(
   const meme = await prisma.meme.findUnique({
     where: {
       id: parseInt(params.id),
-    }
+    },
   });
 
   if (!meme) {
-    return NextResponse.json({error: "Meme does not exist."}, { status: 400 });
+    return NextResponse.json(
+      { error: "Meme does not exist." },
+      { status: 400 }
+    );
   }
 
   try {
     const deleted = await prisma.meme.delete({
       where: {
-        id: meme.id
-      }
+        id: meme.id,
+      },
     });
     return NextResponse.json(deleted);
   } catch (error) {

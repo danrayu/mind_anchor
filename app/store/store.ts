@@ -23,7 +23,7 @@ const initialMemesState: MemesState = {
   loading: false,
   error: null,
 }
-function memesReduces(state: MemesState = initialMemesState, action: any) {
+function memesReducer(state: MemesState = initialMemesState, action: any) {
   // Reducers usually look at the type of action that happened
   // to decide how to update the state
   switch (action.type) {
@@ -80,7 +80,7 @@ function mindscapesReducer(state: MindscapesState = initialMindscapesState, acti
 
 const store = configureStore({
   reducer: {
-    memes: memesReduces,
+    memes: memesReducer,
     categories: categoriesReducer,
     mindscapes: mindscapesReducer,
   },

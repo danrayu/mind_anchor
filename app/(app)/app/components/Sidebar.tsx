@@ -106,7 +106,7 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        {status === "authenticated" && (<div>Loading...</div>)}
+        {status === "loading" && (<div>Loading...</div>)}
         {status === "authenticated" && (
           <>
             <div className="font-bold">{session.user!.name}</div>

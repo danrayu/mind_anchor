@@ -52,8 +52,6 @@ const EditMeme = ({ meme, categories }: EditMemeProps) => {
     let cp = [...categoriesState];
     let i = cp.findIndex(item => item.category.id === id);
     cp[i].active = !cp[i].active;
-    // console.log(item);
-
     setCategoriesState([...cp]);
   }
 
@@ -98,7 +96,6 @@ async function updateMeme(meme: Meme) {
     authorId: meme.authorId,
     categoryIds: meme.categories.map((cat: Category) => cat.id)
   }
-  console.log(memeData);
   try {
     const response = await fetch('http://localhost:3000/api/memes/' + meme.id, {
       method: 'PUT',
