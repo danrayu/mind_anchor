@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   fetchCreateCategory,
   fetchDeleteCategory,
@@ -59,33 +59,38 @@ function CategoryEdit({ category }: CategoryEditProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mt-2 flex space-x-4 items-center">
-        <label htmlFor="categoryName">Name</label>
-        <input
-          type="text"
-          id="categoryName"
-          value={categoryName}
-          className="outline p-1 rounded"
-          onChange={(e) => setCategoryName(e.target.value)}
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        {!isNew && (
-          <button
-            className="btn btn-link text-red-700 font-normal text-sm"
-            type="button"
-            onClick={deleteCat}
-          >
-            Delete
-          </button>
-        )}
+    <div className="max-w-[600px] mx-auto">
+      <form onSubmit={handleSubmit}>
+        <h1 className="text-[35px] font-bold mb-4">
+          {isNew && "Add"} {!isNew && "Edit"} category
+        </h1>
+        <div className="mt-2 flex space-x-4 items-center">
+          <label htmlFor="categoryName">Name</label>
+          <input
+            type="text"
+            id="categoryName"
+            value={categoryName}
+            className="outline p-1 rounded"
+            onChange={(e) => setCategoryName(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-end space-x-2">
+          {!isNew && (
+            <button
+              className="btn btn-link text-red-700 font-normal text-sm"
+              type="button"
+              onClick={deleteCat}
+            >
+              Delete
+            </button>
+          )}
 
-        <button className="btn btn-primary" type="submit">
-          Save Category
-        </button>
-      </div>
-    </form>
+          <button className="btn btn-primary" type="submit">
+            Save Category
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

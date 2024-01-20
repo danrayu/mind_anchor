@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import SwitchCategory from "../../components/utility/SwitchCategory";
 import {
@@ -7,6 +8,7 @@ import {
 } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { fetchMemes } from "@/app/store/actions";
+import { useRouter } from "next/navigation";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -33,6 +35,7 @@ function createEmptyMeme(): Meme {
 }
 
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
+  const router = useRouter()
   const dispatch = useAppDispatch();
   let newMeme = false;
   if (initialMeme === undefined) {
@@ -125,7 +128,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         if (response.ok) {
           dispatch(fetchMemes());
           console.log("Meme deleted", response);
-          //window.location.href = "/app/memes";
+          router.back();
         }
       }
     } catch (error) {

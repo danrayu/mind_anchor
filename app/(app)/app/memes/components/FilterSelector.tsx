@@ -2,7 +2,25 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import FilterItem from "../../components/utility/FilterItem";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { MemeFilter } from "../page";
+import { CategoryFilterState, MemeFilter } from "./MemesPage";
+
+const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
+  let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
+  return cp.join(",");
+};
+
+const setQueryCategories = (
+  params: URLSearchParams,
+  categoryStates: CategoryFilterState[]
+) => {
+  let cats = categoryStates.filter(
+    (state) => state.state === 1 || state.state === -1
+  );
+
+  const paramsNew = new URLSearchParams(params);
+  paramsNew.set("cats", encodeURICategories(cats));
+  return paramsNew.toString();
+};
 
 interface FilterSelectorProps {
   filterState: MemeFilter;
@@ -18,6 +36,12 @@ function FilterSelector({
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    router.push(
+      pathname + "?" + setQueryCategories(params, filterState.categories)
+    );
+  }, [filterState.categories]);
 
   const setFavParam = () => {
     let val = parseInt(params.get("favs") || "0");
@@ -39,6 +63,8 @@ function FilterSelector({
     setFilter({ ...filterState, favoritedState: newFavoritedState });
     updateFavParam(newFavoritedState);
   };
+
+  
 
   function onCategoryFilter(id: number, keepCategoryPressed: boolean) {
     let prevStateIndex = filterState.categories.findIndex(
@@ -67,6 +93,7 @@ function FilterSelector({
 
   function FilterCategory(category: Category) {
     let filter = filterState.categories.find((item) => item.id === category.id);
+    console.log("filter state selector", filterState.categories);
     if (filter === undefined) {
       throw `Error: State of category with id ${category.id} does not exist`;
     }

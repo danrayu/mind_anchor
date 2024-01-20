@@ -8,7 +8,6 @@ async function EditCategoryPage({ params }: { params: { id: string }}) {
 
   return (
     <div className="mt-10">
-      <h1 className="text-[35px] font-bold">Edit Category</h1>
       <CategoryEdit category={category}/>
     </div>
     

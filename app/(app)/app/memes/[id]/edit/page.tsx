@@ -1,31 +1,35 @@
-'use client'
+"use client";
 import React from "react";
 import MemeEdit from "../../components/MemeEdit";
+import { useAppSelector } from "@/app/store/hooks";
+import { useCatsValid, useMemesValid } from "@/app/util/stateValidationHooks";
 
 interface EditMemePageProps {
-  params: { id: number };
+  params: { id: string };
 }
 
-async function EditMemePage({ params: { id } }: EditMemePageProps) {
-  const [memeResponse, categoriesResponse] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/memes/${id}`),
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`),
-  ]);
+function EditMemePage({ params: { id } }: EditMemePageProps) {
 
-  const meme = await memeResponse.json();
-  console.log(memeResponse.statusText);
-  if (!memeResponse.ok) {
-    return (
-      <div className="text-center">
-        <h3>{meme}</h3>
-      </div>
+  const memeState = useAppSelector((state) => state.memes);
+  const categoryState = useAppSelector((state) => state.categories);
+  const catsValid = useCatsValid();
+
+  var meme: Meme | undefined = undefined;
+  if (useMemesValid()) {
+    meme = memeState.memes.find(
+      (meme: Meme) => meme.id === parseInt(id)
     );
   }
-  const categories = await categoriesResponse.json();
+  
+  const categories = categoryState.categories;
+  
 
   return (
     <div className="mt-10">
-      <MemeEdit meme={meme} categories={categories} />
+      {(memeState.loading || categoryState.loading) && <h3>Loading...</h3>}
+      {meme !== undefined && catsValid && (
+        <MemeEdit meme={meme!} categories={categories} />
+      )}
     </div>
   );
 }

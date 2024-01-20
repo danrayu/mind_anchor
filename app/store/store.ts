@@ -1,25 +1,25 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-interface MemesState {
-  memes: Meme[];
+export interface MemesState {
+  memes: Meme[] | undefined;
   loading: boolean;
   error: Error | null;
 }
 
 interface CategoriesState {
-  categories: Category[];
+  categories: Category[] | undefined;
   loading: boolean;
   error: Error | null;
 }
 
 interface MindscapesState {
-  mindscapes: any[];
+  mindscapes: any[] | undefined;
   loading: boolean;
   error: Error | null;
 }
 
 const initialMemesState: MemesState = {
-  memes: [],
+  memes: undefined,
   loading: false,
   error: null,
 }
@@ -27,34 +27,34 @@ function memesReducer(state: MemesState = initialMemesState, action: any) {
   // Reducers usually look at the type of action that happened
   // to decide how to update the state
   switch (action.type) {
-    case 'FETCH_MEMES_START':
+    case 'LOAD_MEMES_START':
       return { ...state, loading: true };
-    case 'FETCH_MEMES_SUCCESS':
-      return { ...state, loading: false, memes: action.payload };
-    case 'FETCH_MEMES_FAILURE':
+    case 'LOAD_MEMES_SUCCESS':
+      return { ...state, loading: false, memes: action.payload, error: null };
+    case 'LOAD_MEMES_FAILURE':
       return { ...state, loading: false, error: action.error };
-    case 'SET_MEMES':
-      return { ...state, memes: action.payload};
+    case 'FETCH_MEMES_SUCCESSFUL':
+      return { ... state, memes: action.payload};
     default: 
       return state;
   }
 }
 
 const initialCategoriesState: CategoriesState = {
-  categories: [],
+  categories: undefined,
   loading: false,
   error: null,
 }
 function categoriesReducer(state: CategoriesState = initialCategoriesState, action: any) {
   switch (action.type) {
-    case 'FETCH_CATS_START':
+    case 'LOAD_CATS_START':
       return { ...state, loading: true };
-    case 'FETCH_CATS_SUCCESS':
-      return { ...state, loading: false, categories: action.payload };
-    case 'FETCH_CATS_FAILURE':
+    case 'LOAD_CATS_SUCCESS':
+      return { ...state, loading: false, categories: action.payload, error: null };
+    case 'LOAD_CATS_FAILURE':
       return { ...state, loading: false, error: action.error };
-      case 'SET_CATS':
-        return { ...state, categories: action.payload};
+    case 'FETCH_CATS_SUCCESSFUL':
+      return { ... state, categories: action.payload};
     default:
       return state;
   }
@@ -67,11 +67,11 @@ const initialMindscapesState: MindscapesState = {
 }
 function mindscapesReducer(state: MindscapesState = initialMindscapesState, action: any) {
   switch (action.type) {
-    case 'FETCH_MINDSCAPES_START':
+    case 'LOAD_MINDSCAPES_START':
       return { ...state, loading: true };
-    case 'FETCH_MINDSCAPES_SUCCESS':
-      return { ...state, loading: false, mindscapes: action.payload };
-    case 'FETCH_MINDSCAPES_FAILURE':
+    case 'LOAD_MINDSCAPES_SUCCESS':
+      return { ...state, loading: false, mindscapes: action.payload, error: null };
+    case 'LOAD_MINDSCAPES_FAILURE':
       return { ...state, loading: false, error: action.error };
     default:
       return state;

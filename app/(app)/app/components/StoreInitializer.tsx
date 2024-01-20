@@ -1,19 +1,25 @@
-'use client'
-import { fetchCats, fetchMemes } from '@/app/store/actions';
-import { useAppDispatch } from '@/app/store/hooks';
-import React from 'react'
+"use client";
+import { loadAll } from "@/app/store/actions";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { useAllValid } from "@/app/util/stateValidationHooks";
+import React, { useEffect } from "react";
 interface StoreInitializerProps {
-  children: React.ReactNode,
+  children: React.ReactNode;
 }
 
-function StoreInitializer({children}: StoreInitializerProps) {
-  // const dispatch = useAppDispatch();
+function StoreInitializer({ children }: StoreInitializerProps) {
+  const dispatch = useAppDispatch();
+  const allValid = useAllValid();
 
-  // dispatch(fetchMemes());
-  // dispatch(fetchCats());
-  return (
-    <>{children}</>
-  )
+  useEffect(() => {
+    console.log("will doooda");
+
+    if (!allValid) {
+      dispatch(loadAll());
+    }
+  }, []);
+
+  return <>{children}</>;
 }
 
-export default StoreInitializer
+export default StoreInitializer;

@@ -4,13 +4,20 @@ import Searchbar from "../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
 import { useEffect } from "react";
 import { fetchCats } from "@/app/store/actions";
+import { useCatsValid } from "@/app/util/stateValidationHooks";
 
 function CategoriesPage() {
-  var categories = useAppSelector(state => state.categories.categories);
+  var categoryState = useAppSelector(state => state.categories);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchCats())
   }, [])
+
+  const renderCategories = () => {
+    return categoryState.categories.map((cat: Category) => {
+      return <CategoryContainer key={cat.id} category={cat} />;
+    });
+  }
   return (
     <div className="mt-10">
       <h1 className="text-[35px] font-bold">Categories</h1>
@@ -24,9 +31,8 @@ function CategoriesPage() {
       </div>
 
       <div className="mt-4">
-        {categories.map((cat: Category) => {
-          return <CategoryContainer key={cat.id} category={cat} />;
-        })}
+        {useCatsValid() && renderCategories()}
+        
       </div>
     </div>
   );

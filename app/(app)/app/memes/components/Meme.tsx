@@ -1,3 +1,4 @@
+"use client"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ function MemeContainer({ meme }: MemeProps) {
   const toggleOpen = () => setIsOpen(!isOpen);
 
   function editMeme(event: any) {
+    // propagation is when by hovering over a button you are also hovering above the button's parent elements
     event.stopPropagation();
     router.push("/app/memes/" + meme.id + "/edit");
   }
