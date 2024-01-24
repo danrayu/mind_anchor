@@ -12,8 +12,6 @@ function StoreInitializer({ children }: StoreInitializerProps) {
   const allValid = useAllValid();
 
   useEffect(() => {
-    console.log("will doooda");
-
     if (!allValid) {
       dispatch(loadAll());
     }

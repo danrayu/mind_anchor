@@ -5,7 +5,6 @@ interface StateProviderProps {
   children: React.ReactNode;
 }
 function StateProvider({children}: StateProviderProps) {
-  console.log("reset state");
   return (
     <Provider store={store}>{children}</Provider>
   )

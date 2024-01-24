@@ -14,5 +14,14 @@ export const authOptions = {
   ],
   sessio: {
     strategy: "jwt"
+  },
+  events: {
+    async signIn(message: any) {
+      signInCallback(message);
+    }
   }
 };
+
+const signInCallback = async (message: any) => {
+  console.log("isNewUser\n",message);
+}
