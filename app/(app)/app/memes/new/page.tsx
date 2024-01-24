@@ -1,21 +1,16 @@
-'use client'
+"use client";
+import { useAppSelector } from "@/app/store/hooks";
 import MemeEdit from "../components/MemeEdit";
+import { useAllValid } from "@/app/util/stateValidationHooks";
 
-async function NewMemePage() {
-  let categories: Category[] = await fetch(
-    "http://localhost:3000/api/categories"
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      return data;
-    });
+function NewMemePage() {
+  const categories = useAppSelector((state) => state.categories.categories);
+  const allValid = useAllValid();
   return (
     <div className="mt-10">
-      <MemeEdit categories={categories} />
+      {allValid && <MemeEdit categories={categories} />}
     </div>
-  )
+  );
 }
 
 export default NewMemePage;

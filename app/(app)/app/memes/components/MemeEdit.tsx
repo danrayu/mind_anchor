@@ -43,12 +43,15 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     initialMeme = createEmptyMeme();
   }
 
-  const [meme, setMeme] = useState<Meme>(initialMeme);
+  const [meme, setMeme] = useState<Meme>({...initialMeme});
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     await saveMeme(meme);
+    if (newMeme) {
+      setMeme(createEmptyMeme());
+    }
   };
 
   const changedTitle = (event: any) => {
@@ -188,6 +191,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               value={meme.description}
               onChange={changedDescription}
               placeholder="Description"
+              spellCheck="false"
               className="mt-1 p-2 block rounded outline w-full h-40"
             ></textarea>
           </div>
