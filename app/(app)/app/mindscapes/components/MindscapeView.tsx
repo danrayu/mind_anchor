@@ -1,14 +1,14 @@
 "use client"
 import { useAppSelector } from '@/app/store/hooks'
-import React from 'react'
 
-function MindscapeView() {
+interface MindscapeViewProps {
+  mindscape: Mindscape;
+}
 
-  const cats = useAppSelector(state => state.memes.memes);
-
+function MindscapeView({mindscape}: MindscapeViewProps) {
 
   return (
-    <div>MindscapeView</div>
+    <div>{JSON.stringify(mindscape)}</div>
   )
 }
 

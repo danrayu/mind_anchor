@@ -6,10 +6,16 @@ import { useRouter } from "next/navigation";
 import Searchbar from "./Searchbar";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useAppSelector } from "@/app/store/hooks";
+import { useMindscapesValid } from "@/app/util/stateValidationHooks";
 
 function Sidebar() {
   const router = useRouter();
   const { status, data: session, update: updateSession } = useSession();
+
+  const mindscapes = useAppSelector((state) => state.mindscapes);
+
+  const mindscapesValid = useMindscapesValid();
 
   return (
     <div className="drawer-side">
@@ -39,12 +45,20 @@ function Sidebar() {
               >
                 <span>+ New</span>
               </li>
-              <li className="group">
-                <span>Default</span>
-              </li>
-              <li className="group">
-                <span>Morning</span>
-              </li>
+              {mindscapesValid &&
+                mindscapes.mindscapes.map((mindscape: Mindscape) => {
+                  return (
+                    <li
+                      className="group"
+                      key={"ms_"+mindscape.id}
+                      onClick={() => {
+                        router.push("/app/mindscapes/" + mindscape.id);
+                      }}
+                    >
+                      <span>{mindscape.title}</span>
+                    </li>
+                  );
+                })}
             </ul>
           </details>
         </li>
@@ -106,7 +120,7 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        {status === "loading" && (<div>Loading...</div>)}
+        {status === "loading" && <div>Loading...</div>}
         {status === "authenticated" && (
           <>
             <div className="font-bold">{session.user!.name}</div>

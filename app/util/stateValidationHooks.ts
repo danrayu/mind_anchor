@@ -12,9 +12,16 @@ export function useCatsValid(): boolean {
   })
 }
 
+export function useMindscapesValid(): boolean {
+  return useAppSelector(state => {
+    return !state.mindscapes.error && state.mindscapes.mindscapes !== undefined && !state.mindscapes.loading;
+  })
+}
+
 export function useAllValid(): boolean {
   const memesValid = useMemesValid();
   const catsValid = useCatsValid();
+  const mindscapesValid = useMindscapesValid();
 
-  return memesValid && catsValid;
+  return memesValid && catsValid && mindscapesValid;
 }
