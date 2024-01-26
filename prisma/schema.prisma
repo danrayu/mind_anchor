@@ -38,18 +38,18 @@ model Session {
 }
 
 model User {
-  id             String           @id @default(cuid())
-  name           String?
-  email          String?          @unique
-  emailVerified  DateTime?
-  image          String?
-  role           Role             @default(USER)
-  accounts       Account[]
-  sessions       Session[]
-  Meme           Meme[]
-  Collection     Collection[]
-  Category       Category[]
-  Mindscape      Mindscape[]
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role         @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  Meme          Meme[]
+  Collection    Collection[]
+  Category      Category[]
+  Mindscape     Mindscape[]
 }
 
 model VerificationToken {
@@ -75,7 +75,7 @@ model Meme {
 
 model Collection {
   id         Int              @id @default(autoincrement())
-  name       String
+  title      String
   author     User             @relation(fields: [authorId], references: [id])
   authorId   String
   memes      CollectionMeme[]
