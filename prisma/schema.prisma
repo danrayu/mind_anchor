@@ -74,11 +74,12 @@ model Meme {
 }
 
 model Collection {
-  id       Int              @id @default(autoincrement())
-  name     String
-  author   User             @relation(fields: [authorId], references: [id])
-  authorId String
-  memes    CollectionMeme[]
+  id         Int              @id @default(autoincrement())
+  name       String
+  author     User             @relation(fields: [authorId], references: [id])
+  authorId   String
+  memes      CollectionMeme[]
+  mindscapes Mindscape[]
 }
 
 model CollectionMeme {
@@ -99,13 +100,14 @@ model Category {
 }
 
 model Mindscape {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
+  id          Int          @id @default(autoincrement())
+  title       String       @unique
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
-  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  author      User         @relation(fields: [authorId], references: [id])
   authorId    String
+  collections Collection[]
 }
 
 enum Role {
