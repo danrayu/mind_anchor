@@ -3,7 +3,7 @@ import { RootState } from "./store";
 
 const url = "http://localhost:3000";
 
-export const fetchMemes = (): ThunkAction<
+export const loadMemes = (): ThunkAction<
   void,
   RootState,
   undefined,
@@ -12,7 +12,7 @@ export const fetchMemes = (): ThunkAction<
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch({ type: "LOAD_MEMES_START" });
 
-    const response = await fetch(url+`/api/memes/?wCats`);
+    const response = await fetch(url + `/api/memes/?wCats`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -30,11 +30,11 @@ export const fetchMemes = (): ThunkAction<
   };
 };
 
-export const fetchCats = () => {
+export const loadCats = () => {
   return async (dispatch: any, getState: any) => {
     dispatch({ type: "LOAD_CATS_START" });
 
-    const response = await fetch(url+`/api/categories`);
+    const response = await fetch(url + `/api/categories`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -48,6 +48,33 @@ export const fetchCats = () => {
       })
       .catch((error) => {
         dispatch({ type: "LOAD_CATS_FAILURE", error });
+      });
+  };
+};
+
+export const loadMindscapes = (): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  Action<string>
+> => {
+  return async (dispatch: Dispatch): Promise<void> => {
+    dispatch({ type: "LOAD_MINDSCAPES_START" });
+
+    const response = await fetch(url + `/api/mindscapes`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch({ type: "LOAD_MINDSCAPES_FAILURE", error: errorData.error });
+      return;
+    }
+    response
+      .json()
+      .then((data) => {
+        dispatch({ type: "LOAD_MINDSCAPES_SUCCESS", payload: data });
+      })
+      .catch((error) => {
+        dispatch({ type: "LOAD_MINDSCAPES_FAILURE", error });
       });
   };
 };
@@ -61,11 +88,15 @@ export const loadAll = (): ThunkAction<
   return async (dispatch: Dispatch): Promise<void> => {
     dispatch({ type: "LOAD_MEMES_START" });
     dispatch({ type: "LOAD_CATS_START" });
+    dispatch({ type: "LOAD_MINDSCAPES_START" });
 
-    const [memesResponse, catsResponse] = await Promise.all([
-      fetch(url+`/api/memes/?wCats`),
-      fetch(url+`/api/categories`),
-    ]);
+    const [memesResponse, catsResponse, mindscapesResponse] = await Promise.all(
+      [
+        fetch(url + `/api/memes/?wCats`),
+        fetch(url + `/api/categories`),
+        fetch(url + `/api/mindscapes`),
+      ]
+    );
 
     if (!memesResponse.ok) {
       const errorData = await memesResponse.json();
@@ -94,6 +125,20 @@ export const loadAll = (): ThunkAction<
       .catch((error) => {
         dispatch({ type: "LOAD_CATS_FAILURE", error });
       });
+
+    if (!mindscapesResponse.ok) {
+      const errorData = await mindscapesResponse.json();
+      dispatch({ type: "LOAD_MINDSCAPES_FAILURE", error: errorData.error });
+      return;
+    }
+    mindscapesResponse
+      .json()
+      .then((data) => {
+        dispatch({ type: "LOAD_MINDSCAPES_SUCCESS", payload: data });
+      })
+      .catch((error) => {
+        dispatch({ type: "LOAD_MINDSCAPES_FAILURE", error });
+      });
   };
 };
 
@@ -104,19 +149,27 @@ export const fetchAll = (): ThunkAction<
   Action<string>
 > => {
   return async (dispatch: Dispatch): Promise<void> => {
-    const [memesResponse, catsResponse] = await Promise.all([
-      fetch(url+`/api/memes/?wCats`),
-      fetch(url+`/api/categories`),
-    ]);
+    const [memesResponse, catsResponse, mindscapesResponse] = await Promise.all(
+      [
+        fetch(url + `/api/memes/?wCats`),
+        fetch(url + `/api/categories`),
+        fetch(url + `/api/mindscapes`),
+      ]
+    );
 
     if (!memesResponse.ok) {
       const errorData = await memesResponse.json();
-      console.log("Could not fetch new data:", errorData.error);
+      console.log("Could not fetch memes data:", errorData.error);
       return;
     }
     if (!catsResponse.ok) {
       const errorData = await catsResponse.json();
-      console.log("Could not fetch new data:", errorData.error);
+      console.log("Could not fetch categories data:", errorData.error);
+      return;
+    }
+    if (!mindscapesResponse.ok) {
+      const errorData = await mindscapesResponse.json();
+      console.log("Could not fetch mindscapes data:", errorData.error);
       return;
     }
 
@@ -126,16 +179,25 @@ export const fetchAll = (): ThunkAction<
         dispatch({ type: "FETCH_MEMES_SUCCESSFUL", payload: data });
       })
       .catch((error) => {
-        console.log("Could not fetch new data:", error);
+        console.log("Could not fetch memes data:", error);
       });
-    
+
     catsResponse
       .json()
       .then((data) => {
         dispatch({ type: "FETCH_CATS_SUCCESSFUL", payload: data });
       })
       .catch((error) => {
-        console.log("Could not fetch new data:", error);
+        console.log("Could not fetch categories data:", error);
+      });
+
+    mindscapesResponse
+      .json()
+      .then((data) => {
+        dispatch({ type: "FETCH_MINDSCAPES_SUCCESS", payload: data });
+      })
+      .catch((error) => {
+        console.log("Could not fetch mindscapes data:", error);
       });
   };
 };

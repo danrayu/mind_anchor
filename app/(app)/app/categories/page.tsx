@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import Searchbar from "../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
 import { useCallback, useEffect, useState } from "react";
-import { fetchCats } from "@/app/store/actions";
+import { loadCats } from "@/app/store/actions";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
 import CategoryEdit from "./components/CategoryEdit";
 
@@ -14,7 +14,7 @@ function CategoriesPage() {
   var categoryState = useAppSelector((state) => state.categories);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(fetchCats());
+    dispatch(loadCats());
   }, []);
 
   const renderCategories = () => {

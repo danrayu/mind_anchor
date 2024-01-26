@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import SwitchCategory from "../../components/utility/SwitchCategory";
 import {
@@ -7,7 +7,7 @@ import {
   fetchUpdateMeme,
 } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
-import { fetchMemes } from "@/app/store/actions";
+import { loadMemes } from "@/app/store/actions";
 import { useRouter } from "next/navigation";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
@@ -35,7 +35,7 @@ function createEmptyMeme(): Meme {
 }
 
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
-  const router = useRouter()
+  const router = useRouter();
   const dispatch = useAppDispatch();
   let newMeme = false;
   if (initialMeme === undefined) {
@@ -43,7 +43,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     initialMeme = createEmptyMeme();
   }
 
-  const [meme, setMeme] = useState<Meme>({...initialMeme});
+  const [meme, setMeme] = useState<Meme>({ ...initialMeme });
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const handleSubmit = async (event: any) => {
@@ -109,7 +109,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
-        dispatch(fetchMemes());
+        dispatch(loadMemes());
         const data = await response.json();
         console.log("Meme saved:", data);
         setUpdateSuccess(true);
@@ -129,7 +129,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       if (proceed) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
-          dispatch(fetchMemes());
+          dispatch(loadMemes());
           console.log("Meme deleted", response);
           router.back();
         }
@@ -161,7 +161,9 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       )}
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
-          <h1 className="text-[35px] font-bold mb-4">{newMeme && "Add"} {!newMeme && "Edit"} meme</h1>
+          <h1 className="text-[35px] font-bold mb-4">
+            {newMeme && "Add"} {!newMeme && "Edit"} meme
+          </h1>
 
           <div className="mb-4">
             <label htmlFor="title" className="block font-medium text-gray-700">
@@ -211,9 +213,11 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
             />
           </div>
           <label
-              htmlFor="categories"
-              className="block font-medium text-gray-700"
-            >Categories</label>
+            htmlFor="categories"
+            className="block font-medium text-gray-700"
+          >
+            Categories
+          </label>
           <div id="categories" className="flex flex-wrap space-x-1">
             {categories.map((cat: Category) => {
               return (
@@ -226,7 +230,11 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               );
             })}
           </div>
-          <div className={"mt-4 flex " + (!newMeme ? "justify-between" : "justify-end")}>
+          <div
+            className={
+              "mt-4 flex " + (!newMeme ? "justify-between" : "justify-end")
+            }
+          >
             {!newMeme && (
               <button
                 className="mt-2 btn btn-link font-normal text-red-700"

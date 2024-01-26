@@ -54,3 +54,32 @@ export async function fetchDeleteCategory(id: number) {
     },
   });
 }
+
+export async function fetchCreateMindscape(mindscapeData: any) {
+  return await fetch("/api/mindscapes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(mindscapeData),
+  });
+}
+
+export async function fetchUpdateMindscape(mindscapeData: any) {
+  return await fetch("/api/mindscapes/" + mindscapeData.id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(mindscapeData),
+  });
+}
+
+export async function fetchDeleteMindscape(id: number) {
+  return await fetch("/api/mindscapes/" + id, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

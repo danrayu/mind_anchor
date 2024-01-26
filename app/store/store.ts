@@ -61,7 +61,7 @@ function categoriesReducer(state: CategoriesState = initialCategoriesState, acti
 }
 
 const initialMindscapesState: MindscapesState = {
-  mindscapes: [],
+  mindscapes: undefined,
   loading: false,
   error: null,
 }
@@ -73,7 +73,9 @@ function mindscapesReducer(state: MindscapesState = initialMindscapesState, acti
       return { ...state, loading: false, mindscapes: action.payload, error: null };
     case 'LOAD_MINDSCAPES_FAILURE':
       return { ...state, loading: false, error: action.error };
-    default:
+    case 'FETCH_MINDSCAPES_SUCCESS':
+      return { ... state, mindscapes: action.payload};
+    default: 
       return state;
   }
 }

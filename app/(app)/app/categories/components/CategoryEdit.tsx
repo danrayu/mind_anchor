@@ -4,7 +4,7 @@ import {
   fetchDeleteCategory,
   fetchUpdateCategory,
 } from "@/app/fetchActions";
-import { fetchCats } from "@/app/store/actions";
+import { loadCats } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -42,12 +42,12 @@ function CategoryEdit({ category }: CategoryEditProps) {
       const response = await fetchCreateCategory(newCategory);
       if (response.ok) {
         setCategoryName("");
-        dispatch(fetchCats());
+        dispatch(loadCats());
       }
     } else {
       await fetchUpdateCategory(category.id, { name: categoryName });
     }
-  }
+  };
 
   const deleteCat = async () => {
     var proceed = confirm(
@@ -56,7 +56,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
     if (proceed) {
       const response = await fetchDeleteCategory(category!.id);
       if (response.ok) {
-        dispatch(fetchCats());
+        dispatch(loadCats());
         router.push("/app/categories");
       }
     }
@@ -64,10 +64,10 @@ function CategoryEdit({ category }: CategoryEditProps) {
 
   const onChange = (event: any) => {
     setCategoryName(event.target.value);
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       save();
     }
-  }
+  };
 
   return (
     <div className="mx-auto">

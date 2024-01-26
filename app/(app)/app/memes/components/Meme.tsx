@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
 import { fetchDeleteMeme } from "@/app/fetchActions";
-import { fetchMemes } from "@/app/store/actions";
+import { loadMemes } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 
 interface MemeProps {
@@ -20,7 +20,7 @@ function MemeContainer({ meme }: MemeProps) {
   const buttonRef = useRef(null);
 
   const autoSetPosition = () => {
-    const buttonElement: any = buttonRef.current!
+    const buttonElement: any = buttonRef.current!;
     const button = buttonElement.getBoundingClientRect();
     if (button) {
       let offset = 59;
@@ -32,7 +32,7 @@ function MemeContainer({ meme }: MemeProps) {
         left: button.left + window.scrollX + offset,
       });
     }
-  }
+  };
 
   useEffect(() => {
     if (menuVisible) {
@@ -44,8 +44,6 @@ function MemeContainer({ meme }: MemeProps) {
     }
   }, [menuVisible]);
 
- 
-
   // Toggle the open state
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -53,9 +51,8 @@ function MemeContainer({ meme }: MemeProps) {
     // propagation is when by hovering over a button you are also hovering above the button's parent elements
     event.stopPropagation();
     autoSetPosition();
-    
-    setMenuVisibility((value) => !value);
 
+    setMenuVisibility((value) => !value);
   }
 
   const onClose = () => {
@@ -64,7 +61,7 @@ function MemeContainer({ meme }: MemeProps) {
 
   const onEdit = () => {
     router.push("/app/memes/" + meme.id + "/edit");
-  }
+  };
 
   const onDelete = async () => {
     try {
@@ -74,7 +71,7 @@ function MemeContainer({ meme }: MemeProps) {
       if (proceed) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
-          dispatch(fetchMemes());
+          dispatch(loadMemes());
           console.log("Meme deleted", response);
           router.back();
         }
@@ -86,7 +83,14 @@ function MemeContainer({ meme }: MemeProps) {
 
   return (
     <>
-      {menuVisible && <ItemActionsMenu position={position} onClose={onClose} onEdit={onEdit} onDelete={onDelete} />}
+      {menuVisible && (
+        <ItemActionsMenu
+          position={position}
+          onClose={onClose}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      )}
       <div className="outline mb-4 rounded-xl">
         <div
           className={
@@ -101,7 +105,11 @@ function MemeContainer({ meme }: MemeProps) {
             </span>
             <span className="text-lg font-semibold">{meme.title}</span>
           </div>
-          <button className="btn btn-outline " onClick={editMeme} ref={buttonRef}>
+          <button
+            className="btn btn-outline "
+            onClick={editMeme}
+            ref={buttonRef}
+          >
             ...
           </button>
         </div>
