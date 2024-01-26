@@ -1,8 +1,9 @@
 import React from 'react'
+import MindscapeForm from '../components/MindscapeForm'
 
 function NewMindscapePage() {
   return (
-    <div>NewMindscapePage</div>
+    <MindscapeForm />
   )
 }
 

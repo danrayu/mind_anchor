@@ -1,4 +1,8 @@
-import { fetchDeleteMindscape } from '@/app/fetchActions';
+"use client";
+import { fetchCreateMindscape, fetchDeleteMindscape, fetchUpdateMindscape } from '@/app/fetchActions';
+import { loadMindscapes } from '@/app/store/actions';
+import { useAppDispatch } from '@/app/store/hooks';
+import { useRouter } from 'next/navigation';
 import React, { FormEventHandler, useState } from 'react'
 interface MindscapeFormProps {
   mindscape?: Mindscape;
@@ -20,11 +24,17 @@ function createEmptyMindscape(): Mindscape {
 function MindscapeForm({mindscape: initialMindscape}: MindscapeFormProps) {
   const isNew: boolean = initialMindscape === undefined;
 
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [mindscape, setMindscape] = useState<Mindscape>(initialMindscape || createEmptyMindscape())
   
 
-  const handleSubmit = (event: React.FormEvent) => {
-
+  const handleSubmit =  async (event: React.FormEvent) => {
+    event.preventDefault();
+    await saveMindscape(mindscape);
+    if (isNew) {
+      // route to the specific mindscape page
+    }
   }
 
   const changedTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +49,36 @@ function MindscapeForm({mindscape: initialMindscape}: MindscapeFormProps) {
     })
   }
 
+  const saveMindscape = async (mindscape: Mindscape) => {
+    let mindscapeData = {
+      id: mindscape.id,
+      title: mindscape.title,
+      description: mindscape.description,
+      authorId: mindscape.authorId,
+    };
+    const request = isNew ? fetchCreateMindscape : fetchUpdateMindscape;
+    try {
+      const response = await request(mindscapeData);
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error status: ${response.status} - ${response.statusText}`
+        );
+      } else {
+        dispatch(loadMindscapes());
+        const data = await response.json();
+        console.log("Mindscape saved:", data);
+        // display success
+        // setUpdateSuccess(true);
+        // setTimeout(() => setUpdateSuccess(false), 3000);
+      }
+    } catch (error) {
+      console.error("Error saving mindscape:", error);
+      // display failure
+      // setUpdateSuccess(false);
+    }
+  };
+
   const deleteMindscape = async () => {
     try {
       var proceed = confirm(
@@ -47,7 +87,7 @@ function MindscapeForm({mindscape: initialMindscape}: MindscapeFormProps) {
       if (proceed) {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
-          dispatch(fetchMemes());
+          dispatch(loadMindscapes());
           console.log("Meme deleted", response);
           router.back();
         }
