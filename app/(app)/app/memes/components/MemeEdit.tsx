@@ -173,7 +173,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="title"
               value={meme.title}
               onChange={changedTitle}
-              placeholder="Title"
               className="mt-1 p-2 block rounded outline w-full"
             />
           </div>
@@ -190,7 +189,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="description"
               value={meme.description}
               onChange={changedDescription}
-              placeholder="Description"
               spellCheck="false"
               className="mt-1 p-2 block rounded outline w-full h-40"
             ></textarea>
