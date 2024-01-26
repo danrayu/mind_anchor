@@ -50,7 +50,6 @@ model User {
   Collection     Collection[]
   Category       Category[]
   Mindscape      Mindscape[]
-  CollectionMeme CollectionMeme[]
 }
 
 model VerificationToken {
@@ -90,8 +89,6 @@ model CollectionMeme {
   memeId            Int
   collection        Collection @relation(fields: [collectionId], references: [id])
   collectionId      Int
-  author            User       @relation(fields: [authorId], references: [id])
-  authorId          String
 }
 
 model Category {
