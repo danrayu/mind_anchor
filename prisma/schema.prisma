@@ -61,25 +61,33 @@ model VerificationToken {
 }
 
 model Meme {
-  id           Int         @id @default(autoincrement())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @default(now()) @updatedAt
-  title        String
-  description  String      @db.Text
-  author       User        @relation(fields: [authorId], references: [id])
-  authorId     String
-  favorite     Boolean
-  categories   Category[]
-  collectionId Int? // Foreign key, optional if a meme might not belong to a collection
-  Collection   Collection? @relation(fields: [collectionId], references: [id])
+  id              Int              @id @default(autoincrement())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now()) @updatedAt
+  title           String
+  description     String           @db.Text
+  author          User             @relation(fields: [authorId], references: [id])
+  authorId        String
+  favorite        Boolean
+  categories      Category[]
+  collectionMemes CollectionMeme[]
 }
 
 model Collection {
-  id       Int    @id @default(autoincrement())
+  id       Int              @id @default(autoincrement())
   name     String
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User             @relation(fields: [authorId], references: [id])
   authorId String
-  Memes    Meme[]
+  memes    CollectionMeme[]
+}
+
+model CollectionMeme {
+  id                Int        @id @default(autoincrement())
+  indexInCollection Int
+  meme              Meme       @relation(fields: [memeId], references: [id])
+  memeId            Int
+  collection        Collection @relation(fields: [collectionId], references: [id])
+  collectionId      Int
 }
 
 model Category {
