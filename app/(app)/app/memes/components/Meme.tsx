@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
 import { fetchDeleteMeme } from "@/app/fetchActions";
-import { loadMemes } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
+import { load } from "@/app/store/actions";
 
 interface MemeProps {
   meme: Meme;
@@ -71,7 +71,7 @@ function MemeContainer({ meme }: MemeProps) {
       if (proceed) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
-          dispatch(loadMemes());
+          dispatch(load(Types.Memes));
           console.log("Meme deleted", response);
           router.back();
         }

@@ -13,19 +13,21 @@ declare global {
     authorId: number;
     favorite: boolean;
     categories: Category[];
-  }
+  };
   type CollectionMeme = {
     id: number;
     meme: Meme;
     index: number;
-    collectionId: number
-  }
+    collectionId: number;
+  };
   type Collection = {
     id: number;
+    createdAt: Date;
+    updatedAt: Date;
     title: string;
     authorId: string;
     memes: CollectionMeme[];
-  }
+  };
   type Mindscape = {
     id: number;
     createdAt: Date;
@@ -34,7 +36,9 @@ declare global {
     description: string;
     authorId: string;
     collections: Collection[];
-  }
+  };
 }
 
 export {};
+
+

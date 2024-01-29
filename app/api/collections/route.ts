@@ -3,10 +3,7 @@ import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
 
-
-export async function GET(
-  request: NextRequest
-) {
+export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
@@ -20,29 +17,35 @@ export async function GET(
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
-    const categories = await prisma.category.findMany({
+
+    const collections = await prisma.collection.findMany({
+      include: {
+        memes: true,
+      },
       where: {
         authorId: user?.id,
-      }
-    })
-    return NextResponse.json(categories);
+      },
+    });
+    return NextResponse.json(collections);
   } catch (error) {
     return NextResponse.json(
-      { error: `Error: Could not get Categories. ${error}` },
+      { error: `Error: Could not get collections. ${error}` },
       { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const { name } = await request.json();
-  const session = await getServerSession(authOptions);
+  const { title, memes } = await request.json();
 
+  const session = await getServerSession(authOptions);
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
-  
-  if (!name) {
-    return NextResponse.json('Error: Category data undefined.', {status: 400});
+
+  if (title === undefined || memes === undefined) {
+    return NextResponse.json("Error: Collection data not defined.", {
+      status: 400,
+    });
   }
 
   try {
@@ -54,16 +57,29 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
-    const updatedMeme = await prisma.category.create({
+
+    const newCollection = await prisma.collection.create({
       data: {
-        name: name,
+        title,
         author: { connect: { id: user.id } },
+        memes: { connect: [] },
       },
-      include: { author: true },
+      include: { author: true, memes: true },
     });
-    return NextResponse.json(updatedMeme);
+    if (memes.length > 0) {
+      const data = memes.map((meme: object) => {
+        return { ...meme, collectionId: newCollection.author.id };
+      });
+      const newMemes = await prisma.collectionMeme.createMany({ data });
+
+      return NextResponse.json({ collection: newCollection, memes: newMemes });
+    }
+    return NextResponse.json({ collection: newCollection });
   } catch (error) {
     // Handle specific errors (e.g., non-existing meme)
-    return NextResponse.json({ error: 'Error: Could not create Category.' }, {status: 500});
+    return NextResponse.json(
+      { error: "Error: Could not create Collection." },
+      { status: 500 }
+    );
   }
 }

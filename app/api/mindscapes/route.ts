@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  if (!title === undefined) {
+  if (title === undefined) {
     return NextResponse.json("Error: Mindscape title not defined.", { status: 400 });
   }
 
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       },
       include: { author: true, collections: true },
     });
-    return NextResponse.json(newMindscape);
+    return NextResponse.json({ mindscape: newMindscape });
   } catch (error) {
     // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(

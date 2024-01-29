@@ -1,3 +1,9 @@
+const url = "http://localhost:3000";
+
+export async function fetchGetMemes() {
+  return await fetch(url + `/api/memes/?wCats`)
+}
+
 export async function fetchCreateMeme(memeData: any) {
   return await fetch("/api/memes", {
     method: "POST",
@@ -25,6 +31,14 @@ export async function fetchDeleteMeme(id: number) {
       "Content-Type": "application/json",
     },
   });
+}
+
+export async function fetchGetCategories() {
+  return await fetch(url + `/api/categories`);
+}
+
+export async function fetchGetCategory(id: number) {
+  return await fetch(url + `/api/categories/`+id);
 }
 
 export async function fetchCreateCategory(catData: any) {
@@ -55,6 +69,10 @@ export async function fetchDeleteCategory(id: number) {
   });
 }
 
+export async function fetchGetMindscapes() {
+  return await fetch(url + `/api/mindscapes`);
+}
+
 export async function fetchCreateMindscape(mindscapeData: any) {
   return await fetch("/api/mindscapes", {
     method: "POST",
@@ -77,6 +95,39 @@ export async function fetchUpdateMindscape(mindscapeData: any) {
 
 export async function fetchDeleteMindscape(id: number) {
   return await fetch("/api/mindscapes/" + id, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function fetchGetCollections() {
+  return await fetch(url + `/api/collections`);
+}
+
+export async function fetchCreateCollection(collectionData: any) {
+  return await fetch("/api/collections", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(collectionData),
+  });
+}
+
+export async function fetchUpdateCollection(collectionData: any) {
+  return await fetch("/api/collections/" + collectionData.id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(collectionData),
+  });
+}
+
+export async function fetchDeleteCollection(id: number) {
+  return await fetch("/api/collections/" + id, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

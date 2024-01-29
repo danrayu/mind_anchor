@@ -18,6 +18,12 @@ interface MindscapesState {
   error: Error | null;
 }
 
+interface CollectionState {
+  collections: any[] | undefined;
+  loading: boolean;
+  error: Error | null;
+}
+
 const initialMemesState: MemesState = {
   memes: undefined,
   loading: false,
@@ -80,11 +86,32 @@ function mindscapesReducer(state: MindscapesState = initialMindscapesState, acti
   }
 }
 
+const initialCollectionsState: CollectionState = {
+  collections: undefined,
+  loading: false,
+  error: null,
+}
+function collectionsReducer(state: CollectionState = initialCollectionsState, action: any) {
+  switch (action.type) {
+    case 'LOAD_COLLECTIONS_START':
+      return { ...state, loading: true };
+    case 'LOAD_COLLECTIONS_SUCCESS':
+      return { ...state, loading: false, collections: action.payload, error: null };
+    case 'LOAD_COLLECTIONS_FAILURE':
+      return { ...state, loading: false, error: action.error };
+    case 'FETCH_COLLECTIONS_SUCCESS':
+      return { ... state, collections: action.payload};
+    default: 
+      return state;
+  }
+}
+
 const store = configureStore({
   reducer: {
     memes: memesReducer,
     categories: categoriesReducer,
     mindscapes: mindscapesReducer,
+    collections: collectionsReducer,
   },
 })
 

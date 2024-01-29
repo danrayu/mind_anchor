@@ -4,8 +4,9 @@ import {
   fetchDeleteCategory,
   fetchUpdateCategory,
 } from "@/app/fetchActions";
-import { loadCats } from "@/app/store/actions";
+import { load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
+import { Types } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -42,7 +43,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
       const response = await fetchCreateCategory(newCategory);
       if (response.ok) {
         setCategoryName("");
-        dispatch(loadCats());
+        dispatch(load(Types.Categories));
       }
     } else {
       await fetchUpdateCategory(category.id, { name: categoryName });
@@ -56,7 +57,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
     if (proceed) {
       const response = await fetchDeleteCategory(category!.id);
       if (response.ok) {
-        dispatch(loadCats());
+        dispatch(load(Types.Categories));
         router.push("/app/categories");
       }
     }
@@ -85,7 +86,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
           </div>
           <div className={"flex justify-end space-x-2" + (isNew && "")}>
             <button className="btn btn-primary" type="submit">
-              Save Category
+              {isNew ? "Add Category" : "Save changes"}
             </button>
           </div>
         </div>

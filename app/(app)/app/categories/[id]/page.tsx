@@ -1,9 +1,10 @@
 'use client'
 import React from 'react'
 import CategoryEdit from '../components/CategoryEdit'
+import { fetchGetCategory } from '@/app/fetchActions';
 
 async function EditCategoryPage({ params }: { params: { id: string }}) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/${params.id}`);
+  const response = await fetchGetCategory(parseInt(params.id));
   var category: Category = await response.json();
 
   return (

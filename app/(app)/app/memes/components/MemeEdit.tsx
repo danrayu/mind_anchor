@@ -7,8 +7,9 @@ import {
   fetchUpdateMeme,
 } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
-import { loadMemes } from "@/app/store/actions";
 import { useRouter } from "next/navigation";
+import { load } from "@/app/store/actions";
+import { Types } from "@/app/types/Types";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -109,7 +110,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
-        dispatch(loadMemes());
+        dispatch(load(Types.Memes));
         const data = await response.json();
         console.log("Meme saved:", data);
         setUpdateSuccess(true);
@@ -129,7 +130,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       if (proceed) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
-          dispatch(loadMemes());
+          dispatch(load(Types.Memes));
           console.log("Meme deleted", response);
           router.back();
         }
