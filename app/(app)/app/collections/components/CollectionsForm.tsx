@@ -17,6 +17,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
+import { useCatsValid, useMemesValid } from "@/app/util/stateValidationHooks";
 interface CollectionsFormInterface {
   collection?: Collection;
 }
@@ -41,8 +42,14 @@ const SortableMeme = ({ meme }: { meme: CollectionMeme }) => {
   };
 
   return (
-    <div ref={setNodeRef} key={meme.meme.id} style={style} {...attributes} {...listeners}>
-      <div className="w-14 h-14">{meme.meme.title}</div>
+    <div
+      ref={setNodeRef}
+      key={meme.meme.id}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <div className="w-[300px] h-18">{meme.meme.title}</div>
     </div>
   );
 };
@@ -54,6 +61,8 @@ function CollectionsForm({
   const [collection, setCollection] = useState<Collection>(
     initialCollection || createEmptyCollections()
   );
+  const memesValid = useMemesValid();
+  const catsValid = useCatsValid();
 
   const [orderedMemes, setOrderedMemes] = useState<CollectionMeme[]>(
     collection.memes
@@ -127,6 +136,7 @@ function CollectionsForm({
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id === over.id) {
+      console.log("haha");
       return;
     }
 
@@ -143,7 +153,12 @@ function CollectionsForm({
 
   return (
     <>
-      <MemeCatalogModal orderedMemes={orderedMemes} setOrderedMemes={setOrderedMemes}/>
+      {memesValid && catsValid && (
+        <MemeCatalogModal
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
+        />
+      )}
       <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} collection
@@ -173,16 +188,21 @@ function CollectionsForm({
           >
             <span className="text-lg">+</span> Meme
           </button>
-          <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext
-              items={orderedMemes}
-              strategy={rectSortingStrategy}
+          {orderedMemes && (
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={onDragEnd}
             >
-              {orderedMemes.map((meme: CollectionMeme) => (
-                <SortableMeme key={meme.meme.id} meme={meme} />
-              ))}
-            </SortableContext>
-          </DndContext>
+              <SortableContext
+                items={orderedMemes}
+                strategy={rectSortingStrategy}
+              >
+                {orderedMemes.map((meme: CollectionMeme) => (
+                  <SortableMeme key={meme.meme.id} meme={meme} />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
         </div>
 
         <div

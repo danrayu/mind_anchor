@@ -48,7 +48,7 @@ function MemeContainer({ meme }: MemeProps) {
   // Toggle the open state
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  function editMeme(event: any) {
+  function openMenu(event: any) {
     // propagation is when by hovering over a button you are also hovering above the button's parent elements
     event.stopPropagation();
     autoSetPosition();
@@ -103,7 +103,7 @@ function MemeContainer({ meme }: MemeProps) {
           </div>
           <button
             className="btn btn-outline "
-            onClick={editMeme}
+            onClick={openMenu}
             ref={buttonRef}
           >
             ...

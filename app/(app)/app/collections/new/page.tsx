@@ -2,7 +2,7 @@
 import React from 'react'
 import CollectionsForm from '../components/CollectionsForm'
 
-function page() {
+function Page() {
 
 
   return (
@@ -10,4 +10,4 @@ function page() {
   )
 }
 
-export default page
+export default Page;

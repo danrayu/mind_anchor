@@ -7,7 +7,7 @@ interface EditPageProps {
   params: { id: string };
 }
 
-function page({params: {id}}: EditPageProps) {
+function Page({params: {id}}: EditPageProps) {
   const valid = useCollectionsValid();
   const collectionState = useAppSelector(state => state.collections);
 
@@ -28,4 +28,4 @@ function page({params: {id}}: EditPageProps) {
   );
 }
 
-export default page
+export default Page;
