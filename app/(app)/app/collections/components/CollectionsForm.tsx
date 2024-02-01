@@ -17,7 +17,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
-import { useCatsValid, useMemesValid } from "@/app/util/stateValidationHooks";
 interface CollectionsFormInterface {
   collection?: Collection;
 }
@@ -35,7 +34,7 @@ function createEmptyCollections(): Collection {
 
 const SortableMeme = ({ meme }: { meme: CollectionMeme }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: meme.id });
+    useSortable({ id: meme.meme.id });
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
@@ -48,8 +47,9 @@ const SortableMeme = ({ meme }: { meme: CollectionMeme }) => {
       style={style}
       {...attributes}
       {...listeners}
+      className="w-[300px] h-18"
     >
-      <div className="w-[300px] h-18">{meme.meme.title}</div>
+     {meme.meme.title}
     </div>
   );
 };
@@ -61,8 +61,6 @@ function CollectionsForm({
   const [collection, setCollection] = useState<Collection>(
     initialCollection || createEmptyCollections()
   );
-  const memesValid = useMemesValid();
-  const catsValid = useCatsValid();
 
   const [orderedMemes, setOrderedMemes] = useState<CollectionMeme[]>(
     collection.memes
@@ -134,31 +132,29 @@ function CollectionsForm({
   };
 
   const onDragEnd = (event: DragEndEvent) => {
+    console.log("drag end", event)
     const { active, over } = event;
     if (over && active.id === over.id) {
-      console.log("haha");
       return;
     }
 
     setOrderedMemes((memes: CollectionMeme[]) => {
       const oldIndex = memes.findIndex(
-        (meme: CollectionMeme) => meme.id === active.id
+        (meme: CollectionMeme) => meme.meme.id === active.id
       );
       const newIndex = memes.findIndex(
-        (meme: CollectionMeme) => meme.id === over!.id
+        (meme: CollectionMeme) => meme.meme.id === over!.id
       );
       return arrayMove(memes, oldIndex, newIndex);
     });
   };
-
+  console.log(orderedMemes);
   return (
     <>
-      {memesValid && catsValid && (
-        <MemeCatalogModal
+      <MemeCatalogModal
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
         />
-      )}
       <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} collection

@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import CollectionsForm from '../components/CollectionsForm'
 import { useAppSelector } from '@/app/store/hooks'
-import { useCollectionsValid } from '@/app/util/stateValidationHooks';
+import { useCatsValid, useCollectionsValid, useMemesValid } from '@/app/util/stateValidationHooks';
 interface EditPageProps {
   params: { id: string };
 }
@@ -10,6 +10,8 @@ interface EditPageProps {
 function Page({params: {id}}: EditPageProps) {
   const valid = useCollectionsValid();
   const collectionState = useAppSelector(state => state.collections);
+  const memesValid = useMemesValid();
+  const catsValid = useCatsValid();
 
   var collection: Collection | undefined = undefined;
   if (valid) {
@@ -21,7 +23,7 @@ function Page({params: {id}}: EditPageProps) {
   return (
     <div className="mt-10">
       {(collectionState.loading) && <h3>Loading...</h3>}
-      {collection !== undefined && (
+      {collection !== undefined && catsValid && memesValid && (
         <CollectionsForm collection={collection!} />
       )}
     </div>
