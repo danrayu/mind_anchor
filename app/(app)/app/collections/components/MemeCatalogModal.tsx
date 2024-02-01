@@ -1,20 +1,13 @@
-"use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useAppSelector } from "@/app/store/hooks";
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import FilterSelector from "../../memes/components/FilterSelector";
+import {
+  CategoryFilterState,
+  MemeFilter,
+} from "../../memes/components/MemesPage";
 import Searchbar from "../../components/Searchbar";
-import FilterSelector from "./FilterSelector";
-import MemeContainer from "./Meme";
-
-export type CategoryFilterState = {
-  id: number;
-  state: number;
-};
-
-export type MemeFilter = {
-  favoritedState: number;
-  categories: CategoryFilterState[];
-  searchString: string;
-};
+import AddableMeme from "./AddableMeme";
+import { useMemesValid } from "@/app/util/stateValidationHooks";
 
 const defaultFilterState: MemeFilter = {
   favoritedState: 0,
@@ -30,22 +23,15 @@ const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
   return activated;
 };
 
-const decodeURICategories = (param: string): CategoryFilterState[] => {
-  if (!param) return [];
-  let catsString = param.split(",");
-  return catsString.map((cat: string) => {
-    const [id, st] = cat.split(":")!;
-    return { id: parseInt(id), state: parseInt(st) };
-  });
-};
-
-interface MemesPage {
-  memes: Meme[],
-  categories: Category[]
+interface MemeCatalogModalProps {
+  orderedMemes: CollectionMeme[],
+  setOrderedMemes: Dispatch<SetStateAction<CollectionMeme[]>>,
 }
 
-function MemesPage({memes, categories}: MemesPage) {
-  const params = useSearchParams();
+function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps) {
+  const memes = useAppSelector((state) => state.memes.memes);
+  const categories = useAppSelector((state) => state.categories.categories);
+  const memesValid = useMemesValid();
 
   const [filterState, setFilter] = useState<MemeFilter>(
     setupFilterState(categories)
@@ -53,23 +39,15 @@ function MemesPage({memes, categories}: MemesPage) {
   const [filteredMemes, setFilteredMemes] = useState<any[]>([]);
 
   function setupFilterState(categories: Category[]) {
-    const dataArray: CategoryFilterState[] = decodeURICategories(
-      params.get("cats")!
-    );
     let fState = {
       ...defaultFilterState,
       categories: [...defaultFilterState.categories],
     };
     categories.forEach((cat: Category) => {
-      let catQuery = dataArray.find((item) => cat.id === item.id);
-      if (catQuery !== undefined) {
-        fState.categories.push(catQuery);
-      } else {
-        fState.categories.push({
-          id: cat.id,
-          state: 0,
-        });
-      }
+      fState.categories.push({
+        id: cat.id,
+        state: 0,
+      });
     });
     return fState;
   }
@@ -134,11 +112,10 @@ function MemesPage({memes, categories}: MemesPage) {
   }, []);
 
   const filter = () => {
-    if (memes.length !== 0) {
+    if (memesValid && memes.length !== 0) {
       setFilteredMemes(
         filterBySearchString(filterByFavorites(filterByCategories([...memes])))
       );
-
     }
   };
 
@@ -150,34 +127,53 @@ function MemesPage({memes, categories}: MemesPage) {
     setFilter({ ...filterState, searchString: value });
   };
 
-  return (
-    <div className="mt-10">
-      <h1 className="text-[35px] font-bold">Memes</h1>
-      <div className="flex flex-wrap">
-        <div className="mr-auto w-full max-w-[600px]">
-          <Searchbar onChange={onSearchbarChange} />
-        </div>
-        <div className="my-auto">
-          <button className="btn btn-outline h-10">Search</button>
-        </div>
-      </div>
-      <FilterSelector
-        filterState={filterState}
-        setFilter={setFilter}
-      />
+  const onSwitchAdded = (id: number) => {
+    setOrderedMemes((oldState: CollectionMeme[]) => {
+      const index = oldState.findIndex(meme => meme.meme.id === id);
+      if (index === -1) {
+        oldState = oldState.map((meme: CollectionMeme) => {
+          meme.index += 1;
+          return meme;
+        })
+        const newCollectionMeme: CollectionMeme = {
+          id: 0,
+          meme: memes.find((meme: Meme) => meme.id === id),
+          collectionId: 0,
+          index: 0,
+        }
+        return [newCollectionMeme, ...oldState]
+      }
+      else {
+        oldState.splice(index, 1);
+        return oldState.slice();;
+      }
+    })
+  };
 
-      <div className="mt-4">
-        {filteredMemes.map((meme) => {
-          return <MemeContainer key={meme.id} meme={meme} />;
-        })}
-        {filteredMemes.length === 0 && (
-          <div className="mt-7">
-            <span className="text-lg">No memes were found</span>
+  return (
+    <dialog id="meme-catalog" className="modal">
+      <div className="modal-box w-11/12 max-w-5xl">
+        <h3 className="font-bold text-lg">Meme Catalog</h3>
+        <p className="py-4">Add memes of your choosing.</p>
+        <div>
+          <Searchbar onChange={onSearchbarChange} />
+          <FilterSelector filterState={filterState} setFilter={setFilter} />
+          <div className="mt-4">
+            {filteredMemes.map((meme: Meme) => (
+              <AddableMeme key={meme.id} meme={meme} onChange={onSwitchAdded} />
+            ))}
           </div>
-        )}
+        </div>
+
+        <div className="modal-action">
+          <form method="dialog">
+            {/* if there is a button, it will close the modal */}
+            <button className="btn">Close</button>
+          </form>
+        </div>
       </div>
-    </div>
+    </dialog>
   );
 }
 
-export default MemesPage
+export default MemeCatalogModal;

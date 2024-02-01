@@ -12,10 +12,11 @@ enum StageTypes {
   start,
   failure,
   success,
+  fetch,
 }
 
 const getDispatchCode = (type: Types, stage: StageTypes) => {
-  let code = "LOAD_";
+  let code = stage !== StageTypes.fetch ? "LOAD_" : "FETCH_";
 
   switch (type) {
     case Types.Memes:
@@ -40,6 +41,9 @@ const getDispatchCode = (type: Types, stage: StageTypes) => {
       code += "FAILURE";
       break;
     case StageTypes.success:
+      code += "SUCCESS";
+      break;
+    case StageTypes.fetch:
       code += "SUCCESS";
       break;
   }
@@ -86,6 +90,45 @@ export const load = (
       })
       .catch((error) => {
         dispatch({ type: getDispatchCode(type, StageTypes.failure), error });
+      });
+  };
+};
+
+export const appFetch = (
+  type: Types
+): ThunkAction<void, RootState, undefined, Action<string>> => {
+  return async (dispatch: Dispatch): Promise<void> => {
+    let response;
+    switch (type) {
+      case Types.Memes:
+        response = await fetchGetMemes();
+        break;
+      case Types.Categories:
+        response = await fetchGetCategories();
+        break;
+      case Types.Mindscapes:
+        response = await fetchGetMindscapes();
+        break;
+      case Types.Collections:
+        response = await fetchGetCollections();
+        break;
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log(errorData.error);
+      return;
+    }
+    response
+      .json()
+      .then((data) => {
+        dispatch({
+          type: getDispatchCode(type, StageTypes.fetch),
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 };

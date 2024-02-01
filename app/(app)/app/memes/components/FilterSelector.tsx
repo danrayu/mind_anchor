@@ -3,6 +3,7 @@ import FilterItem from "../../components/utility/FilterItem";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { CategoryFilterState, MemeFilter } from "./MemesPage";
+import { useAppSelector } from "@/app/store/hooks";
 
 const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
   let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
@@ -24,20 +25,22 @@ const setQueryCategories = (
 
 interface FilterSelectorProps {
   filterState: MemeFilter;
-  categories: any;
   setFilter: Dispatch<SetStateAction<MemeFilter>>;
+  useURI?: true;
 }
 
 function FilterSelector({
-  categories,
   filterState,
   setFilter,
+  useURI,
 }: FilterSelectorProps) {
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
+  const categories = useAppSelector(state => state.categories.categories);
 
   useEffect(() => {
+    if (!useURI) return;
     router.push(
       pathname + "?" + setQueryCategories(params, filterState.categories)
     );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SwitchCategory from "../../components/utility/SwitchCategory";
 import {
   fetchCreateMeme,
@@ -8,8 +8,9 @@ import {
 } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useRouter } from "next/navigation";
-import { load } from "@/app/store/actions";
+import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
+import SuccessAlert from "../../components/SuccessAlert";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -38,9 +39,9 @@ function createEmptyMeme(): Meme {
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  let newMeme = false;
+  let isNew = false;
   if (initialMeme === undefined) {
-    newMeme = true;
+    isNew = true;
     initialMeme = createEmptyMeme();
   }
 
@@ -50,7 +51,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     await saveMeme(meme);
-    if (newMeme) {
+    if (isNew) {
       setMeme(createEmptyMeme());
     }
   };
@@ -91,7 +92,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       setMeme({ ...meme, categories: memeCategories });
     }
   };
-
   const saveMeme = async (meme: Meme) => {
     let memeData = {
       id: meme.id,
@@ -101,7 +101,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       authorId: meme.authorId,
       categoryIds: meme.categories.map((cat: Category) => cat.id),
     };
-    const request = newMeme ? fetchCreateMeme : fetchUpdateMeme;
+    const request = isNew ? fetchCreateMeme : fetchUpdateMeme;
     try {
       const response = await request(memeData);
 
@@ -110,11 +110,11 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
-        dispatch(load(Types.Memes));
+        dispatch(appFetch(Types.Memes));
         const data = await response.json();
         console.log("Meme saved:", data);
         setUpdateSuccess(true);
-        setTimeout(() => setUpdateSuccess(false), 3000);
+        setTimeout(() => setUpdateSuccess(false), 2224);
       }
     } catch (error) {
       console.error("Error saving meme:", error);
@@ -140,30 +140,20 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     }
   };
 
+  useEffect(() => {
+  // setUpdateSuccess(true);
+
+  }, [])
+
   return (
     <>
       {updateSuccess && (
-        <div role="alert" className="alert alert-success">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Successfully saved meme</span>
-        </div>
+        <SuccessAlert message={isNew ? "Meme added" : "Meme updated"}/>
       )}
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
           <h1 className="text-[35px] font-bold mb-4">
-            {newMeme && "Add"} {!newMeme && "Edit"} meme
+            {isNew && "Add"} {!isNew && "Edit"} meme
           </h1>
 
           <div className="mb-4">
@@ -233,10 +223,10 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           </div>
           <div
             className={
-              "mt-4 flex " + (!newMeme ? "justify-between" : "justify-end")
+              "mt-4 flex " + (!isNew ? "justify-between" : "justify-end")
             }
           >
-            {!newMeme && (
+            {!isNew && (
               <button
                 className="mt-2 btn btn-link font-normal text-red-700"
                 type="button"

@@ -19,8 +19,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
   return (
     <StateProvider>
       <AuthProvider>

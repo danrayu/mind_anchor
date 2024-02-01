@@ -35,12 +35,12 @@ body {
 
 @layer base {
   .outline {
-    @apply outline-1 outline-slate-400;
+    @apply outline-1 outline-slate-500;
   } 
 }
 
 @layer components {
   .btn-outline {
-    @apply border-slate-400;
+    @apply border-slate-500;
   }
 }

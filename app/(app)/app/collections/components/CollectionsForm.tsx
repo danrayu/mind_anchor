@@ -1,9 +1,22 @@
-import { fetchCreateCollection, fetchDeleteCollection, fetchUpdateCollection } from '@/app/fetchActions';
-import { load } from '@/app/store/actions';
-import { useAppDispatch } from '@/app/store/hooks';
-import { Types } from '@/app/types/Types';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import {
+  fetchCreateCollection,
+  fetchDeleteCollection,
+  fetchUpdateCollection,
+} from "@/app/fetchActions";
+import { load } from "@/app/store/actions";
+import { useAppDispatch } from "@/app/store/hooks";
+import { Types } from "@/app/types/Types";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import MemeCatalogModal from "./MemeCatalogModal";
 interface CollectionsFormInterface {
   collection?: Collection;
 }
@@ -19,10 +32,32 @@ function createEmptyCollections(): Collection {
   };
 }
 
-function CollectionsForm({collection: initialCollection}: CollectionsFormInterface) {
+const SortableMeme = ({ meme }: { meme: CollectionMeme }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: meme.id });
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
+  return (
+    <div ref={setNodeRef} key={meme.meme.id} style={style} {...attributes} {...listeners}>
+      <div className="w-14 h-14">{meme.meme.title}</div>
+    </div>
+  );
+};
+
+function CollectionsForm({
+  collection: initialCollection,
+}: CollectionsFormInterface) {
   const isNew = initialCollection === undefined;
-  const [collection, setCollection] = useState<Collection>(initialCollection || createEmptyCollections());
-  console.log(collection)
+  const [collection, setCollection] = useState<Collection>(
+    initialCollection || createEmptyCollections()
+  );
+
+  const [orderedMemes, setOrderedMemes] = useState<CollectionMeme[]>(
+    collection.memes
+  );
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -36,7 +71,7 @@ function CollectionsForm({collection: initialCollection}: CollectionsFormInterfa
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     await saveCollection(collection);
-  }
+  };
 
   const saveCollection = async (collection: Collection) => {
     let requestData = {
@@ -59,7 +94,7 @@ function CollectionsForm({collection: initialCollection}: CollectionsFormInterfa
         console.log("Collection saved:", data);
         if (isNew) {
           router.push("/app/collections/" + data.collection.id);
-        } 
+        }
         // display success
         // setUpdateSuccess(true);
         // setTimeout(() => setUpdateSuccess(false), 3000);
@@ -87,45 +122,90 @@ function CollectionsForm({collection: initialCollection}: CollectionsFormInterfa
     } catch (error) {
       console.error("Error deleting meme:", error);
     }
-  }
+  };
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id === over.id) {
+      return;
+    }
+
+    setOrderedMemes((memes: CollectionMeme[]) => {
+      const oldIndex = memes.findIndex(
+        (meme: CollectionMeme) => meme.id === active.id
+      );
+      const newIndex = memes.findIndex(
+        (meme: CollectionMeme) => meme.id === over!.id
+      );
+      return arrayMove(memes, oldIndex, newIndex);
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
-      <h1 className="text-[35px] font-bold mb-4">
-        {isNew && "Add"} {!isNew && "Edit"} collection
-      </h1>
+    <>
+      <MemeCatalogModal orderedMemes={orderedMemes} setOrderedMemes={setOrderedMemes}/>
+      <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
+        <h1 className="text-[35px] font-bold mb-4">
+          {isNew && "Add"} {!isNew && "Edit"} collection
+        </h1>
 
-      <div className="mb-4">
-        <label htmlFor="title" className="block font-medium text-gray-700">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={collection.title}
-          onChange={changedTitle}
-          className="mt-1 p-2 block rounded outline w-full"
-        />
-      </div>
+        <div className="mb-4">
+          <label htmlFor="title" className="block font-medium text-gray-700">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={collection.title}
+            onChange={changedTitle}
+            className="mt-1 p-2 block rounded outline w-full"
+          />
+        </div>
 
-      <div
-        className={"mt-4 flex " + (!isNew ? "justify-between" : "justify-end")}
-      >
-        {!isNew && (
+        <div id="manage-memes">
           <button
-            className="mt-2 btn btn-link font-normal text-red-700"
+            className="btn btn-outline"
+            onClick={() =>
+              (document.getElementById("meme-catalog")! as any).showModal()
+            }
             type="button"
-            onClick={handleDelete}
           >
-            Delete
+            <span className="text-lg">+</span> Meme
           </button>
-        )}
-        <button type="submit" className="mt-2 btn btn-primary">
-          Save
-        </button>
-      </div>
-    </form>
-  )
+          <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+            <SortableContext
+              items={orderedMemes}
+              strategy={rectSortingStrategy}
+            >
+              {orderedMemes.map((meme: CollectionMeme) => (
+                <SortableMeme key={meme.meme.id} meme={meme} />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </div>
+
+        <div
+          className={
+            "mt-4 flex " + (!isNew ? "justify-between" : "justify-end")
+          }
+        >
+          {!isNew && (
+            <button
+              className="mt-2 btn btn-link font-normal text-red-700"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          )}
+          <button type="submit" className="mt-2 btn btn-primary">
+            Save
+          </button>
+        </div>
+      </form>
+    </>
+  );
 }
 
-export default CollectionsForm
+export default CollectionsForm;

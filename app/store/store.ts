@@ -39,7 +39,7 @@ function memesReducer(state: MemesState = initialMemesState, action: any) {
       return { ...state, loading: false, memes: action.payload, error: null };
     case 'LOAD_MEMES_FAILURE':
       return { ...state, loading: false, error: action.error };
-    case 'FETCH_MEMES_SUCCESSFUL':
+    case 'FETCH_MEMES_SUCCESS':
       return { ... state, memes: action.payload};
     default: 
       return state;
@@ -59,7 +59,7 @@ function categoriesReducer(state: CategoriesState = initialCategoriesState, acti
       return { ...state, loading: false, categories: action.payload, error: null };
     case 'LOAD_CATS_FAILURE':
       return { ...state, loading: false, error: action.error };
-    case 'FETCH_CATS_SUCCESSFUL':
+    case 'FETCH_CATS_SUCCESS':
       return { ... state, categories: action.payload};
     default:
       return state;

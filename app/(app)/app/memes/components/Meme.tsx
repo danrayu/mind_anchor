@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
 import { fetchDeleteMeme } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
-import { load } from "@/app/store/actions";
+import { appFetch, load } from "@/app/store/actions";
+import { Types } from "@/app/types/Types";
 
 interface MemeProps {
   meme: Meme;
@@ -71,9 +72,7 @@ function MemeContainer({ meme }: MemeProps) {
       if (proceed) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
-          dispatch(load(Types.Memes));
-          console.log("Meme deleted", response);
-          router.back();
+          dispatch(appFetch(Types.Memes));
         }
       }
     } catch (error) {
@@ -99,10 +98,7 @@ function MemeContainer({ meme }: MemeProps) {
           }
           onClick={toggleOpen}
         >
-          <div className="space-x-3 ">
-            <span className={!isOpen ? "ml-[3px]" : ""}>
-              {isOpen ? "▼" : ">"}
-            </span>
+          <div className="">
             <span className="text-lg font-semibold">{meme.title}</span>
           </div>
           <button
@@ -113,7 +109,7 @@ function MemeContainer({ meme }: MemeProps) {
             ...
           </button>
         </div>
-        <div className={`${isOpen ? "max-h-96 p-6 pl-12 pr-14" : "hidden"}`}>
+        <div className={`${isOpen ? "max-h-96 p-6 pl-7 pr-14" : "hidden"}`}>
           <span>{meme.description}</span>
         </div>
       </div>
