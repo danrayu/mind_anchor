@@ -24,8 +24,8 @@ const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
 };
 
 interface MemeCatalogModalProps {
-  orderedMemes: CollectionMeme[],
-  setOrderedMemes: Dispatch<SetStateAction<CollectionMeme[]>>,
+  orderedMemes: Meme[],
+  setOrderedMemes: Dispatch<SetStateAction<Meme[]>>,
 }
 
 function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps) {
@@ -128,20 +128,11 @@ function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps
   };
 
   const onSwitchAdded = (id: number) => {
-    setOrderedMemes((oldState: CollectionMeme[]) => {
-      const index = oldState.findIndex(meme => meme.meme.id === id);
+    setOrderedMemes((oldState: Meme[]) => {
+      const index = oldState.findIndex(meme => meme.id === id);
       if (index === -1) {
-        oldState = oldState.map((meme: CollectionMeme) => {
-          meme.index += 1;
-          return meme;
-        })
-        const newCollectionMeme: CollectionMeme = {
-          id: 0,
-          meme: memes.find((meme: Meme) => meme.id === id),
-          collectionId: 0,
-          index: 0,
-        }
-        return [newCollectionMeme, ...oldState]
+        const newMeme = memes.find((meme: Meme) => meme.id === id);
+        return [newMeme, ...oldState]
       }
       else {
         oldState.splice(index, 1);

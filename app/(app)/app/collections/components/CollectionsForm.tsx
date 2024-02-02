@@ -21,6 +21,12 @@ interface CollectionsFormInterface {
   collection?: Collection;
 }
 
+type CMemeModel = {
+  indexInCollection: number;
+  memeId: number;
+  collectionId: number;
+};
+
 function createEmptyCollections(): Collection {
   return {
     id: 0,
@@ -32,24 +38,17 @@ function createEmptyCollections(): Collection {
   };
 }
 
-const SortableMeme = ({ meme }: { meme: CollectionMeme }) => {
+const SortableMeme = ({ meme }: { meme: Meme }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: meme.meme.id });
+    useSortable({ id: meme.id });
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      key={meme.meme.id}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="w-[300px] h-18"
-    >
-     {meme.meme.title}
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <div className="w-[800px] h-14">{meme.title}</div>
     </div>
   );
 };
@@ -62,14 +61,23 @@ function CollectionsForm({
     initialCollection || createEmptyCollections()
   );
 
-  const [orderedMemes, setOrderedMemes] = useState<CollectionMeme[]>(
-    collection.memes
+  const [titleInputError, setTitleInputError] = useState<string>("");
+
+  const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
+    collection.memes.map((meme: CollectionMeme) => meme.meme)
   );
 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const changedTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changedTitle = (event: any) => {
+    setTitleInputError(() => {
+      if (event.target!.value.length === event.target.maxLength) {
+        return "Max length 80 characters.";
+      } else {
+        return "";
+      }
+    });
     setCollection((oldState) => {
       return { ...oldState, title: event.target!.value };
     });
@@ -81,11 +89,30 @@ function CollectionsForm({
   };
 
   const saveCollection = async (collection: Collection) => {
+    const memeData = orderedMemes.map(
+      (meme: Meme, index: number): CMemeModel => {
+        const collMeme = collection.memes.find(
+          (collMeme: CollectionMeme) => collMeme.meme.id === meme.id
+        );
+        if (collMeme) {
+          collMeme.index = index;
+          return {
+            indexInCollection: index,
+            memeId: meme.id,
+            collectionId: collection.id,
+          };
+        }
+        return {
+          indexInCollection: index,
+          memeId: meme.id,
+          collectionId: collection.id,
+        };
+      }
+    );
     let requestData = {
       id: collection.id,
       title: collection.title,
-      memes: collection.memes || [],
-      authorId: collection.authorId,
+      memes: memeData || collection.memes || [],
     };
     const request = isNew ? fetchCreateCollection : fetchUpdateCollection;
     try {
@@ -131,48 +158,57 @@ function CollectionsForm({
     }
   };
 
+  const titleInputBlur = () => {
+    setTitleInputError("");
+  };
+
   const onDragEnd = (event: DragEndEvent) => {
-    console.log("drag end", event)
+    console.log("drag end", event);
     const { active, over } = event;
     if (over && active.id === over.id) {
       return;
     }
 
-    setOrderedMemes((memes: CollectionMeme[]) => {
-      const oldIndex = memes.findIndex(
-        (meme: CollectionMeme) => meme.meme.id === active.id
-      );
-      const newIndex = memes.findIndex(
-        (meme: CollectionMeme) => meme.meme.id === over!.id
-      );
+    setOrderedMemes((memes: Meme[]) => {
+      const oldIndex = memes.findIndex((meme: Meme) => meme.id === active.id);
+      const newIndex = memes.findIndex((meme: Meme) => meme.id === over!.id);
       return arrayMove(memes, oldIndex, newIndex);
     });
   };
-  console.log(orderedMemes);
+
   return (
     <>
       <MemeCatalogModal
-          orderedMemes={orderedMemes}
-          setOrderedMemes={setOrderedMemes}
-        />
-      <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
+        orderedMemes={orderedMemes}
+        setOrderedMemes={setOrderedMemes}
+      />
+      <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} collection
         </h1>
-
-        <div className="mb-4">
-          <label htmlFor="title" className="block font-medium text-gray-700">
-            Title
-          </label>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text text-base">Title</span>
+            {/* top right <span className="label-text-alt"></span> */}
+          </div>
           <input
             type="text"
-            id="title"
-            name="title"
+            placeholder="Type here"
+            className="input input-bordered w-full"
             value={collection.title}
             onChange={changedTitle}
-            className="mt-1 p-2 block rounded outline w-full"
+            onKeyDown={changedTitle}
+            maxLength={80}
+            onBlur={titleInputBlur}
           />
-        </div>
+          <div className="label">
+            {titleInputError && (
+              <span className="label-text-alt text-base  text-error">
+                {titleInputError}
+              </span>
+            )}
+          </div>
+        </label>
 
         <div id="manage-memes">
           <button
@@ -193,8 +229,8 @@ function CollectionsForm({
                 items={orderedMemes}
                 strategy={rectSortingStrategy}
               >
-                {orderedMemes.map((meme: CollectionMeme) => (
-                  <SortableMeme key={meme.meme.id} meme={meme} />
+                {orderedMemes.map((meme: Meme) => (
+                  <SortableMeme key={meme.id} meme={meme} />
                 ))}
               </SortableContext>
             </DndContext>

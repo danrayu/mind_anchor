@@ -3,6 +3,13 @@ import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/authOptions";
 
+type CMemeModel = {
+  id: number;
+  indexInCollection: number;
+  memeId: number;
+  collectionId: number;
+};
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -55,9 +62,9 @@ export async function PUT(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const { title } = await request.json();
+  const { id, title, memes } = await request.json();
 
-  if (!title) {
+  if (!title || !id || memes === undefined) {
     return NextResponse.json("Error: collection data undefined.", {
       status: 400,
     });
@@ -79,8 +86,22 @@ export async function PUT(
       },
       include: { author: true },
     });
-    return NextResponse.json(updatedCollection);
+    console.log(memes);
+    await prisma.collectionMeme.deleteMany({
+      where: {
+        collectionId: updatedCollection.id,
+      },
+    });
+    await prisma.collectionMeme.createMany({
+      data: memes,
+    });
+
+    return NextResponse.json({
+      collection: updatedCollection,
+      memes,
+    });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Error updating the collection." },
       { status: 500 }

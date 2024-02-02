@@ -20,7 +20,11 @@ export async function GET(request: NextRequest) {
 
     const collections = await prisma.collection.findMany({
       include: {
-        memes: true,
+        memes: {
+          include: {
+            meme: true,
+          },
+        }
       },
       where: {
         authorId: user?.id,
@@ -67,7 +71,7 @@ export async function POST(request: NextRequest) {
       include: { author: true, memes: true },
     });
     if (memes.length > 0) {
-      const data = memes.map((meme: object) => {
+      const data = memes.map((meme: CollectionMeme) => {
         return { ...meme, collectionId: newCollection.author.id };
       });
       const newMemes = await prisma.collectionMeme.createMany({ data });

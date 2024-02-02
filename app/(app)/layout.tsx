@@ -23,7 +23,7 @@ export default function RootLayout({
     <StateProvider>
       <AuthProvider>
         <StoreInitializer>
-          <html lang="en" data-theme="light">
+          <html lang="en" data-theme="cupcake">
             <body className={inter.className}>
               <div>
                 <div className="drawer lg:drawer-open">

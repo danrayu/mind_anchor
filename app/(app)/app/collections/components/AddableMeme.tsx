@@ -3,11 +3,12 @@ import { useState } from "react";
 
 interface AddableMemeProps {
   meme: Meme;
+  initIsAdded: boolean;
   onChange: (id: number) => void;
 }
 
-function AddableMeme({ meme, onChange }: AddableMemeProps) {
-  const [isOpen, setIsOpen] = useState(false);
+function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
+  const [isOpen, setIsOpen] = useState(initIsAdded);
 
   // Toggle the open state
   const toggleOpen = () => setIsOpen(!isOpen);
@@ -17,7 +18,7 @@ function AddableMeme({ meme, onChange }: AddableMemeProps) {
     event.stopPropagation();
   }
 
-  const [blackMode, setBMode] = useState(false);
+  const [blackMode, setBMode] = useState(initIsAdded);
 
   const onSwitch = () => {
     console.log("switched")
