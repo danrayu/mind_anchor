@@ -151,7 +151,7 @@ function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps
           <FilterSelector filterState={filterState} setFilter={setFilter} />
           <div className="mt-4">
             {filteredMemes.map((meme: Meme) => (
-              <AddableMeme key={meme.id} meme={meme} onChange={onSwitchAdded} />
+              <AddableMeme key={meme.id} meme={meme} initIsAdded={orderedMemes.find(m => m.id === meme.id) !== undefined} onChange={onSwitchAdded} />
             ))}
           </div>
         </div>

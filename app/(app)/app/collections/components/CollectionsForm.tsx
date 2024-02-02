@@ -47,9 +47,11 @@ const SortableMeme = ({ meme }: { meme: Meme }) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div className="w-[800px] h-14">{meme.title}</div>
-    </div>
+    <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <td>
+        <div className="w-full">{meme.title}</div>
+      </td>
+    </tr>
   );
 };
 
@@ -163,7 +165,6 @@ function CollectionsForm({
   };
 
   const onDragEnd = (event: DragEndEvent) => {
-    console.log("drag end", event);
     const { active, over } = event;
     if (over && active.id === over.id) {
       return;
@@ -220,21 +221,27 @@ function CollectionsForm({
           >
             <span className="text-lg">+</span> Meme
           </button>
-          {orderedMemes && (
-            <DndContext
-              collisionDetection={closestCenter}
-              onDragEnd={onDragEnd}
-            >
-              <SortableContext
-                items={orderedMemes}
-                strategy={rectSortingStrategy}
-              >
-                {orderedMemes.map((meme: Meme) => (
-                  <SortableMeme key={meme.id} meme={meme} />
-                ))}
-              </SortableContext>
-            </DndContext>
-          )}
+          <div className="mt-2 outline rounded-xl">
+            <table className="table table-pin-rows">
+              <tbody>
+                {orderedMemes && (
+                  <DndContext
+                    collisionDetection={closestCenter}
+                    onDragEnd={onDragEnd}
+                  >
+                    <SortableContext
+                      items={orderedMemes}
+                      strategy={rectSortingStrategy}
+                    >
+                      {orderedMemes.map((meme: Meme) => (
+                        <SortableMeme key={meme.id} meme={meme} />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div

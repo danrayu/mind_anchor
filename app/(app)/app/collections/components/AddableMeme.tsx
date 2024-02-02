@@ -8,7 +8,7 @@ interface AddableMemeProps {
 }
 
 function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
-  const [isOpen, setIsOpen] = useState(initIsAdded);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Toggle the open state
   const toggleOpen = () => setIsOpen(!isOpen);
@@ -40,18 +40,15 @@ function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
         onClick={toggleOpen}
       >
         <div className="space-x-3 ">
-          <span className={!isOpen ? "ml-[3px]" : ""}>
-            {isOpen ? "▼" : ">"}
-          </span>
           <span className="text-lg font-semibold">{meme.title}</span>
         </div>
         <label className="swap">
           <input type="checkbox" onClick={onSwitch}/>
-          <div className="swap-on">Remove</div>
-          <div className="swap-off">Add</div>
+          <div className="swap-on">{blackMode ? "Remove" : "Add"}</div> 
+          <div className="swap-off">{blackMode ? "Remove" : "Add"}</div>
         </label>
       </div>
-      <div className={`${isOpen ? "max-h-96 px-4 p-2 pl-12 pr-14" : "hidden"}`}>
+      <div className={`${isOpen ? "max-h-96 px-4 p-4 pl-5 pr-14 max-w-xl " : "hidden"}`}>
         <span>{meme.description}</span>
       </div>
     </div>
