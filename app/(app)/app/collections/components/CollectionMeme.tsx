@@ -30,11 +30,11 @@ function CollectionMeme({ meme, onRemove }: CollectionMemeProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className=" border-b-2 w-full"
+      className=" border-b-2 active:border-0 w-full hover:bg-slate-100"
     >
       <div
         className={
-          "flex p-6 py-5 justify-between items-center hover:bg-slate-100" +
+          "flex p-6 py-5 justify-between items-center " +
           (isOpen && " border-b border-slate-200")
         }
         onClick={toggleOpen}
