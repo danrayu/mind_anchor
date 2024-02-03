@@ -121,7 +121,7 @@ function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps
 
   useEffect(() => {
     filter();
-  }, [filterState, memes]);
+  }, [filterState, memes, orderedMemes]);
 
   const onSearchbarChange = (value: string) => {
     setFilter({ ...filterState, searchString: value });

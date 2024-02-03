@@ -17,6 +17,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
+import CollectionMeme from "./CollectionMeme";
 interface CollectionsFormInterface {
   collection?: Collection;
 }
@@ -37,23 +38,6 @@ function createEmptyCollections(): Collection {
     memes: [],
   };
 }
-
-const SortableMeme = ({ meme }: { meme: Meme }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: meme.id });
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-  };
-
-  return (
-    <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <td>
-        <div className="w-full text-base">{meme.title}</div>
-      </td>
-    </tr>
-  );
-};
 
 function CollectionsForm({
   collection: initialCollection,
@@ -177,9 +161,18 @@ function CollectionsForm({
     });
   };
 
+  const onRemoveMeme = (id: number) => {
+    console.log(id);
+    setOrderedMemes((state) => {
+      const i = state.findIndex((meme) => meme.id === id);
+      state.splice(i, 1);
+      console.log("state", state.slice())
+      return state.slice();
+    })
+  }
+
   return (
     <>
-    
       <MemeCatalogModal
         orderedMemes={orderedMemes}
         setOrderedMemes={setOrderedMemes}
@@ -205,7 +198,7 @@ function CollectionsForm({
           />
           <div className="label">
             {titleInputError && (
-              <span className="label-text-alt text-base  text-error">
+              <span className="label-text-alt text-base text-error">
                 {titleInputError}
               </span>
             )}
@@ -213,19 +206,21 @@ function CollectionsForm({
         </label>
 
         <div id="manage-memes">
-          <button
-            className="btn btn-outline"
-            onClick={() =>
-              (document.getElementById("meme-catalog")! as any).showModal()
-            }
-            type="button"
-          >
-            <span className="text-lg">+</span> Meme
-          </button>
+          <div className="flex flex-wrap justify-between items-center">
+            <h3 className="">Memes</h3>
+            <button
+              className="btn btn-outline"
+              onClick={() =>
+                (document.getElementById("meme-catalog")! as any).showModal()
+              }
+              type="button"
+            >
+              <span className="text-lg">+</span> Meme
+            </button>
+          </div>
+
           <div className="mt-2 outline rounded-xl">
-            <table className="table table-pin-rows">
-              <tbody>
-                {orderedMemes && (
+          {orderedMemes && (
                   <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={onDragEnd}
@@ -235,13 +230,11 @@ function CollectionsForm({
                       strategy={rectSortingStrategy}
                     >
                       {orderedMemes.map((meme: Meme) => (
-                        <SortableMeme key={meme.id} meme={meme} />
+                        <CollectionMeme meme={meme} key={meme.id} onRemove={onRemoveMeme} />
                       ))}
                     </SortableContext>
                   </DndContext>
                 )}
-              </tbody>
-            </table>
           </div>
         </div>
 
