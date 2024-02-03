@@ -2,9 +2,12 @@
 import { useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import DnDMemeDisplay from "../../components/dnd/DnDMemeDisplay";
-import Collapse from "../../components/utility/Collapse";
+import Collapse from "../../components/Collapse";
 import { fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";
+import { useAppSelector } from "@/app/store/hooks";
+import DescriptionField from "./DescriptionField";
+import CollectionPicker from "./CollectionPicker";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
@@ -14,14 +17,18 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const breadcrumbs = [{ label: "Mindscapes" }, { label: mindscape.title }];
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(mindscape.title);
+  const [description, setDescription] = useState(mindscape.description);
+  const [collection, setCollection] = useState<Collection | undefined>(undefined);
+  const memes = useAppSelector((state) => state.memes.memes);
+  const collections = useAppSelector(state => state.collections.collections);
 
   const handleOnEdit = async () => {
     // If saving
     if (editMode) {
       const data = {
-        title,
         id: mindscape.id,
-        description: mindscape.description,
+        title,
+        description,
       };
       const response = await fetchUpdateMindscape(data);
       console.log("ok", response.ok);
@@ -32,6 +39,15 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const handleTitleChange = (event: any) => {
     setTitle(event.target!.value);
   };
+
+  const handleDescriptionChange = (event: any) => {
+    setDescription(event.target!.value);
+  }
+
+  const handleSelect = (event: any) => {
+    console.log("selected collection id", event.target!.value);
+    setCollection(collections.find((col: Collection) => col.id === parseInt(event.target!.value)))
+  }
 
   return (
     <div className="mt-10">
@@ -55,10 +71,12 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
             {editMode ? "Save" : "Edit"}
           </button>
         </div>
-        <DropdownDescription description={mindscape.description} />
+        {editMode && <DescriptionField value={description} onChange={handleDescriptionChange}/>}
+        {!editMode && <DropdownDescription description={description} />}
+        
       </div>
-
-      <DnDMemeDisplay />
+      {!editMode && collection && <DnDMemeDisplay memes={collection.memes.map((meme: CollectionMeme) => meme.meme)} />}
+      {editMode && <CollectionPicker onSelect={handleSelect}/>}
     </div>
   );
 }
