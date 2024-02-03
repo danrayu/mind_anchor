@@ -8,10 +8,10 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
+import UserDisplay from "./sidebar/UserDisplay";
 
 function Sidebar() {
   const router = useRouter();
-  const { status, data: session, update: updateSession } = useSession();
 
   const mindscapes = useAppSelector((state) => state.mindscapes);
 
@@ -50,7 +50,7 @@ function Sidebar() {
                   return (
                     <li
                       className="group"
-                      key={"ms_"+mindscape.id}
+                      key={"ms_" + mindscape.id}
                       onClick={() => {
                         router.push("/app/mindscapes/" + mindscape.id);
                       }}
@@ -149,21 +149,11 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        {status === "loading" && <div>Loading...</div>}
-        {status === "authenticated" && (
-          <>
-            <div className="font-bold">{session.user!.name}</div>
-            <Link className="bottom-0 m-4" href={"/api/auth/signout"}>
-              Logout
-            </Link>
-          </>
-        )}
-        {status === "unauthenticated" && (
-          <Link className="bottom-0 m-4" href={"/api/auth/signin"}>
-            Login
-          </Link>
-        )}
+        
+        <UserDisplay />
       </ul>
+
+      
     </div>
   );
 }
