@@ -23,7 +23,7 @@ function Page({params: {id}}: EditPageProps) {
   return (
     <div className="mt-10">
       {(collectionState.loading) && <h3>Loading...</h3>}
-      {collection !== undefined && catsValid && memesValid && (
+      {collection && catsValid && memesValid && (
         <CollectionsForm collection={collection!} />
       )}
     </div>

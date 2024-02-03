@@ -43,7 +43,7 @@ function Sidebar() {
                   router.push("/app/mindscapes/new");
                 }}
               >
-                <span>+ New</span>
+                <span>New</span>
               </li>
               {mindscapesValid &&
                 mindscapes.mindscapes.map((mindscape: Mindscape) => {
@@ -78,7 +78,7 @@ function Sidebar() {
                   router.push("/app/collections/new");
                 }}
               >
-                <span>+ New</span>
+                <span>New</span>
               </li>
               <li
                 className="group"
@@ -107,7 +107,7 @@ function Sidebar() {
                   router.push("/app/memes/new");
                 }}
               >
-                <span>+ New</span>
+                <span>New</span>
               </li>
               <li
                 className="group"
@@ -136,7 +136,7 @@ function Sidebar() {
                   router.push("/app/categories/new");
                 }}
               >
-                <span>+ New</span>
+                <span>New</span>
               </li>
               <li
                 className="group"

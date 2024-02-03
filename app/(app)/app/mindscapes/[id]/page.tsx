@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector } from "@/app/store/hooks";
 import { useAllValid, useMindscapesValid } from "@/app/util/stateValidationHooks";
 import MindscapeView from "../components/MindscapeView";
@@ -15,6 +15,7 @@ function Page({ params: { id } }: EditPageProps) {
   const mindscapeState = useAppSelector((state) => state.mindscapes);
   const allValid = useAllValid();
   const mindscapeValid = useMindscapesValid();
+
 
   var mindscape: Mindscape | undefined = undefined;
   if (mindscapeValid) {

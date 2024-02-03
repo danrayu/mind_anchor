@@ -49,7 +49,7 @@ const SortableMeme = ({ meme }: { meme: Meme }) => {
   return (
     <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <td>
-        <div className="w-full">{meme.title}</div>
+        <div className="w-full text-base">{meme.title}</div>
       </td>
     </tr>
   );
@@ -179,11 +179,12 @@ function CollectionsForm({
 
   return (
     <>
+    
       <MemeCatalogModal
         orderedMemes={orderedMemes}
         setOrderedMemes={setOrderedMemes}
       />
-      <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto">
+      <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto mt-10">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} collection
         </h1>
