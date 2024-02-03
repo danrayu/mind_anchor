@@ -93,7 +93,7 @@ function MemeContainer({ meme }: MemeProps) {
       <div className="outline mb-4 rounded-xl">
         <div
           className={
-            "flex p-6 justify-between items-center hover:bg-slate-100" +
+            "flex p-6 justify-between items-center hover:bg-gray-100 " +
             (isOpen && " border-b border-slate-200")
           }
           onClick={toggleOpen}
