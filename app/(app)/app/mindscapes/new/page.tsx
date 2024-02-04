@@ -1,10 +1,12 @@
-import React from 'react'
-import MindscapeForm from '../components/MindscapeForm'
+"use client";
+import React from "react";
+import MindscapeForm from "../components/MindscapeForm";
+import { useCatsValid, useMemesValid } from "@/app/util/stateValidationHooks";
 
 function NewMindscapePage() {
-  return (
-    <MindscapeForm />
-  )
+  const memesValid = useMemesValid();
+  const categoriesValid = useCatsValid();
+  return (memesValid && categoriesValid && <MindscapeForm />);
 }
 
-export default NewMindscapePage
+export default NewMindscapePage;

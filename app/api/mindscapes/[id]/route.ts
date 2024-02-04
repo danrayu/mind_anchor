@@ -11,18 +11,6 @@ export async function DELETE(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const mindscape = await prisma.mindscape.findUnique({
-    where: {
-      id: parseInt(params.id),
-    },
-  });
-  if (!mindscape) {
-    return NextResponse.json(
-      { error: "Mindscape does not exist." },
-      { status: 400 }
-    );
-  }
-
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -32,6 +20,26 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
+
+    const mindscape = await prisma.mindscape.findUnique({
+      where: {
+        authorId: user.id,
+        id: parseInt(params.id)
+      }
+    });
+    if (!mindscape) {
+      return NextResponse.json(
+        { error: "Mindscape does not exist." },
+        { status: 400 }
+      );
+    }
+
+    await prisma.mindscapeMeme.deleteMany({
+      where: {
+        mindscapeId: mindscape.id,
+      },
+    });
+    
     const deleted = await prisma.mindscape.delete({
       where: {
         id: mindscape.id,
@@ -55,9 +63,9 @@ export async function PUT(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const { title, description, config } = await request.json();
+  const { title, description, memes } = await request.json();
 
-  if (!title || config === undefined) {
+  if (!title || memes === undefined) {
     return NextResponse.json("Error: Mindscape data undefined.", {
       status: 400,
     });
@@ -72,16 +80,28 @@ export async function PUT(
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
+    
     const updatedMindscape = await prisma.mindscape.update({
       where: { id: parseInt(params.id), authorId: user.id },
       data: {
         ...(title && { title }),
         ...(description && {description}),
-        ...(config && {config}),
       },
       include: { author: true },
     });
-    return NextResponse.json(updatedMindscape);
+    await prisma.mindscapeMeme.deleteMany({
+      where: {
+        mindscapeId: updatedMindscape.id,
+      },
+    });
+    await prisma.mindscapeMeme.createMany({
+      data: memes,
+    });
+
+    return NextResponse.json({
+      collection: updatedMindscape,
+      memes,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: "Error updating the Mindscape." },

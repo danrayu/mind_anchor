@@ -2,7 +2,6 @@ import { Action, Dispatch, ThunkAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import {
   fetchGetCategories,
-  fetchGetCollections,
   fetchGetMemes,
   fetchGetMindscapes,
 } from "../fetchActions";
@@ -27,9 +26,6 @@ const getDispatchCode = (type: Types, stage: StageTypes) => {
       break;
     case Types.Mindscapes:
       code += "MINDSCAPES_";
-      break;
-    case Types.Collections:
-      code += "COLLECTIONS_";
       break;
   }
 
@@ -66,9 +62,6 @@ export const load = (
         break;
       case Types.Mindscapes:
         response = await fetchGetMindscapes();
-        break;
-      case Types.Collections:
-        response = await fetchGetCollections();
         break;
     }
 
@@ -109,9 +102,6 @@ export const appFetch = (
       case Types.Mindscapes:
         response = await fetchGetMindscapes();
         break;
-      case Types.Collections:
-        response = await fetchGetCollections();
-        break;
     }
 
     if (!response.ok) {
@@ -145,14 +135,12 @@ export const loadAll = (): ThunkAction<
     dispatch({ type: "LOAD_MEMES_START" });
     dispatch({ type: "LOAD_CATS_START" });
     dispatch({ type: "LOAD_MINDSCAPES_START" });
-    dispatch({ type: "LOAD_COLLECTIONS_START" });
 
-    const [memesResponse, catsResponse, mindscapesResponse, collectionsResponse] = await Promise.all(
+    const [memesResponse, catsResponse, mindscapesResponse] = await Promise.all(
       [
         fetch(url + `/api/memes/?wCats`),
         fetch(url + `/api/categories`),
         fetch(url + `/api/mindscapes`),
-        fetch(url + `/api/collections`),
       ]
     );
 
@@ -216,26 +204,6 @@ export const loadAll = (): ThunkAction<
       });
     }
 
-    if (!collectionsResponse.ok) {
-      const errorData = await collectionsResponse.json();
-      dispatch({
-        type: getDispatchCode(Types.Collections, StageTypes.failure),
-        error: errorData.error,
-      });
-    } else {
-      collectionsResponse
-      .json()
-      .then((data) => {
-        dispatch({
-          type: getDispatchCode(Types.Collections, StageTypes.success),
-          payload: data,
-        });
-      })
-      .catch((error) => {
-        dispatch({ type: getDispatchCode(Types.Collections, StageTypes.failure), error });
-      });
-    }
-    
   };
 };
 

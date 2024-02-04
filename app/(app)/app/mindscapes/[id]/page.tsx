@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useAppSelector } from "@/app/store/hooks";
-import { useAllValid, useMindscapesValid } from "@/app/util/stateValidationHooks";
+import { useMindscapesValid } from "@/app/util/stateValidationHooks";
 import MindscapeView from "../components/MindscapeView";
 
 interface EditPageProps {
@@ -10,11 +10,11 @@ interface EditPageProps {
 
 function Page({ params: { id } }: EditPageProps) {
   const mindscapeState = useAppSelector((state) => state.mindscapes);
-  const mindscapeValid = useMindscapesValid();
+  const mindscapesValid = useMindscapesValid();
 
 
   var mindscape: Mindscape | undefined = undefined;
-  if (mindscapeValid) {
+  if (mindscapesValid) {
     mindscape = mindscapeState.mindscapes.find(
       (mindscape: Mindscape) => mindscape.id === parseInt(id)
     );
@@ -23,7 +23,7 @@ function Page({ params: { id } }: EditPageProps) {
   return (
     <div className="mt-10">
       {(mindscapeState.loading) && <h3>Loading...</h3>}
-      {mindscape !== undefined && (
+      {mindscape !== undefined && mindscapesValid && (
         <MindscapeView mindscape={mindscape!} />
       )}
     </div>

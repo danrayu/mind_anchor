@@ -14,19 +14,11 @@ declare global {
     favorite: boolean;
     categories: Category[];
   };
-  type CollectionMeme = {
+  type MindscapeMeme = {
     id: number;
     meme: Meme;
     index: number;
-    collectionId: number;
-  };
-  type Collection = {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    title: string;
-    authorId: string;
-    memes: CollectionMeme[];
+    mindscapeId: number;
   };
   type Mindscape = {
     id: number;
@@ -35,7 +27,7 @@ declare global {
     title: string;
     description: string;
     authorId: string;
-    collections: Collection[];
+    memes: MindscapeMeme[];
   };
 }
 

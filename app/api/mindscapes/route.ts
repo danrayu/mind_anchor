@@ -20,12 +20,17 @@ export async function GET(request: NextRequest) {
 
     const mindscapes = await prisma.mindscape.findMany({
       include: {
-        collections: true
+        memes: {
+          include: {
+            meme: true,
+          },
+        }
       },
       where: {
         authorId: user?.id,
       },
     });
+    
     return NextResponse.json(mindscapes);
   } catch (error) {
     return NextResponse.json(
@@ -36,14 +41,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { title, description } =
+  const { title, description, memes } =
     await request.json();
 
   const session = await getServerSession(authOptions);
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  if (title === undefined) {
+  if (title === undefined || memes === undefined) {
     return NextResponse.json("Error: Mindscape title not defined.", { status: 400 });
   }
 
@@ -62,13 +67,21 @@ export async function POST(request: NextRequest) {
         title,
         description: description ? description : "",
         author: { connect: { id: user.id } },
-        collections: { connect: []},
-        config: "",
+        memes: { connect: []},
       },
-      include: { author: true, collections: true },
+      include: { author: true, memes: true },
     });
+    if (memes.length > 0) {
+      const data = memes.map((meme: MindscapeMeme) => {
+        return { ...meme, mindscapeId: newMindscape.id };
+      });
+      const newMemes = await prisma.mindscapeMeme.createMany({ data });
+
+      return NextResponse.json({ mindscape: newMindscape, memes: newMemes });
+    }
     return NextResponse.json({ mindscape: newMindscape });
   } catch (error) {
+    console.log(error);
     // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(
       { error: "Error: Could not create Mindscape." },

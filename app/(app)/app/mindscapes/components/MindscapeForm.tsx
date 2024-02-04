@@ -1,17 +1,26 @@
-"use client";
 import {
   fetchCreateMindscape,
   fetchDeleteMindscape,
   fetchUpdateMindscape,
 } from "@/app/fetchActions";
-import { load } from "@/app/store/actions";
+import { appFetch, load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
-import React, { FormEventHandler, useState } from "react";
-interface MindscapeFormProps {
+import React, { useState } from "react";
+import MemeCatalogModal from "./MemeCatalogModal";
+import Modal from "../../components/Modal";
+import DnDMindscapeMemes from "./DnDMindscapeMemes";
+
+interface CMindscapeFormInterface {
   mindscape?: Mindscape;
 }
+
+type CMemeModel = {
+  indexInMindscape: number;
+  memeId: number;
+  mindscapeId: number;
+};
 
 function createEmptyMindscape(): Mindscape {
   return {
@@ -21,61 +30,73 @@ function createEmptyMindscape(): Mindscape {
     authorId: "",
     createdAt: new Date(),
     updatedAt: new Date(),
-    collections: [],
+    memes: [],
   };
 }
 
-function MindscapeForm({ mindscape: initialMindscape }: MindscapeFormProps) {
-  const isNew: boolean = initialMindscape === undefined;
-
+function MindscapeForm({
+  mindscape: initialMindscape,
+}: CMindscapeFormInterface) {
+  const isNew = initialMindscape === undefined;
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const [mindscape, setMindscape] = useState<Mindscape>(
     initialMindscape || createEmptyMindscape()
   );
+  const [titleInputError, setTitleInputError] = useState<string>("");
+  const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
+    mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
+  );
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const response = await saveMindscape(mindscape);
-    
-  };
-
-  const changedTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changedTitle = (event: any) => {
+    setTitleInputError(() => {
+      if (event.target!.value.length === event.target.maxLength) {
+        return "Max length 80 characters.";
+      } else {
+        return "";
+      }
+    });
     setMindscape((oldState) => {
       return { ...oldState, title: event.target!.value };
     });
   };
 
-  const changedDescription = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setMindscape((oldState) => {
-      return { ...oldState, description: event.target!.value };
-    });
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await saveMindscape(mindscape);
   };
 
   const saveMindscape = async (mindscape: Mindscape) => {
-    let mindscapeData = {
+    const memeData = orderedMemes.map(
+      (meme: Meme, index: number): CMemeModel => {
+        return {
+          indexInMindscape: index,
+          memeId: meme.id,
+          mindscapeId: mindscape.id,
+        };
+      }
+    );
+    let requestData = {
       id: mindscape.id,
       title: mindscape.title,
-      description: mindscape.description,
-      authorId: mindscape.authorId,
+      memes: memeData || mindscape.memes,
     };
     const request = isNew ? fetchCreateMindscape : fetchUpdateMindscape;
     try {
-      const response = await request(mindscapeData);
+      const response = await request(requestData);
 
       if (!response.ok) {
         throw new Error(
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
-        dispatch(load(Types.Mindscapes));
+        dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
         console.log("Mindscape saved:", data);
         if (isNew) {
           router.push("/app/mindscapes/" + data.mindscape.id);
-        } 
+        }
         // display success
         // setUpdateSuccess(true);
         // setTimeout(() => setUpdateSuccess(false), 3000);
@@ -87,7 +108,7 @@ function MindscapeForm({ mindscape: initialMindscape }: MindscapeFormProps) {
     }
   };
 
-  const deleteMindscape = async () => {
+  const handleDelete = async () => {
     try {
       var proceed = confirm(
         `Are you sure you want to delete mindscape ${mindscape.title}?`
@@ -96,69 +117,79 @@ function MindscapeForm({ mindscape: initialMindscape }: MindscapeFormProps) {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
           dispatch(load(Types.Mindscapes));
-          console.log("Meme deleted", response);
+          console.log("Mindscape deleted", response);
           router.back();
         }
       }
     } catch (error) {
-      console.error("Error deleting meme:", error);
+      console.error("Error deleting Mindscape:", error);
     }
   };
 
+  const titleInputBlur = () => {
+    setTitleInputError("");
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
-      <h1 className="text-[35px] font-bold mb-4">
-        {isNew && "Add"} {!isNew && "Edit"} mindscape
-      </h1>
-
-      <div className="mb-4">
-        <label htmlFor="title" className="block font-medium text-gray-700">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={mindscape.title}
-          onChange={changedTitle}
-          className="mt-1 p-2 block rounded outline w-full"
+    <>
+      <Modal title={"Meme Catalog"} id={"meme-catalog"}>
+        <MemeCatalogModal
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
         />
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block font-medium text-gray-700"
-        >
-          Description
+      </Modal>
+      <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto mt-10">
+        <h1 className="text-[35px] font-bold mb-4">
+          {isNew && "Add"} {!isNew && "Edit"} mindscape
+        </h1>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text text-base">Title</span>
+            {/* top right <span className="label-text-alt"></span> */}
+          </div>
+          <input
+            type="text"
+            placeholder="Type here"
+            className="input input-bordered w-full"
+            value={mindscape.title}
+            onChange={changedTitle}
+            onKeyDown={changedTitle}
+            maxLength={80}
+            onBlur={titleInputBlur}
+          />
+          <div className="label">
+            {titleInputError && (
+              <span className="label-text-alt text-base text-error">
+                {titleInputError}
+              </span>
+            )}
+          </div>
         </label>
-        <textarea
-          id="description"
-          name="description"
-          value={mindscape.description}
-          onChange={changedDescription}
-          spellCheck="false"
-          className="mt-1 p-2 block rounded outline w-full h-40"
-        ></textarea>
-      </div>
+        <DnDMindscapeMemes
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
+        />
 
-      <div
-        className={"mt-4 flex " + (!isNew ? "justify-between" : "justify-end")}
-      >
-        {!isNew && (
-          <button
-            className="mt-2 btn btn-link font-normal text-red-700"
-            type="button"
-            onClick={deleteMindscape}
-          >
-            Delete
+        <div
+          className={
+            "mt-4 flex " + (!isNew ? "justify-between" : "justify-end")
+          }
+        >
+          {!isNew && (
+            <button
+              className="mt-2 btn btn-link font-normal text-red-700"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          )}
+          <button type="submit" className="mt-2 btn btn-primary">
+            Save
           </button>
-        )}
-        <button type="submit" className="mt-2 btn btn-primary">
-          Save
-        </button>
-      </div>
-    </form>
+        </div>
+      </form>
+    </>
   );
 }
 

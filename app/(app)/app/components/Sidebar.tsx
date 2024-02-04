@@ -37,8 +37,17 @@ function Sidebar() {
               Mindscapes
             </summary>
             <ul>
-              <li
+            <li
                 className="group"
+                onClick={() => {
+                  router.push("/app/mindscapes/manage");
+                }}
+                
+              >
+                <span>Manage</span>
+              </li>
+              <li
+                className="group mb-2"
                 onClick={() => {
                   router.push("/app/mindscapes/new");
                 }}
@@ -59,35 +68,7 @@ function Sidebar() {
                     </li>
                   );
                 })}
-            </ul>
-          </details>
-        </li>
-        <li className="mt-2">
-          <details open>
-            <summary className="group">
-              <span>
-                <Image src="/logo.png" width={20} height={20} alt="icon" />
-                {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
-              </span>
-              Collections
-            </summary>
-            <ul>
-              <li
-                className="group"
-                onClick={() => {
-                  router.push("/app/collections/new");
-                }}
-              >
-                <span>New</span>
-              </li>
-              <li
-                className="group"
-                onClick={() => {
-                  router.push("/app/collections");
-                }}
-              >
-                <span>View All</span>
-              </li>
+                
             </ul>
           </details>
         </li>

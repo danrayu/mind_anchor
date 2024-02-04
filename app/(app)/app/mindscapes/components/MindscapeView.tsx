@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import DnDMemeDisplay from "../../components/dnd/DnDMemeDisplay";
-import Collapse from "../../components/Collapse";
-import { fetchUpdateMindscape } from "@/app/fetchActions";
+import { fetchDeleteMindscape, fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";
-import { useAppSelector } from "@/app/store/hooks";
 import DescriptionField from "./DescriptionField";
-import CollectionPicker from "./CollectionPicker";
+import DnDMemeDisplay from "../../components/dnd/DnDMemeDisplay";
+import { useAppDispatch } from "@/app/store/hooks";
+import { appFetch } from "@/app/store/actions";
+import { Types } from "@/app/types/Types";
+import DnDMindscapeMemes from "./DnDMindscapeMemes";
+import Modal from "../../components/Modal";
+import MemeCatalogModal from "./MemeCatalogModal";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
@@ -15,23 +18,37 @@ interface MindscapeViewProps {
 
 function MindscapeView({ mindscape }: MindscapeViewProps) {
   const breadcrumbs = [{ label: "Mindscapes" }, { label: mindscape.title }];
+  const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(mindscape.title);
   const [description, setDescription] = useState(mindscape.description);
-  const [collection, setCollection] = useState<Collection | undefined>(undefined);
-  const memes = useAppSelector((state) => state.memes.memes);
-  const collections = useAppSelector(state => state.collections.collections);
+  const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
+    mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
+  );
 
   const handleOnEdit = async () => {
     // If saving
     if (editMode) {
+      const memeData = orderedMemes.map(
+        (meme: Meme, index: number) => {
+          return {
+            indexInMindscape: index,
+            memeId: meme.id,
+            mindscapeId: mindscape.id,
+          };
+        }
+      );
       const data = {
         id: mindscape.id,
         title,
         description,
+        memes: memeData || mindscape.memes,
       };
       const response = await fetchUpdateMindscape(data);
       console.log("ok", response.ok);
+      if (response.ok) {
+        dispatch(appFetch(Types.Mindscapes));
+      }
     }
     setEditMode((state) => !state);
   };
@@ -42,42 +59,83 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
 
   const handleDescriptionChange = (event: any) => {
     setDescription(event.target!.value);
-  }
+  };
 
-  const handleSelect = (event: any) => {
-    console.log("selected collection id", event.target!.value);
-    setCollection(collections.find((col: Collection) => col.id === parseInt(event.target!.value)))
-  }
+  const handleDelete = async () => {
+    const ok = confirm(
+      "Are you sure you would like to delete Mindscape " + mindscape.title + "?"
+    );
+    if (ok) {
+      try {
+        const response = await fetchDeleteMindscape(mindscape.id);
+        if (response.ok) {
+          console.log("deleted");
+          dispatch(appFetch(Types.Mindscapes));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
-    <div className="mt-10">
-      <Breadcrumbs items={breadcrumbs} />
-      <div className="flex flex-wrap">
-        <div className="w-full flex flex-wrap justify-between mb-2">
-          {editMode ? (
-            <input
-              type="text"
-              placeholder="Title"
-              className="text-[35px] p-0 border-0 outline-0 "
-              value={title}
-              onKeyDown={handleTitleChange}
-              onChange={handleTitleChange}
+    <>
+      <Modal title={"Meme Catalog"} id={"meme-catalog"}>
+        <MemeCatalogModal
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
+        />
+      </Modal>
+      <div className="mt-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <div className="">
+          <div className="w-full flex flex-wrap justify-between mb-2">
+            {editMode ? (
+              <input
+                type="text"
+                placeholder="Title"
+                className="text-[35px] p-0 border-0 outline-0 "
+                value={title}
+                onKeyDown={handleTitleChange}
+                onChange={handleTitleChange}
+              />
+            ) : (
+              <h1 className="text-[35px] font-bold">{title}</h1>
+            )}
+            <button className="btn btn-primary" onClick={handleOnEdit}>
+              {editMode ? "Save" : "Edit"}
+            </button>
+          </div>
+          {editMode && (
+            <DescriptionField
+              value={description}
+              onChange={handleDescriptionChange}
             />
-          ) : (
-            <h1 className="text-[35px] font-bold">{title}</h1>
           )}
-
-          <button className="btn btn-primary" onClick={handleOnEdit}>
-            {editMode ? "Save" : "Edit"}
-          </button>
+          {!editMode && <DropdownDescription description={description} />}
+          {!editMode && (
+            <DnDMemeDisplay
+              memes={orderedMemes.map((meme: Meme) => meme)}
+            ></DnDMemeDisplay>
+          )}
+          {editMode && (
+            <DnDMindscapeMemes
+              orderedMemes={orderedMemes}
+              setOrderedMemes={setOrderedMemes}
+            />
+          )}
+          {editMode && (
+            <button
+              className="mt-2 btn btn-link font-normal text-red-700"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          )}
         </div>
-        {editMode && <DescriptionField value={description} onChange={handleDescriptionChange}/>}
-        {!editMode && <DropdownDescription description={description} />}
-        
       </div>
-      {!editMode && collection && <DnDMemeDisplay memes={collection.memes.map((meme: CollectionMeme) => meme.meme)} />}
-      {editMode && <CollectionPicker onSelect={handleSelect}/>}
-    </div>
+    </>
   );
 }
 

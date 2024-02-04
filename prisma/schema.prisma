@@ -47,7 +47,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Meme          Meme[]
-  Collection    Collection[]
   Category      Category[]
   Mindscape     Mindscape[]
 }
@@ -70,25 +69,16 @@ model Meme {
   authorId        String
   favorite        Boolean
   categories      Category[]
-  collectionMemes CollectionMeme[]
+  collectionMemes MindscapeMeme[]
 }
 
-model Collection {
-  id         Int              @id @default(autoincrement())
-  title      String
-  author     User             @relation(fields: [authorId], references: [id])
-  authorId   String
-  memes      CollectionMeme[]
-  mindscapes Mindscape[]
-}
-
-model CollectionMeme {
+model MindscapeMeme {
   id                Int        @id @default(autoincrement())
-  indexInCollection Int
+  indexInMindscape Int
   meme              Meme       @relation(fields: [memeId], references: [id])
   memeId            Int
-  collection        Collection @relation(fields: [collectionId], references: [id])
-  collectionId      Int
+  mindscape        Mindscape @relation(fields: [mindscapeId], references: [id])
+  mindscapeId      Int
 }
 
 model Category {
@@ -100,15 +90,14 @@ model Category {
 }
 
 model Mindscape {
-  id          Int          @id @default(autoincrement())
-  title       String       @unique
-  description String       @db.Text
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
-  author      User         @relation(fields: [authorId], references: [id])
+  id          Int             @id @default(autoincrement())
+  title       String          @unique
+  description String          @db.Text
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now()) @updatedAt
+  author      User            @relation(fields: [authorId], references: [id])
   authorId    String
-  collections Collection[]
-  config      String       @db.Text
+  memes       MindscapeMeme[]
 }
 
 enum Role {
