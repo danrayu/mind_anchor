@@ -20,29 +20,29 @@ export async function GET(
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
-    const categories = await prisma.mindscapeScheduleConfig.findUnique({
+    const schedule = await prisma.mindscapeScheduleConfig.findUnique({
       where: {
         authorId: user?.id,
       }
     })
-    return NextResponse.json(categories);
+    return NextResponse.json(schedule);
   } catch (error) {
     return NextResponse.json(
-      { error: `Error: Could not get Categories. ${error}` },
+      { error: `Error: Could not get the schedule for mindscapes. ${error}` },
       { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const { name } = await request.json();
+  const { config } = await request.json();
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
   
-  if (!name) {
-    return NextResponse.json('Error: Category data undefined.', {status: 400});
+  if (!config) {
+    return NextResponse.json('Error: Config data undefined.', {status: 400});
   }
 
   try {
@@ -54,16 +54,62 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
-    const updatedMeme = await prisma.category.create({
-      data: {
-        name: name,
-        author: { connect: { id: user.id } },
-      },
-      include: { author: true },
+    const oldConfig = await prisma.mindscapeScheduleConfig.findUnique({
+      where: { authorId: user.id }
     });
-    return NextResponse.json(updatedMeme);
+    if (!oldConfig) {
+      const newConfig = await prisma.mindscapeScheduleConfig.create({
+        data: {
+          config,
+          author: { connect: { id: user.id } },
+        },
+        include: { author: true },
+      });
+      return NextResponse.json(newConfig);
+    }
+    else {
+      throw  Error(`MindScape schedule already exists for ${user.email}`);
+    }
   } catch (error) {
-    // Handle specific errors (e.g., non-existing meme)
-    return NextResponse.json({ error: 'Error: Could not create Category.' }, {status: 500});
+    return NextResponse.json({ error: 'Error: Could not create schedule.' }, {status: 500});
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email)
+    return NextResponse.json("Not authenticated", { status: 401 });
+
+  const { config } = await request.json();
+
+  if (!config) {
+    return NextResponse.json("Error: Error: Config data undefined.", {
+      status: 400,
+    });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session!.user!.email!,
+      },
+    });
+    if (!user) {
+      return NextResponse.json("User not found", { status: 404 });
+    }
+    const updatedConfig = await prisma.mindscapeScheduleConfig.update({
+      where: { authorId: user.id },
+      data: {
+        ...(config && { config }),
+      },
+    });
+    return NextResponse.json(updatedConfig);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error updating the schedule config." },
+      { status: 500 }
+    );
   }
 }
