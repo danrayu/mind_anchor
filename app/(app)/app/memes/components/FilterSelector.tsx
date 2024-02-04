@@ -10,7 +10,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { CategoryFilterState, MemeFilter } from "./MemesPage";
 import { useAppSelector } from "@/app/store/hooks";
-import { set } from "zod";
 
 const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
   let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
@@ -45,6 +44,8 @@ function FilterSelector({
   const params = useSearchParams();
   const router = useRouter();
   const categories = useAppSelector((state) => state.categories.categories);
+
+  const [filterOpen, setFilterOpen] = useState(false);
 
   useEffect(() => {
     if (!useURI) return;
@@ -103,7 +104,6 @@ function FilterSelector({
 
   function FilterCategory(category: Category) {
     let filter = filterState.categories.find((item) => item.id === category.id);
-    console.log("filter state selector", filterState.categories);
     if (filter === undefined) {
       throw `Error: State of category with id ${category.id} does not exist`;
     }
@@ -118,7 +118,6 @@ function FilterSelector({
     );
   }
 
-  const [filterOpen, setFilterOpen] = useState(false);
   function toggleFilter() {
     setFilterOpen(!filterOpen);
   }
