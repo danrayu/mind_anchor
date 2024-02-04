@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import Sidebar from "./app/components/Sidebar";
+import Sidebar from "./app/components/sidebar/Sidebar";
 import MainView from "./app/components/Main";
 import StateProvider from "./app/components/StateProvider";
 import StoreInitializer from "./app/components/StoreInitializer";

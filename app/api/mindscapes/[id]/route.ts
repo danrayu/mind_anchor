@@ -110,37 +110,3 @@ export async function PUT(
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email)
-    return NextResponse.json("Not authenticated", { status: 401 });
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session!.user!.email!,
-      },
-    });
-    if (!user) {
-      return NextResponse.json("User not found", { status: 404 });
-    }
-    const mindscape = await prisma.mindscape.findUnique({
-      where: {
-        id: parseInt(params.id),
-        authorId: user.id,
-      },
-    });
-
-    if (!mindscape) {
-      return NextResponse.json("Mindscape not found.", { status: 404 });
-    }
-    return NextResponse.json(mindscape);
-  } catch {
-    return NextResponse.json("Could not get Mindscape. Server error.", {
-      status: 500,
-    });
-  }
-}

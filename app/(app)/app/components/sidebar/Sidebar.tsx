@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
-import Brand from "./sidebar/Brand";
+import Brand from "./Brand";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Searchbar from "./Searchbar";
+import Searchbar from "../Searchbar";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
-import UserDisplay from "./sidebar/UserDisplay";
+import UserDisplay from "./UserDisplay";
 
 function Sidebar() {
   const router = useRouter();
@@ -37,23 +37,23 @@ function Sidebar() {
               Mindscapes
             </summary>
             <ul>
-            <li
+              <li
                 className="group"
                 onClick={() => {
                   router.push("/app/mindscapes/manage");
                 }}
-                
               >
                 <span>Manage</span>
               </li>
               <li
-                className="group mb-2"
+                className="group mb-1"
                 onClick={() => {
                   router.push("/app/mindscapes/new");
                 }}
               >
                 <span>New</span>
               </li>
+              
               {mindscapesValid &&
                 mindscapes.mindscapes.map((mindscape: Mindscape) => {
                   return (
@@ -68,7 +68,6 @@ function Sidebar() {
                     </li>
                   );
                 })}
-                
             </ul>
           </details>
         </li>
@@ -130,11 +129,9 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        
+
         <UserDisplay />
       </ul>
-
-      
     </div>
   );
 }
