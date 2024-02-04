@@ -38,12 +38,12 @@ model Session {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?      @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
-  role          Role         @default(USER)
+  role          Role        @default(USER)
   accounts      Account[]
   sessions      Session[]
   Meme          Meme[]
@@ -60,12 +60,12 @@ model VerificationToken {
 }
 
 model Meme {
-  id              Int              @id @default(autoincrement())
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @default(now()) @updatedAt
+  id              Int             @id @default(autoincrement())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now()) @updatedAt
   title           String
-  description     String           @db.Text
-  author          User             @relation(fields: [authorId], references: [id])
+  description     String          @db.Text
+  author          User            @relation(fields: [authorId], references: [id])
   authorId        String
   favorite        Boolean
   categories      Category[]
@@ -73,10 +73,10 @@ model Meme {
 }
 
 model MindscapeMeme {
-  id                Int        @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   indexInMindscape Int
-  meme              Meme       @relation(fields: [memeId], references: [id])
-  memeId            Int
+  meme             Meme      @relation(fields: [memeId], references: [id])
+  memeId           Int
   mindscape        Mindscape @relation(fields: [mindscapeId], references: [id])
   mindscapeId      Int
 }
@@ -98,6 +98,11 @@ model Mindscape {
   author      User            @relation(fields: [authorId], references: [id])
   authorId    String
   memes       MindscapeMeme[]
+}
+
+model MindscapeScheduleConfig {
+  id     Int    @id @default(autoincrement())
+  config String @db.Text
 }
 
 enum Role {
