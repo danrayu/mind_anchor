@@ -11,6 +11,7 @@ import { Types } from "@/app/types/Types";
 import DnDMindscapeMemes from "./DnDMindscapeMemes";
 import Modal from "../../components/Modal";
 import MemeCatalogModal from "./MemeCatalogModal";
+import MemeContainer from "../../components/MemeContainer";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
@@ -29,15 +30,13 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const handleOnEdit = async () => {
     // If saving
     if (editMode) {
-      const memeData = orderedMemes.map(
-        (meme: Meme, index: number) => {
-          return {
-            indexInMindscape: index,
-            memeId: meme.id,
-            mindscapeId: mindscape.id,
-          };
-        }
-      );
+      const memeData = orderedMemes.map((meme: Meme, index: number) => {
+        return {
+          indexInMindscape: index,
+          memeId: meme.id,
+          mindscapeId: mindscape.id,
+        };
+      });
       const data = {
         id: mindscape.id,
         title,
@@ -113,11 +112,12 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
             />
           )}
           {!editMode && <DropdownDescription description={description} />}
-          {!editMode && (
-            <DnDMemeDisplay
-              memes={orderedMemes.map((meme: Meme) => meme)}
-            ></DnDMemeDisplay>
-          )}
+          <div className="mt-4 ">
+            {!editMode &&
+              orderedMemes.map((meme: Meme) => (
+                <MemeContainer key={meme.id} meme={meme} />
+              ))}
+          </div>
           {editMode && (
             <DnDMindscapeMemes
               orderedMemes={orderedMemes}

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Searchbar from "../../components/Searchbar";
 import FilterSelector from "./FilterSelector";
-import MemeContainer from "./Meme";
+import MemeContainer from "../../components/MemeContainer";
 
 export type CategoryFilterState = {
   id: number;
@@ -40,11 +40,11 @@ const decodeURICategories = (param: string): CategoryFilterState[] => {
 };
 
 interface MemesPage {
-  memes: Meme[],
-  categories: Category[]
+  memes: Meme[];
+  categories: Category[];
 }
 
-function MemesPage({memes, categories}: MemesPage) {
+function MemesPage({ memes, categories }: MemesPage) {
   const params = useSearchParams();
 
   const [filterState, setFilter] = useState<MemeFilter>(
@@ -108,30 +108,33 @@ function MemesPage({memes, categories}: MemesPage) {
     [filterState.favoritedState]
   );
 
-  const filterByCategories = useCallback((memes: Meme[]): Meme[] => {
-    const catAllowedIds = new Set(
-      filterState.categories
-        .filter((cat) => cat.state === 1)
-        .map((cat) => cat.id)
-    );
-    const catForbiddenIds = new Set(
-      filterState.categories
-        .filter((cat) => cat.state === -1)
-        .map((cat) => cat.id)
-    );
+  const filterByCategories = useCallback(
+    (memes: Meme[]): Meme[] => {
+      const catAllowedIds = new Set(
+        filterState.categories
+          .filter((cat) => cat.state === 1)
+          .map((cat) => cat.id)
+      );
+      const catForbiddenIds = new Set(
+        filterState.categories
+          .filter((cat) => cat.state === -1)
+          .map((cat) => cat.id)
+      );
 
-    let pFilter = positiveFilterActivated(filterState.categories);
-    return memes.filter((meme) => {
-      const memeCatIds = meme.categories.map((cat) => cat.id);
+      let pFilter = positiveFilterActivated(filterState.categories);
+      return memes.filter((meme) => {
+        const memeCatIds = meme.categories.map((cat) => cat.id);
 
-      const isForbidden = memeCatIds.some((id) => catForbiddenIds.has(id));
-      if (isForbidden) return false;
+        const isForbidden = memeCatIds.some((id) => catForbiddenIds.has(id));
+        if (isForbidden) return false;
 
-      if (!pFilter) return true;
-      const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
-      return isAllowed;
-    });
-  }, [filterState.categories]);
+        if (!pFilter) return true;
+        const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
+        return isAllowed;
+      });
+    },
+    [filterState.categories]
+  );
 
   const filter = useCallback(() => {
     if (memes.length !== 0) {
@@ -139,7 +142,13 @@ function MemesPage({memes, categories}: MemesPage) {
         filterBySearchString(filterByFavorites(filterByCategories([...memes])))
       );
     }
-  }, [memes, filterBySearchString, filterByFavorites, filterByCategories, setFilteredMemes]);
+  }, [
+    memes,
+    filterBySearchString,
+    filterByFavorites,
+    filterByCategories,
+    setFilteredMemes,
+  ]);
 
   useEffect(() => {
     filter();
@@ -160,10 +169,7 @@ function MemesPage({memes, categories}: MemesPage) {
           <button className="btn btn-outline h-10">Search</button>
         </div>
       </div>
-      <FilterSelector
-        filterState={filterState}
-        setFilter={setFilter}
-      />
+      <FilterSelector filterState={filterState} setFilter={setFilter} />
 
       <div className="mt-4">
         {filteredMemes.map((meme) => {
@@ -179,4 +185,4 @@ function MemesPage({memes, categories}: MemesPage) {
   );
 }
 
-export default MemesPage
+export default MemesPage;
