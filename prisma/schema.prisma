@@ -38,17 +38,18 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String                   @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String?                  @unique
   emailVerified DateTime?
   image         String?
-  role          Role        @default(USER)
+  role          Role                     @default(USER)
   accounts      Account[]
   sessions      Session[]
   Meme          Meme[]
   Category      Category[]
   Mindscape     Mindscape[]
+  Schedule      MindscapeScheduleConfig?
 }
 
 model VerificationToken {
@@ -101,8 +102,10 @@ model Mindscape {
 }
 
 model MindscapeScheduleConfig {
-  id     Int    @id @default(autoincrement())
-  config String @db.Text
+  id       Int    @id @default(autoincrement())
+  config   String @db.Text
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @unique
 }
 
 enum Role {
