@@ -38,7 +38,7 @@ function DnDMemeDisplay({ memes }: DnDMemeDisplayProps) {
 
   useEffect(() => {
     memesOk && setOrderedMemes(memes);
-  }, [memes]);
+  }, [memes, memesOk]);
 
   const onDragEnd = (event: DragEndEvent) => {
     console.log("drag end", event);

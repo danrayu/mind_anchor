@@ -13,7 +13,7 @@ function EditCategoryPage({ params }: { params: { id: string }}) {
     if (catsValid) {
       setCategory(categories.find((cat: Category) => cat.id === parseInt(params.id)));
     }
-  }, [categories]);
+  }, [categories, catsValid, params.id]);
 
 
   return (

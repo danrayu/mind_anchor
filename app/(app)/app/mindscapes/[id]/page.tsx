@@ -9,11 +9,7 @@ interface EditPageProps {
 }
 
 function Page({ params: { id } }: EditPageProps) {
-
-  const memeState = useAppSelector((state) => state.memes);
-  const categoryState = useAppSelector((state) => state.categories);
   const mindscapeState = useAppSelector((state) => state.mindscapes);
-  const allValid = useAllValid();
   const mindscapeValid = useMindscapesValid();
 
 

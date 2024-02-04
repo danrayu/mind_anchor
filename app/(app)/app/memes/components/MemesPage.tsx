@@ -131,20 +131,19 @@ function MemesPage({memes, categories}: MemesPage) {
       const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
       return isAllowed;
     });
-  }, []);
+  }, [filterState.categories]);
 
-  const filter = () => {
+  const filter = useCallback(() => {
     if (memes.length !== 0) {
       setFilteredMemes(
         filterBySearchString(filterByFavorites(filterByCategories([...memes])))
       );
-
     }
-  };
+  }, [memes, filterBySearchString, filterByFavorites, filterByCategories, setFilteredMemes]);
 
   useEffect(() => {
     filter();
-  }, [filterState, memes]);
+  }, [filter]);
 
   const onSearchbarChange = (value: string) => {
     setFilter({ ...filterState, searchString: value });

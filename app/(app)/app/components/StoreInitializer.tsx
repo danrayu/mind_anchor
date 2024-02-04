@@ -15,7 +15,7 @@ function StoreInitializer({ children }: StoreInitializerProps) {
     if (!allValid) {
       dispatch(loadAll());
     }
-  }, []);
+  }, [allValid, dispatch]);
 
   return <>{children}</>;
 }

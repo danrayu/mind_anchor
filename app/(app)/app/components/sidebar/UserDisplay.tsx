@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -13,9 +14,7 @@ function UserDisplay() {
       {status === "authenticated" && (
         <div className="flex items-center justify-between">
           <div className="avatar">
-            <div className="w-12 rounded">
-              <img src={session?.user?.image!} />
-            </div>
+              <Image src={session?.user?.image!} className="w-12 rounded" width={48} height={48} alt="user icon" />
           </div>
           <div className="font-semibold text-lg">{session.user!.name}</div>
           <Link className="underline" href={"/api/auth/signout"}>

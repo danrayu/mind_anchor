@@ -55,9 +55,9 @@ export async function PUT(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const { title, description } = await request.json();
+  const { title, description, config } = await request.json();
 
-  if (!title) {
+  if (!title || config === undefined) {
     return NextResponse.json("Error: Mindscape data undefined.", {
       status: 400,
     });
@@ -76,7 +76,8 @@ export async function PUT(
       where: { id: parseInt(params.id), authorId: user.id },
       data: {
         ...(title && { title }),
-        ...(description && {description})
+        ...(description && {description}),
+        ...(config && {config}),
       },
       include: { author: true },
     });

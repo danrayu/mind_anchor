@@ -1,5 +1,11 @@
 import { useAppSelector } from "@/app/store/hooks";
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import FilterSelector from "../../memes/components/FilterSelector";
 import {
   CategoryFilterState,
@@ -24,11 +30,14 @@ const positiveFilterActivated = (catStates: CategoryFilterState[]): boolean => {
 };
 
 interface MemeCatalogModalProps {
-  orderedMemes: Meme[],
-  setOrderedMemes: Dispatch<SetStateAction<Meme[]>>,
+  orderedMemes: Meme[];
+  setOrderedMemes: Dispatch<SetStateAction<Meme[]>>;
 }
 
-function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps) {
+function MemeCatalogModal({
+  orderedMemes,
+  setOrderedMemes,
+}: MemeCatalogModalProps) {
   const memes = useAppSelector((state) => state.memes.memes);
   const categories = useAppSelector((state) => state.categories.categories);
   const memesValid = useMemesValid();
@@ -109,19 +118,19 @@ function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps
       const isAllowed = memeCatIds.some((id) => catAllowedIds.has(id));
       return isAllowed;
     });
-  }, []);
+  }, [filterState.categories]);
 
-  const filter = () => {
+  const filter = useCallback(() => {
     if (memesValid && memes.length !== 0) {
       setFilteredMemes(
         filterBySearchString(filterByFavorites(filterByCategories([...memes])))
       );
     }
-  };
+  }, [setFilteredMemes, filterBySearchString, filterByFavorites, filterByCategories, memesValid, memes])
 
   useEffect(() => {
     filter();
-  }, [filterState, memes, orderedMemes]);
+  }, [filterState, memes, orderedMemes, filter]);
 
   const onSearchbarChange = (value: string) => {
     setFilter({ ...filterState, searchString: value });
@@ -129,41 +138,34 @@ function MemeCatalogModal({orderedMemes, setOrderedMemes}: MemeCatalogModalProps
 
   const onSwitchAdded = (id: number) => {
     setOrderedMemes((oldState: Meme[]) => {
-      const index = oldState.findIndex(meme => meme.id === id);
+      const index = oldState.findIndex((meme) => meme.id === id);
       if (index === -1) {
         const newMeme = memes.find((meme: Meme) => meme.id === id);
-        return [newMeme, ...oldState]
-      }
-      else {
+        return [newMeme, ...oldState];
+      } else {
         oldState.splice(index, 1);
-        return oldState.slice();;
+        return oldState.slice();
       }
-    })
+    });
   };
 
   return (
-    <dialog id="meme-catalog" className="modal">
-      <div className="modal-box w-11/12 max-w-5xl">
-        <h3 className="font-bold text-lg">Meme Catalog</h3>
-        <p className="py-4">Add memes of your choosing.</p>
-        <div>
-          <Searchbar onChange={onSearchbarChange} />
-          <FilterSelector filterState={filterState} setFilter={setFilter} />
-          <div className="mt-4">
-            {filteredMemes.map((meme: Meme) => (
-              <AddableMeme key={meme.id} meme={meme} initIsAdded={orderedMemes.find(m => m.id === meme.id) !== undefined} onChange={onSwitchAdded} />
-            ))}
-          </div>
-        </div>
-
-        <div className="modal-action">
-          <form method="dialog">
-            {/* if there is a button, it will close the modal */}
-            <button className="btn">Close</button>
-          </form>
-        </div>
+    <div>
+      <Searchbar onChange={onSearchbarChange} />
+      <FilterSelector filterState={filterState} setFilter={setFilter} />
+      <div className="mt-4">
+        {filteredMemes.map((meme: Meme) => (
+          <AddableMeme
+            key={meme.id}
+            meme={meme}
+            initIsAdded={
+              orderedMemes.find((m) => m.id === meme.id) !== undefined
+            }
+            onChange={onSwitchAdded}
+          />
+        ))}
       </div>
-    </dialog>
+    </div>
   );
 }
 

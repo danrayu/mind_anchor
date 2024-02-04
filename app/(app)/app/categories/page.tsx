@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import Searchbar from "../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
 import CategoryEdit from "./components/CategoryEdit";
 import { load } from "@/app/store/actions";
@@ -16,7 +16,7 @@ function CategoriesPage() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(load(Types.Categories));
-  }, []);
+  }, [dispatch]);
 
   const renderCategories = () => {
     return filteredCategories.map((cat: Category) => {
@@ -30,17 +30,17 @@ function CategoriesPage() {
 
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
 
-  const filterBySearchString = (categories: Category[]): Category[] => {
+  const filterBySearchString = useCallback((categories: Category[]): Category[] => {
     return categories.filter((category) =>
       category.name.toLowerCase().includes(searchString.toLowerCase())
     );
-  };
+  }, [searchString]);
 
   useEffect(() => {
     if (categoriesValid) {
       setFilteredCategories(filterBySearchString(categoryState.categories));
     }
-  }, [categoryState, searchString]);
+  }, [categoryState, searchString, categoriesValid, filterBySearchString]);
 
   return (
     <div className="mt-10">

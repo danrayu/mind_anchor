@@ -1,4 +1,4 @@
-import { CategoryState } from "../../../components/MemeEdit";
+import { CategoryState } from "./MemeEdit";
 
 interface SwitchItemProps {
   switch: (id:number) => void;

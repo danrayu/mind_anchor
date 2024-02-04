@@ -1,9 +1,16 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import FilterItem from "../../components/utility/FilterItem";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { CategoryFilterState, MemeFilter } from "./MemesPage";
 import { useAppSelector } from "@/app/store/hooks";
+import { set } from "zod";
 
 const encodeURICategories = (categoryStates: CategoryFilterState[]): string => {
   let cp = categoryStates.map((cat) => `${cat.id}:${cat.state}`);
@@ -37,21 +44,23 @@ function FilterSelector({
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
-  const categories = useAppSelector(state => state.categories.categories);
+  const categories = useAppSelector((state) => state.categories.categories);
 
   useEffect(() => {
     if (!useURI) return;
     router.push(
       pathname + "?" + setQueryCategories(params, filterState.categories)
     );
-  }, [filterState.categories]);
+  }, [filterState.categories, pathname, params, router, useURI]);
 
-  const setFavParam = () => {
+  const setFavParam = useCallback(() => {
     let val = parseInt(params.get("favs") || "0");
-    setFilter({ ...filterState, favoritedState: val });
-  };
+    setFilter((oldState) => {
+      return { ...oldState, favoritedState: val };
+    });
+  }, [params, setFilter]);
 
-  useEffect(setFavParam, [params]);
+  useEffect(setFavParam, [setFavParam]);
 
   const updateFavParam = (newFilterState: number) => {
     const paramsNew = new URLSearchParams(params);
@@ -66,8 +75,6 @@ function FilterSelector({
     setFilter({ ...filterState, favoritedState: newFavoritedState });
     updateFavParam(newFavoritedState);
   };
-
-  
 
   function onCategoryFilter(id: number, keepCategoryPressed: boolean) {
     let prevStateIndex = filterState.categories.findIndex(

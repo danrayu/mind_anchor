@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
         description: description ? description : "",
         author: { connect: { id: user.id } },
         collections: { connect: []},
+        config: "",
       },
       include: { author: true, collections: true },
     });

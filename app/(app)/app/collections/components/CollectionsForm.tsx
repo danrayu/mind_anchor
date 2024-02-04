@@ -6,18 +6,11 @@ import {
 import { load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  rectSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
-import CollectionMeme from "./CollectionMeme";
+import Modal from "../../components/Modal";
+import DnDCollectionMemes from "./DnDCollectionMemes";
 interface CollectionsFormInterface {
   collection?: Collection;
 }
@@ -43,18 +36,16 @@ function CollectionsForm({
   collection: initialCollection,
 }: CollectionsFormInterface) {
   const isNew = initialCollection === undefined;
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const [collection, setCollection] = useState<Collection>(
     initialCollection || createEmptyCollections()
   );
-
   const [titleInputError, setTitleInputError] = useState<string>("");
-
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     collection.memes.map((meme: CollectionMeme) => meme.meme)
   );
-
-  const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const changedTitle = (event: any) => {
     setTitleInputError(() => {
@@ -77,17 +68,6 @@ function CollectionsForm({
   const saveCollection = async (collection: Collection) => {
     const memeData = orderedMemes.map(
       (meme: Meme, index: number): CMemeModel => {
-        const collMeme = collection.memes.find(
-          (collMeme: CollectionMeme) => collMeme.meme.id === meme.id
-        );
-        if (collMeme) {
-          collMeme.index = index;
-          return {
-            indexInCollection: index,
-            memeId: meme.id,
-            collectionId: collection.id,
-          };
-        }
         return {
           indexInCollection: index,
           memeId: meme.id,
@@ -98,7 +78,7 @@ function CollectionsForm({
     let requestData = {
       id: collection.id,
       title: collection.title,
-      memes: memeData || collection.memes || [],
+      memes: memeData || collection.memes,
     };
     const request = isNew ? fetchCreateCollection : fetchUpdateCollection;
     try {
@@ -148,35 +128,14 @@ function CollectionsForm({
     setTitleInputError("");
   };
 
-  const onDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id === over.id) {
-      return;
-    }
-
-    setOrderedMemes((memes: Meme[]) => {
-      const oldIndex = memes.findIndex((meme: Meme) => meme.id === active.id);
-      const newIndex = memes.findIndex((meme: Meme) => meme.id === over!.id);
-      return arrayMove(memes, oldIndex, newIndex);
-    });
-  };
-
-  const onRemoveMeme = (id: number) => {
-    console.log(id);
-    setOrderedMemes((state) => {
-      const i = state.findIndex((meme) => meme.id === id);
-      state.splice(i, 1);
-      console.log("state", state.slice())
-      return state.slice();
-    })
-  }
-
   return (
     <>
-      <MemeCatalogModal
-        orderedMemes={orderedMemes}
-        setOrderedMemes={setOrderedMemes}
-      />
+      <Modal title={"Meme Catalog"} id={"meme-catalog"}>
+        <MemeCatalogModal
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
+        />
+      </Modal>
       <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto mt-10">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} collection
@@ -204,39 +163,10 @@ function CollectionsForm({
             )}
           </div>
         </label>
-
-        <div id="manage-memes">
-          <div className="flex flex-wrap justify-between items-center">
-            <h3 className="">Memes</h3>
-            <button
-              className="btn btn-outline"
-              onClick={() =>
-                (document.getElementById("meme-catalog")! as any).showModal()
-              }
-              type="button"
-            >
-              <span className="text-lg">+</span> Meme
-            </button>
-          </div>
-
-          <div className="mt-2 outline rounded-xl">
-          {orderedMemes && (
-                  <DndContext
-                    collisionDetection={closestCenter}
-                    onDragEnd={onDragEnd}
-                  >
-                    <SortableContext
-                      items={orderedMemes}
-                      strategy={rectSortingStrategy}
-                    >
-                      {orderedMemes.map((meme: Meme) => (
-                        <CollectionMeme meme={meme} key={meme.id} onRemove={onRemoveMeme} />
-                      ))}
-                    </SortableContext>
-                  </DndContext>
-                )}
-          </div>
-        </div>
+        <DnDCollectionMemes
+          orderedMemes={orderedMemes}
+          setOrderedMemes={setOrderedMemes}
+        />
 
         <div
           className={
