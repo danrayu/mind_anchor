@@ -1,19 +1,11 @@
 "use client";
-import {
-  fetchCreateCategory,
-  fetchDeleteCategory,
-  fetchUpdateCategory,
-} from "@/app/fetchActions";
-import { appFetch, load } from "@/app/store/actions";
+import { fetchCreateCategory } from "@/app/fetchActions";
+import { appFetch } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-interface CategoryEditProps {
-  category?: Category;
-}
-function CategoryEdit({ category }: CategoryEditProps) {
+function CategoryEdit() {
   var catName = "";
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
@@ -37,7 +29,7 @@ function CategoryEdit({ category }: CategoryEditProps) {
   };
 
   const onChange = (event: any) => {
-    console.log( !inputError.length && "hidden")
+    console.log(!inputError.length && "hidden");
     if (event.target.value.length === event.target.maxLength) {
       setInputError("Max length 40 characters.");
     } else {
@@ -65,18 +57,16 @@ function CategoryEdit({ category }: CategoryEditProps) {
                 onKeyDown={onChange}
                 maxLength={40}
               />
-              <div
-                className={
-                  "label  " + (!inputError.length && "hidden")
-                }
-              >
-                <span className="label-text-alt text-error text-base">{inputError}</span>
+              <div className={"label  " + (!inputError.length && "hidden")}>
+                <span className="label-text-alt text-error text-base">
+                  {inputError}
+                </span>
               </div>
             </label>
           </div>
           <div className="flex justify-end space-x-2">
             <button className="btn btn-primary" type="submit">
-            Add Category
+              Add Category
             </button>
           </div>
         </div>
