@@ -5,7 +5,7 @@ import CategoryContainer from "./components/CategoryContainer";
 import { useCallback, useEffect, useState } from "react";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
 import CategoryEdit from "./components/CategoryEdit";
-import { load } from "@/app/store/actions";
+import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 
 function CategoriesPage() {
@@ -15,7 +15,7 @@ function CategoriesPage() {
   var categoryState = useAppSelector((state) => state.categories);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(load(Types.Categories));
+    dispatch(appFetch(Types.Categories));
   }, [dispatch]);
 
   const renderCategories = () => {

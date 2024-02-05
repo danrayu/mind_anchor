@@ -4,7 +4,7 @@ import {
   fetchDeleteCategory,
   fetchUpdateCategory,
 } from "@/app/fetchActions";
-import { load } from "@/app/store/actions";
+import { appFetch, load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
@@ -14,15 +14,11 @@ interface CategoryEditProps {
   category?: Category;
 }
 function CategoryEdit({ category }: CategoryEditProps) {
-  const dispatch = useAppDispatch();
   var catName = "";
-  const isNew = category == undefined;
+  const [inputError, setInputError] = useState("");
+  const dispatch = useAppDispatch();
 
-  if (!isNew) {
-    catName = category.name;
-  }
   const [categoryName, setCategoryName] = useState(catName);
-  const router = useRouter();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -35,35 +31,18 @@ function CategoryEdit({ category }: CategoryEditProps) {
       return;
     }
 
-    if (isNew) {
-      const newCategory = {
-        name: categoryName,
-        authorId: 1,
-      };
-      const response = await fetchCreateCategory(newCategory);
-      if (response.ok) {
-        setCategoryName("");
-        dispatch(load(Types.Categories));
-      }
-    } else {
-      await fetchUpdateCategory(category.id, { name: categoryName });
-    }
-  };
-
-  const deleteCat = async () => {
-    var proceed = confirm(
-      `Are you sure you want to delete category ${category!.name}?`
-    );
-    if (proceed) {
-      const response = await fetchDeleteCategory(category!.id);
-      if (response.ok) {
-        dispatch(load(Types.Categories));
-        router.push("/app/categories");
-      }
-    }
+    await fetchCreateCategory({ name: categoryName });
+    dispatch(appFetch(Types.Categories));
+    setCategoryName("");
   };
 
   const onChange = (event: any) => {
+    console.log( !inputError.length && "hidden")
+    if (event.target.value.length === event.target.maxLength) {
+      setInputError("Max length 40 characters.");
+    } else {
+      setInputError("");
+    }
     setCategoryName(event.target.value);
     if (event.key === "Enter") {
       save();
@@ -73,32 +52,34 @@ function CategoryEdit({ category }: CategoryEditProps) {
   return (
     <div className="mx-auto">
       <form onSubmit={handleSubmit}>
-        <div className={"justify-between " + (isNew ? "flex" : "")}>
+        <h3 className="pb-2">New category</h3>
+        <div className="justify-between flex">
           <div className="flex space-x-4 items-center">
-            <label htmlFor="categoryName">Name</label>
-            <input
-              type="text"
-              id="categoryName"
-              value={categoryName}
-              className="outline p-1 rounded"
-              onChange={onChange}
-            />
+            <label className="form-control w-full max-w-xs">
+              <input
+                type="text"
+                id="categoryName"
+                value={categoryName}
+                className="input input-bordered w-full m-0 rounded max-w-xl"
+                onChange={onChange}
+                onKeyDown={onChange}
+                maxLength={40}
+              />
+              <div
+                className={
+                  "label  " + (!inputError.length && "hidden")
+                }
+              >
+                <span className="label-text-alt text-error text-base">{inputError}</span>
+              </div>
+            </label>
           </div>
-          <div className={"flex justify-end space-x-2" + (isNew && "")}>
+          <div className="flex justify-end space-x-2">
             <button className="btn btn-primary" type="submit">
-              {isNew ? "Add Category" : "Save changes"}
+            Add Category
             </button>
           </div>
         </div>
-        {!isNew && (
-          <button
-            className="btn btn-link text-red-700 font-normal text-sm"
-            type="button"
-            onClick={deleteCat}
-          >
-            Delete
-          </button>
-        )}
       </form>
     </div>
   );

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-
 function UserDisplay() {
   const { status, data: session, update: updateSession } = useSession();
 
@@ -13,10 +12,18 @@ function UserDisplay() {
       {status === "loading" && <div>Loading...</div>}
       {status === "authenticated" && (
         <div className="flex items-center justify-between">
-          <div className="avatar">
-              <Image src={session?.user?.image!} className="w-12 rounded" width={48} height={48} alt="user icon" />
+          <div className="flex items-center space-x-2">
+            <div className="avatar mask mask-squircle">
+              <Image
+                src={session?.user?.image!}
+                className="w-12"
+                width={38}
+                height={38}
+                alt="user icon"
+              />
+            </div>
+            <div className="font-semibold text-lg">{session.user!.name}</div>
           </div>
-          <div className="font-semibold text-lg">{session.user!.name}</div>
           <Link className="underline" href={"/api/auth/signout"}>
             Logout
           </Link>

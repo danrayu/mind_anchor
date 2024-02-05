@@ -13,6 +13,7 @@ function StoreInitializer({ children }: StoreInitializerProps) {
 
   useEffect(() => {
     if (!allValid) {
+      console.log("loaded all");
       dispatch(loadAll());
     }
   }, [allValid, dispatch]);

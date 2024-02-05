@@ -53,7 +53,7 @@ function Sidebar() {
               >
                 <span>New</span>
               </li>
-              
+
               {mindscapesValid &&
                 mindscapes.mindscapes.map((mindscape: Mindscape) => {
                   return (
@@ -100,34 +100,19 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        <li className="mt-2">
-          <details open>
-            <summary className="group">
-              <span>
-                <Image src="/logo.png" width={20} height={20} alt="icon" />
-                {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
-              </span>
-              Categories
-            </summary>
-            <ul>
-              <li
-                className="group"
-                onClick={() => {
-                  router.push("/app/categories/new");
-                }}
-              >
-                <span>New</span>
-              </li>
-              <li
-                className="group"
-                onClick={() => {
-                  router.push("/app/categories");
-                }}
-              >
-                <span>View All</span>
-              </li>
-            </ul>
-          </details>
+        <li
+          className="mt-2"
+          onClick={() => {
+            router.push("/app/categories");
+          }}
+        >
+          <div>
+            <span>
+              <Image src="/logo.png" width={20} height={20} alt="icon" />
+              {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
+            </span>
+            Categories
+          </div>
         </li>
 
         <UserDisplay />

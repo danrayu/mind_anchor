@@ -57,6 +57,7 @@ export async function fetchUpdateCategory(id: number, catData: any) {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(catData),
   });
 }
 

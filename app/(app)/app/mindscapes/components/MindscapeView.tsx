@@ -4,7 +4,6 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import { fetchDeleteMindscape, fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";
 import DescriptionField from "./DescriptionField";
-import DnDMemeDisplay from "../../components/dnd/DnDMemeDisplay";
 import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
@@ -97,6 +96,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
                 value={title}
                 onKeyDown={handleTitleChange}
                 onChange={handleTitleChange}
+                maxLength={80}
               />
             ) : (
               <h1 className="text-[35px] font-bold">{title}</h1>
