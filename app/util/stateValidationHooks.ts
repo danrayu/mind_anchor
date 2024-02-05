@@ -30,16 +30,6 @@ export function useMindscapesValid(): boolean {
   });
 }
 
-export function useCollectionsValid(): boolean {
-  return useAppSelector((state) => {
-    return (
-      !state.collections.error &&
-      state.collections.collections !== undefined &&
-      !state.collections.loading
-    );
-  });
-}
-
 export function useAllValid(): boolean {
   return useAppSelector((state) => !state.memes.error &&
   state.memes.memes &&
@@ -49,8 +39,5 @@ export function useAllValid(): boolean {
   !state.categories.loading &&
   !state.mindscapes.error &&
   state.mindscapes.mindscapes &&
-  !state.mindscapes.loading &&
-  !state.collections.error &&
-  state.collections.collections &&
-  !state.collections.loading);
+  !state.mindscapes.loading);
 }
