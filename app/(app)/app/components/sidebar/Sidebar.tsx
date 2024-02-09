@@ -26,7 +26,6 @@ function Sidebar() {
       ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
         <Brand />
-        <Searchbar />
         <li className="mt-2">
           <details open>
             <summary className="group">

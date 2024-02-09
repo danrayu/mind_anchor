@@ -18,6 +18,12 @@ interface MindscapesState {
   error: Error | null;
 }
 
+interface ScheduleState {
+  schedule: Schedule | undefined;
+  loading: boolean;
+  error: Error | null;
+}
+
 const initialMemesState: MemesState = {
   memes: undefined,
   loading: false,
@@ -80,11 +86,32 @@ function mindscapesReducer(state: MindscapesState = initialMindscapesState, acti
   }
 }
 
+const initialScheduleState: ScheduleState = {
+  schedule: undefined,
+  loading: false,
+  error: null,
+}
+function scheduleReducer(state: ScheduleState = initialScheduleState, action: any) {
+  switch (action.type) {
+    case 'LOAD_SCHEDULE_START':
+      return { ...state, loading: true };
+    case 'LOAD_SCHEDULE_SUCCESS':
+      return { ...state, loading: false, schedule: action.payload, error: null };
+    case 'LOAD_SCHEDULE_FAILURE':
+      return { ...state, loading: false, error: action.error };
+    case 'FETCH_SCHEDULE_SUCCESS':
+      return { ... state, schedule: action.payload};
+    default: 
+      return state;
+  }
+}
+
 const store = configureStore({
   reducer: {
     memes: memesReducer,
     categories: categoriesReducer,
     mindscapes: mindscapesReducer,
+    schedule: scheduleReducer,
   },
 })
 

@@ -30,14 +30,30 @@ export function useMindscapesValid(): boolean {
   });
 }
 
+export function useScheduleValid(): boolean {
+  return useAppSelector((state) => {
+    return (
+      !state.schedule.error &&
+      state.schedule.schedule !== undefined &&
+      !state.schedule.loading
+    );
+  });
+}
+
 export function useAllValid(): boolean {
-  return useAppSelector((state) => !state.memes.error &&
-  state.memes.memes &&
-  !state.memes.loading &&
-  !state.categories.error &&
-  state.categories.categories &&
-  !state.categories.loading &&
-  !state.mindscapes.error &&
-  state.mindscapes.mindscapes &&
-  !state.mindscapes.loading);
+  return useAppSelector(
+    (state) =>
+      !state.memes.error &&
+      state.memes.memes &&
+      !state.memes.loading &&
+      !state.categories.error &&
+      state.categories.categories &&
+      !state.categories.loading &&
+      !state.mindscapes.error &&
+      state.mindscapes.mindscapes &&
+      !state.mindscapes.loading &&
+      !state.schedule.error &&
+      state.schedule.schedule &&
+      !state.schedule.loading
+  );
 }

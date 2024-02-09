@@ -78,7 +78,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
 
   return (
     <>
-      <Modal title={"Meme Catalog"} id={"meme-catalog"}>
+      <Modal title={"Meme Catalog"} id={"meme-catalog"} className={"width-11/12 max-w-3xl"}>
         <MemeCatalogModal
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
@@ -86,7 +86,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       </Modal>
       <div className="mt-10">
         <Breadcrumbs items={breadcrumbs} />
-        <div className="">
+        <div className="mt-2">
           <div className="w-full flex flex-wrap justify-between mb-2">
             {editMode ? (
               <input

@@ -135,3 +135,18 @@ export async function fetchDeleteCollection(id: number) {
     },
   });
 }
+
+export async function fetchGetSchedule() {
+  return await fetch("/api/schedule");
+}
+
+
+export async function fetchUpdateSchedule(scheduleData: any) {
+  return await fetch("/api/schedule", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(scheduleData),
+  });
+}

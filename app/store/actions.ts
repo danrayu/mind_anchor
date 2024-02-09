@@ -4,6 +4,7 @@ import {
   fetchGetCategories,
   fetchGetMemes,
   fetchGetMindscapes,
+  fetchGetSchedule,
 } from "../fetchActions";
 import { Types } from "../types/Types";
 
@@ -26,6 +27,9 @@ const getDispatchCode = (type: Types, stage: StageTypes) => {
       break;
     case Types.Mindscapes:
       code += "MINDSCAPES_";
+      break;
+    case Types.Schedule:
+      code += "SCHEDULE_";
       break;
   }
 
@@ -62,6 +66,9 @@ export const load = (
         break;
       case Types.Mindscapes:
         response = await fetchGetMindscapes();
+        break;
+      case Types.Schedule:
+        response = await fetchGetSchedule();
         break;
     }
 
@@ -102,6 +109,9 @@ export const appFetch = (
       case Types.Mindscapes:
         response = await fetchGetMindscapes();
         break;
+      case Types.Schedule:
+        response = await fetchGetSchedule();
+        break;
     }
 
     if (!response.ok) {
@@ -135,12 +145,14 @@ export const loadAll = (): ThunkAction<
     dispatch({ type: "LOAD_MEMES_START" });
     dispatch({ type: "LOAD_CATS_START" });
     dispatch({ type: "LOAD_MINDSCAPES_START" });
+    dispatch({ type: "LOAD_SCHEDULE_START" });
 
-    const [memesResponse, catsResponse, mindscapesResponse] = await Promise.all(
+    const [memesResponse, catsResponse, mindscapesResponse, scheduleResponse] = await Promise.all(
       [
         fetch(url + `/api/memes/?wCats`),
         fetch(url + `/api/categories`),
         fetch(url + `/api/mindscapes`),
+        fetch(url + `/api/schedule`)
       ]
     );
 
@@ -201,6 +213,26 @@ export const loadAll = (): ThunkAction<
       })
       .catch((error) => {
         dispatch({ type: getDispatchCode(Types.Mindscapes, StageTypes.failure), error });
+      });
+    }
+
+    if (!scheduleResponse.ok) {
+      const errorData = await scheduleResponse.json();
+      dispatch({
+        type: getDispatchCode(Types.Schedule, StageTypes.failure),
+        error: errorData.error,
+      });
+    } else {
+      scheduleResponse
+      .json()
+      .then((data) => {
+        dispatch({
+          type: getDispatchCode(Types.Schedule, StageTypes.success),
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        dispatch({ type: getDispatchCode(Types.Schedule, StageTypes.failure), error });
       });
     }
 

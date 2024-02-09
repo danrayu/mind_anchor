@@ -1,3 +1,5 @@
+import { DateTime } from "next-auth/providers/kakao";
+
 declare global {
   type Category = {
     id: number;
@@ -29,8 +31,7 @@ declare global {
     authorId: string;
     memes: MindscapeMeme[];
   };
+  type Schedule = Array<{ time: DateTime; mindscape: Mindscape }>;
 }
 
 export {};
-
-

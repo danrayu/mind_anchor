@@ -3,6 +3,15 @@ import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/authOptions";
 
+const inflateSchedule = (schedule: any, mindscapes: any) => {
+  schedule = schedule["config"];
+  schedule.map((row: any) => {
+    const id = row.id;
+    row.mindscape = mindscapes.find((ms: Mindscape) => ms.id === id);
+    return row;
+  });
+  return schedule;
+}
 
 export async function GET(
   request: NextRequest
@@ -20,58 +29,38 @@ export async function GET(
     if (!user) {
       return NextResponse.json("User not found", { status: 404 });
     }
+    const mindscapes = await prisma.mindscape.findMany({
+      include: {
+        memes: {
+          include: {
+            meme: true,
+          },
+        }
+      },
+      where: { authorId: user.id },
+    });
     const schedule = await prisma.mindscapeScheduleConfig.findUnique({
       where: {
         authorId: user?.id,
       }
-    })
-    return NextResponse.json(schedule);
-  } catch (error) {
-    return NextResponse.json(
-      { error: `Error: Could not get the schedule for mindscapes. ${error}` },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  const { config } = await request.json();
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.email)
-    return NextResponse.json("Not authenticated", { status: 401 });
-  
-  if (!config) {
-    return NextResponse.json('Error: Config data undefined.', {status: 400});
-  }
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session!.user!.email!,
-      },
     });
-    if (!user) {
-      return NextResponse.json("User not found", { status: 404 });
-    }
-    const oldConfig = await prisma.mindscapeScheduleConfig.findUnique({
-      where: { authorId: user.id }
-    });
-    if (!oldConfig) {
+    if (!schedule) {
       const newConfig = await prisma.mindscapeScheduleConfig.create({
         data: {
-          config,
+          config:  JSON.stringify([]),
           author: { connect: { id: user.id } },
         },
         include: { author: true },
       });
-      return NextResponse.json(newConfig);
+      
+      return NextResponse.json(inflateSchedule(JSON.parse(newConfig.config), mindscapes));
     }
-    else {
-      throw  Error(`MindScape schedule already exists for ${user.email}`);
-    }
+    return NextResponse.json(inflateSchedule(JSON.parse(schedule.config), mindscapes));
   } catch (error) {
-    return NextResponse.json({ error: 'Error: Could not create schedule.' }, {status: 500});
+    return NextResponse.json(
+      { error: `Error: Could not get the schedule for mindscapes. ${error}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -82,7 +71,7 @@ export async function PUT(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const { config } = await request.json();
+  const config = await request.json();
 
   if (!config) {
     return NextResponse.json("Error: Error: Config data undefined.", {
@@ -102,11 +91,22 @@ export async function PUT(
     const updatedConfig = await prisma.mindscapeScheduleConfig.update({
       where: { authorId: user.id },
       data: {
-        ...(config && { config }),
+        config: JSON.stringify(config),
       },
     });
-    return NextResponse.json(updatedConfig);
+    const mindscapes = await prisma.mindscape.findMany({
+      include: {
+        memes: {
+          include: {
+            meme: true,
+          },
+        }
+      },
+      where: { authorId: user.id },
+    });
+    return NextResponse.json(inflateSchedule(JSON.parse(updatedConfig.config), mindscapes));
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Error updating the schedule config." },
       { status: 500 }

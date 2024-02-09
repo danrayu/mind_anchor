@@ -7,7 +7,7 @@ function Brand() {
 
   return (
     <div className="mb-2 cursor-pointer" onClick={() => {
-      router.push('/app');
+      router.push('/app/mindscapes');
     }}>
       <div className="flex">
         <Image src="/logo.png" width={30} height={30} className="rounded-xl" alt="MindAnchor logo" />

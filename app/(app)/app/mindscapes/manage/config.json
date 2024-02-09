@@ -1,0 +1,14 @@
+[
+  {
+    "time":  "time of day in Datetime",
+    "mindscape": "Morning"
+  },
+  {
+    "time":  "time of day in Datetime later",
+    "mindscape": "Afternooon"
+  },
+  {
+    "time":  "time of day in Datetime even later",
+    "mindscape": "Evening"
+  }
+]
