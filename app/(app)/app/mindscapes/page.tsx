@@ -16,9 +16,7 @@ function MapsPage() {
     }
   }, [schedule]);
 
-  const getActiveMindscape = (
-    schedule: Schedule
-  ): Mindscape => {
+  const getActiveMindscape = (schedule: Schedule): Mindscape => {
     const currentTime = new Date();
     for (let i = 0; i < schedule.length; i++) {
       if (i === schedule.length - 1) {
@@ -51,8 +49,7 @@ function MapsPage() {
           console.log("reload to get the currently scheduled mindscape");
         }
       }
-      
-    }, 60 * 1000); 
+    }, 60 * 1000);
     return () => {
       clearInterval(interval);
     };
@@ -60,6 +57,11 @@ function MapsPage() {
   return (
     <div className="mt-10">
       {activeMindscape && <MindscapeView mindscape={activeMindscape} />}
+      {!activeMindscape && (
+        <div className="flex items-center justify-center h-screen pb-[200px]">
+          <span className="loading loading-dots loading-lg "></span>
+        </div>
+      )}
     </div>
   );
 }

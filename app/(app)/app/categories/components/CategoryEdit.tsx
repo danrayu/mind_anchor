@@ -23,7 +23,13 @@ function CategoryEdit() {
       return;
     }
 
-    await fetchCreateCategory({ name: categoryName });
+    const response = await fetchCreateCategory({ name: categoryName });
+    const newCat = await response.json();
+
+    // Adding the new cat while waiting for the full refetch to happen
+    if (response.ok) {
+      dispatch({ type: "ADD_CAT", payload: newCat});
+    }
     dispatch(appFetch(Types.Categories));
     setCategoryName("");
   };

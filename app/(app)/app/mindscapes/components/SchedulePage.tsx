@@ -39,6 +39,10 @@ function SchedulePage() {
         };
       });
       const response = await fetchUpdateSchedule({ config: data });
+      if (response.ok) {
+        dispatch({ type: "SET_SCHEDULE", payload: schedule});
+
+      }
       console.log(response);
       dispatch(appFetch(Types.Schedule));
     };

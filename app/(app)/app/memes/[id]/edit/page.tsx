@@ -9,24 +9,24 @@ interface EditMemePageProps {
 }
 
 function EditMemePage({ params: { id } }: EditMemePageProps) {
-
   const memeState = useAppSelector((state) => state.memes);
   const categoryState = useAppSelector((state) => state.categories);
   const catsValid = useCatsValid();
 
   var meme: Meme | undefined = undefined;
   if (useMemesValid()) {
-    meme = memeState.memes.find(
-      (meme: Meme) => meme.id === parseInt(id)
-    );
+    meme = memeState.memes.find((meme: Meme) => meme.id === parseInt(id));
   }
-  
+
   const categories = categoryState.categories;
-  
 
   return (
     <div className="mt-10">
-      {(memeState.loading || categoryState.loading) && <h3>Loading...</h3>}
+      {(memeState.loading || categoryState.loading) && (
+        <div className="flex items-center justify-center h-screen pb-[200px]">
+          <span className="loading loading-dots loading-lg "></span>
+        </div>
+      )}
       {meme !== undefined && catsValid && (
         <MemeEdit meme={meme!} categories={categories} />
       )}

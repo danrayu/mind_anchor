@@ -10,9 +10,16 @@ function Page() {
 
   return (
     <div>
-      {memesState.loading && <h3>Loading</h3>}
+      {memesState.loading && (
+        <div className="flex items-center justify-center h-screen pb-[200px]">
+          <span className="loading loading-dots loading-lg "></span>
+        </div>
+      )}
       {useAllValid() && (
-        <MemesPage memes={memesState.memes} categories={categoryState.categories}></MemesPage>
+        <MemesPage
+          memes={memesState.memes}
+          categories={categoryState.categories}
+        ></MemesPage>
       )}
     </div>
   );

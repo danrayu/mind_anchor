@@ -98,10 +98,7 @@ export async function PUT(
       data: memes,
     });
 
-    return NextResponse.json({
-      collection: updatedMindscape,
-      memes,
-    });
+    return NextResponse.json(updatedMindscape);
   } catch (error) {
     return NextResponse.json(
       { error: "Error updating the Mindscape." },

@@ -78,7 +78,11 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
 
   return (
     <>
-      <Modal title={"Meme Catalog"} id={"meme-catalog"} className={"width-11/12 max-w-3xl"}>
+      <Modal
+        title={"Meme Catalog"}
+        id={"meme-catalog"}
+        className={"width-11/12 max-w-3xl"}
+      >
         <MemeCatalogModal
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
@@ -105,14 +109,17 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
               {editMode ? "Save" : "Edit"}
             </button>
           </div>
-          {editMode && (
-            <DescriptionField
-              value={description}
-              onChange={handleDescriptionChange}
-            />
-          )}
-          {!editMode && <DropdownDescription description={description} />}
-          <div className="mt-4 ">
+          <div className="mt-4">
+            {editMode && (
+              <DescriptionField
+                value={description}
+                onChange={handleDescriptionChange}
+              />
+            )}
+            {!editMode && <DropdownDescription description={description} />}
+          </div>
+
+          <div className="mt-12 ">
             {!editMode &&
               orderedMemes.map((meme: Meme) => (
                 <MemeContainer key={meme.id} meme={meme} />

@@ -73,6 +73,7 @@ function CategoryContainer({ category }: CategoryContainerProps) {
     if (response.ok) {
       setEditMode(false);
     }
+    dispatch(appFetch(Types.Categories))
   };
 
   const handleTitleChange = (event: any) => {

@@ -6,11 +6,11 @@ import {
 import React from "react";
 import SchedulePage from "../components/SchedulePage";
 
-function page() {
+function Page() {
   const mindscapesValid = useMindscapesValid();
   const scheduleValid = useScheduleValid();
 
   return mindscapesValid && scheduleValid && <SchedulePage />;
 }
 
-export default page;
+export default Page;

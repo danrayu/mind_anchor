@@ -36,6 +36,14 @@ function Sidebar() {
               Mindscapes
             </summary>
             <ul>
+             <li
+                className="group"
+                onClick={() => {
+                  router.push("/app/mindscapes");
+                }}
+              >
+                <span>Home</span>
+              </li>
               <li
                 className="group"
                 onClick={() => {

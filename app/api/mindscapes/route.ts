@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ mindscape: newMindscape, memes: newMemes });
     }
-    return NextResponse.json({ mindscape: newMindscape });
+    return NextResponse.json(newMindscape);
   } catch (error) {
     console.log(error);
     // Handle specific errors (e.g., non-existing meme)

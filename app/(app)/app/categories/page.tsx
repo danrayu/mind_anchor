@@ -5,8 +5,6 @@ import CategoryContainer from "./components/CategoryContainer";
 import { useCallback, useEffect, useState } from "react";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
 import CategoryEdit from "./components/CategoryEdit";
-import { appFetch, load } from "@/app/store/actions";
-import { Types } from "@/app/types/Types";
 
 function CategoriesPage() {
   const [searchString, setSearchString] = useState("");
@@ -14,9 +12,6 @@ function CategoriesPage() {
 
   var categoryState = useAppSelector((state) => state.categories);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(appFetch(Types.Categories));
-  }, [dispatch]);
 
   const renderCategories = () => {
     return filteredCategories.map((cat: Category) => {
