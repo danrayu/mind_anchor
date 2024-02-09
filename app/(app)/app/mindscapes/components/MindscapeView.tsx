@@ -29,6 +29,10 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const handleOnEdit = async () => {
     // If saving
     if (editMode) {
+      if (!title) {
+        alert("Please enter a title for the mindscape.");
+        return;
+      }
       const memeData = orderedMemes.map((meme: Meme, index: number) => {
         return {
           indexInMindscape: index,
@@ -91,16 +95,16 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       <div className="mt-10">
         <Breadcrumbs items={breadcrumbs} />
         <div className="mt-2">
-          <div className="w-full flex flex-wrap justify-between mb-2">
+          <div className="w-full flex flex-grow overflow-hidden items-center justify-between mb-2">
             {editMode ? (
               <input
                 type="text"
                 placeholder="Title"
-                className="text-[35px] p-0 border-0 outline-0 "
+                className="text-[35px] p-0 border-0 outline-0 bg-transparent grow break-words overflow-hidden"
                 value={title}
                 onKeyDown={handleTitleChange}
                 onChange={handleTitleChange}
-                maxLength={80}
+                maxLength={50}
               />
             ) : (
               <h1 className="text-[35px] font-bold">{title}</h1>

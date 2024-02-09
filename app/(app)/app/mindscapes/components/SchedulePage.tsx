@@ -6,6 +6,7 @@ import MindscapeScheduler from "./MindscapeScheduler";
 import { fetchUpdateSchedule } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
+import Link from "next/link";
 
 {
   /* <tr>
@@ -139,7 +140,6 @@ function SchedulePage() {
                 <tr>
                   <th>Time</th>
                   <th>Mindscape</th>
-                  <th>Active</th>
                 </tr>
               </thead>
 
@@ -149,10 +149,10 @@ function SchedulePage() {
                   return (
                     <tr
                       key={`id${row.mindscape.id}_${row.time}`}
-                      className={isActive ? "" : ""}
                     >
                       <td>{row.time}</td>
-                      <td>{row.mindscape.title}</td>
+                      <td className="underline"><Link href={"/app/mindscapes/"+row.mindscape.id}>{row.mindscape.title}</Link></td>
+                      <td className="text-primary">{isActive && "Active"}</td>
                       <td className="w-[200px] flex justify-end">
                         <button
                           className="btn btn-circle btn-outline ml-auto mr-2"

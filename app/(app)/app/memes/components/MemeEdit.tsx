@@ -50,6 +50,10 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    if (!meme.title) {
+      alert("Please enter a title.");
+      return;
+    }
     await saveMeme(meme);
     if (isNew) {
       setMeme(createEmptyMeme());
