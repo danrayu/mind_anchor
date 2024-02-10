@@ -6,20 +6,17 @@ interface DescriptionFieldProps {
 
 function DescriptionField({ value, onChange }: DescriptionFieldProps) {
   return (
-    <div className="mb-4">
-      <label htmlFor="description" className="block font-medium text-gray-700">
-        Description
-      </label>
+    <div className="mb-4 w-full">
+      <div className="label">
+        <span className="label-text text-base">Description</span>
+      </div>
       <textarea
-        id="description"
-        name="description"
+        className="textarea textarea-bordered w-full h-[150px] text-base pre-line"
+        placeholder="Enter the description of the mindscape"
         value={value}
         onChange={onChange}
-        spellCheck="false"
-        className="mt-1 py-2 block textarea textarea-bordered p-4 h-40 w-[500px]"
       ></textarea>
     </div>
-
   );
 }
 

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Searchbar from "../../components/Searchbar";
 import FilterSelector from "./FilterSelector";
-import MemeContainer from "../../components/MemeContainer";
+import MemeContainer from "./MemeContainer";
 
 export type CategoryFilterState = {
   id: number;
@@ -158,6 +158,10 @@ function MemesPage({ memes, categories }: MemesPage) {
     setFilter({ ...filterState, searchString: value });
   };
 
+  const resetFilter = () => {
+    setFilter(setupFilterState(categories));
+  }
+
   return (
     <div className="mt-10">
       <h1 className="text-[35px] font-bold">Memes</h1>
@@ -165,11 +169,8 @@ function MemesPage({ memes, categories }: MemesPage) {
         <div className="mr-auto w-full max-w-[600px]">
           <Searchbar onChange={onSearchbarChange} />
         </div>
-        <div className="my-auto">
-          <button className="btn btn-outline h-10">Search</button>
-        </div>
       </div>
-      <FilterSelector filterState={filterState} setFilter={setFilter} />
+      <FilterSelector filterState={filterState} setFilter={setFilter} resetFilter={resetFilter} />
 
       <div className="mt-4">
         {filteredMemes.map((meme) => {

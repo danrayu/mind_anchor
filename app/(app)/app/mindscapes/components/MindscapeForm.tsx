@@ -80,6 +80,7 @@ function MindscapeForm({
     let requestData = {
       id: mindscape.id,
       title: mindscape.title,
+      description: mindscape.description,
       memes: memeData || mindscape.memes,
     };
     const request = isNew ? fetchCreateMindscape : fetchUpdateMindscape;
@@ -130,6 +131,13 @@ function MindscapeForm({
     setTitleInputError("");
   };
 
+  const changedDescription = (event: any) => {
+    setMindscape((oldState) => {
+      oldState.description = event.target.value;
+      return oldState;
+    });
+  };
+
   return (
     <>
       <Modal title={"Meme Catalog"} id={"meme-catalog"}>
@@ -149,7 +157,7 @@ function MindscapeForm({
           </div>
           <input
             type="text"
-            placeholder="Type here"
+            placeholder="Enter the title of the mindscape"
             className="input input-bordered w-full"
             value={mindscape.title}
             onChange={changedTitle}
@@ -165,6 +173,15 @@ function MindscapeForm({
             )}
           </div>
         </label>
+        <div className="label">
+          <span className="label-text text-base">Description</span>
+        </div>
+        <textarea
+          className="textarea textarea-bordered w-full h-[150px] text-base"
+          placeholder="Enter the description of the mindscape"
+          value={mindscape.description}
+          onChange={changedDescription}
+        ></textarea>
         <DnDMindscapeMemes
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}

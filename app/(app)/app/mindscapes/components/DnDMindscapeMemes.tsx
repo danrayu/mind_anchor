@@ -38,20 +38,20 @@ function DnDMindscapeMemes({
     });
   };
   return (
-    <div id="order-memes">
+    <div id="order-memes" className="mt-6">
       <div className="flex flex-wrap justify-between items-center">
         <h3 className="">Memes</h3>
         <button
-          className="btn btn-outline"
+          className="btn btn-outline btn-normal"
           onClick={() =>
             (document.getElementById("meme-catalog")! as any).showModal()
           }
           type="button"
         >
-          <span className="text-lg">+</span> Meme
+          <span className="text-base">+</span> Meme
         </button>
       </div>
-      <div className="mt-2 outline rounded-xl">
+      <div className="mt-2 border border-base-content rounded-xl">
         {orderedMemes && (
           <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
             <SortableContext

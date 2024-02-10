@@ -10,14 +10,14 @@ import { Types } from "@/app/types/Types";
 import DnDMindscapeMemes from "./DnDMindscapeMemes";
 import Modal from "../../components/Modal";
 import MemeCatalogModal from "./MemeCatalogModal";
-import MemeContainer from "../../components/MemeContainer";
+import MemeContainer from "../../memes/components/MemeContainer";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
 }
 
 function MindscapeView({ mindscape }: MindscapeViewProps) {
-  const breadcrumbs = [{ label: "Mindscapes" }, { label: mindscape.title }];
+  const breadcrumbs = [{ label: "Mindscapes" }];
   const dispatch = useAppDispatch();
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(mindscape.title);
@@ -92,10 +92,11 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
           setOrderedMemes={setOrderedMemes}
         />
       </Modal>
-      <div className="mt-10">
-        <Breadcrumbs items={breadcrumbs} />
-        <div className="mt-2">
-          <div className="w-full flex flex-grow overflow-hidden items-center justify-between mb-2">
+      <div className="mt-2">
+        <div>
+          {!editMode && <Breadcrumbs items={breadcrumbs} />}
+
+          <div className="w-full flex flex-grow overflow-hidden items-center justify-between">
             {editMode ? (
               <input
                 type="text"
@@ -107,13 +108,13 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
                 maxLength={50}
               />
             ) : (
-              <h1 className="text-[35px] font-bold">{title}</h1>
+              <h1 className="text-[35px] font-bold -mt-1">{title}</h1>
             )}
             <button className="btn btn-primary" onClick={handleOnEdit}>
               {editMode ? "Save" : "Edit"}
             </button>
           </div>
-          <div className="mt-4">
+          <div className="mt-6">
             {editMode && (
               <DescriptionField
                 value={description}
@@ -141,7 +142,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
               type="button"
               onClick={handleDelete}
             >
-              Delete
+              Delete mindscape
             </button>
           )}
         </div>

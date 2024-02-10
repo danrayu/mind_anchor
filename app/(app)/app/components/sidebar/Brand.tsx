@@ -6,7 +6,7 @@ function Brand() {
   const router = useRouter();
 
   return (
-    <div className="mb-2 cursor-pointer" onClick={() => {
+    <div className="mb-2 ml-4 cursor-pointer" onClick={() => {
       router.push('/app/mindscapes');
     }}>
       <div className="flex">

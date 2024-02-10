@@ -26,18 +26,13 @@ function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
     setAdded((state) => !state);
   };
 
-  const getBorder = () => {
-    return isAdded ? "border-slate-700" : "border-slate-200";
-  };
-
   return (
     <div
-      className={"outline mb-2 rounded-xl " + (isAdded && "bg-slate-200")}
+      className={"border border-base-content mb-2 rounded-xl " + (isAdded && "bg-primary-content")}
     >
       <div
         className={
-          "flex p-2 px-4 justify-between items-center" +
-          (isOpen && " border-b border-slate-200")
+          "flex p-4 px-4 justify-between items-center"
         }
         onClick={toggleOpen}
       >

@@ -149,10 +149,14 @@ function MemeCatalogModal({
     });
   };
 
+  const resetFilter = () => {
+    setFilter(setupFilterState(categories));
+  }
+
   return (
     <div>
       <Searchbar onChange={onSearchbarChange} />
-      <FilterSelector filterState={filterState} setFilter={setFilter} />
+      <FilterSelector filterState={filterState} setFilter={setFilter} resetFilter={resetFilter} />
       <div className="mt-4">
         {filteredMemes.map((meme: Meme) => (
           <AddableMeme

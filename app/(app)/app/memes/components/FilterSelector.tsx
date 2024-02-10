@@ -33,12 +33,14 @@ interface FilterSelectorProps {
   filterState: MemeFilter;
   setFilter: Dispatch<SetStateAction<MemeFilter>>;
   useURI?: true;
+  resetFilter: () => void;
 }
 
 function FilterSelector({
   filterState,
   setFilter,
   useURI,
+  resetFilter,
 }: FilterSelectorProps) {
   const pathname = usePathname();
   const params = useSearchParams();
@@ -122,15 +124,26 @@ function FilterSelector({
     setFilterOpen(!filterOpen);
   }
 
+  const onResetFilter = () => {
+    router.push(pathname);
+    resetFilter();
+  }
+
   return (
     <div className="mt-2 pt-2 flex flex-nowrap align-items-stretch">
-      {filterOpen && <div className="max-w-[1px] flex-1 bg-slate-400" />}
+      {filterOpen && <div className="max-w-[1px] flex-1 bg-base-content" />}
       <div className={"flex-1" + (filterOpen && "")}>
         <button
           className={"btn btn-outline " + (filterOpen && "ml-2")}
           onClick={toggleFilter}
         >
           {filterOpen ? "Hide Filter" : "Show Filter"}
+        </button>
+        <button
+          className={"btn btn-link "}
+          onClick={onResetFilter}
+        >
+          Reset filter
         </button>
         {filterOpen && (
           <>
@@ -145,7 +158,7 @@ function FilterSelector({
                 />
               </div>
               <h5 className="mt-2">Categories</h5>
-              <div className="flex flex-wrap space-x-2">
+              <div className="flex flex-wrap">
                 {categories.map((category: any) => FilterCategory(category))}
               </div>
             </div>

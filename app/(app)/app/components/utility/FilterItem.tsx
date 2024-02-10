@@ -13,7 +13,7 @@ function FilterItem({ onAdd, onRemove, state, name }: FilterItemProps) {
   const styleAddSelected = " text-green-600 ";
   const styleRemoveSelected = " text-red-600 join-item ";
   return (
-    <div className={`flex items-center badge badge-outline border-slate-500 py-4 my-1 space-x-1`}>
+    <div className={`flex items-center badge badge-outline border py-4 my-1 mr-1 space-x-1`}>
       <button
         className={
           styleBtn +

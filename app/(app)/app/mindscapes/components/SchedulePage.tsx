@@ -1,24 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import TimeSelector from "./TimeSelector";
 import Modal from "../../components/Modal";
 import MindscapeScheduler from "./MindscapeScheduler";
 import { fetchUpdateSchedule } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import Link from "next/link";
-
-{
-  /* <tr>
-                <td
-                  colSpan={2}
-                  className="w-full h-[4px] p-0 my-2 bg-transparent hover:bg-primary"
-                  onClick={() => handleAdd(-1)}
-                >
-                  <span></span>
-                </td>
-              </tr> */
-}
 
 function SchedulePage() {
   const dispatch = useAppDispatch();
@@ -128,7 +115,7 @@ function SchedulePage() {
       <div className="mt-10">
         <h1 className="text-[35px] font-bold">Schedule</h1>
         <div id="schedule">
-          <div className="overflow-x-auto mt-4">
+          <div className=" mt-4">
             <table className="table">
               <colgroup>
                 <col className="w-2/12" />
@@ -145,6 +132,7 @@ function SchedulePage() {
 
               <tbody>
                 {schedule.map((row, index) => {
+                  console.log("row", row)
                   const isActive = row.mindscape.id === activeMindscape;
                   return (
                     <tr
@@ -153,7 +141,7 @@ function SchedulePage() {
                       <td>{row.time}</td>
                       <td className="underline"><Link href={"/app/mindscapes/"+row.mindscape.id}>{row.mindscape.title}</Link></td>
                       <td className="text-primary">{isActive && "Active"}</td>
-                      <td className="w-[200px] flex justify-end">
+                      <td className="flex justify-end">
                         <button
                           className="btn btn-circle btn-outline ml-auto mr-2"
                           onClick={() => {

@@ -3,18 +3,13 @@ import React from "react";
 import Brand from "./Brand";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Searchbar from "../Searchbar";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
 import UserDisplay from "./UserDisplay";
 
 function Sidebar() {
   const router = useRouter();
-
   const mindscapes = useAppSelector((state) => state.mindscapes);
-
   const mindscapesValid = useMindscapesValid();
 
   return (
@@ -26,7 +21,7 @@ function Sidebar() {
       ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
         <Brand />
-        <li className="mt-2">
+        <li className="mt-2 text-base">
           <details open>
             <summary className="group">
               <span>
@@ -78,7 +73,7 @@ function Sidebar() {
             </ul>
           </details>
         </li>
-        <li className="mt-2">
+        <li className="mt-2 text-base">
           <details open>
             <summary className="group">
               <span>
@@ -108,7 +103,7 @@ function Sidebar() {
           </details>
         </li>
         <li
-          className="mt-2"
+          className="mt-2 text-base"
           onClick={() => {
             router.push("/app/categories");
           }}

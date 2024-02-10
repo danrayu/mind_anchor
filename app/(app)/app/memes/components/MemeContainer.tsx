@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import ItemActionsMenu, { Position } from "./ItemActionsMenu";
+import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
 import { fetchDeleteMeme } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
@@ -89,11 +89,11 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className="outline mb-4 rounded-xl">
+      <div className="border border-1 mb-4 rounded-xl">
         <div
           className={
-            "flex p-4 px-6 justify-between items-center hover:bg-gray-100 " +
-            (isOpen && " border-b border-slate-200")
+            "flex p-4 px-6 justify-between items-center hover:bg-base-200 hover:cursor-pointer " +
+            (isOpen && "")
           }
           onClick={toggleOpen}
         >
@@ -108,8 +108,12 @@ function MemeContainer({ meme }: MemeProps) {
             ...
           </button>
         </div>
-        <div className={`${isOpen ? "max-h-96 max-w-2xl p-4 pl-6 pr-14" : "hidden"}`}>
-          <span>{meme.description}</span>
+        <div
+          className={`${
+            isOpen ? "max-h-96 max-w-2xl p-4 pl-6 pr-14" : "hidden"
+          }`}
+        >
+          <span className="whitespace-pre-line mb-2">{meme.description ? meme.description : "No description"}</span>
         </div>
       </div>
     </>

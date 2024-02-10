@@ -73,8 +73,9 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   };
 
   const changedFavorite = (event: any) => {
+    console.log("favorite", meme.favorite);
     setMeme((oldState) => {
-      return { ...oldState, favorite: event.target.checked };
+      return { ...oldState, favorite: !oldState.favorite };
     });
   };
 
@@ -145,14 +146,13 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   };
 
   useEffect(() => {
-  // setUpdateSuccess(true);
-
-  }, [])
+    // setUpdateSuccess(true);
+  }, []);
 
   return (
     <>
       {updateSuccess && (
-        <SuccessAlert message={isNew ? "Meme added" : "Meme updated"}/>
+        <SuccessAlert message={isNew ? "Meme added" : "Meme updated"} />
       )}
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
@@ -161,7 +161,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           </h1>
 
           <div className="mb-4">
-            <label htmlFor="title" className="block font-medium text-gray-700">
+            <label htmlFor="title" className="block font-medium">
               Title
             </label>
             <input
@@ -170,15 +170,12 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               name="title"
               value={meme.title}
               onChange={changedTitle}
-              className="mt-1 p-2 block rounded outline w-full"
+              className="input input-bordered mt-1 p-2 w-full"
             />
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="description"
-              className="block font-medium text-gray-700"
-            >
+            <label htmlFor="description" className="block font-medium">
               Description
             </label>
             <textarea
@@ -187,33 +184,23 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               value={meme.description}
               onChange={changedDescription}
               spellCheck="false"
-              className="mt-1 p-2 block rounded outline w-full h-40"
+              className="mt-1 p-2 textarea textarea-bordered w-full h-40"
             ></textarea>
           </div>
 
           <div className="mb-4 flex space-x-4 items-center">
-            <label
-              htmlFor="favorite"
-              className="block font-medium text-gray-700 mt-1"
-            >
-              Favorite
-            </label>
             <input
               type="checkbox"
-              id="favorite"
-              name="favorite"
-              checked={meme.favorite}
+              className={"mt-2 btn"}
               onChange={changedFavorite}
-              className="mt-1 checkbox border-slate-400"
+              aria-label="Favorite"
+              checked={meme.favorite}
             />
           </div>
-          <label
-            htmlFor="categories"
-            className="block font-medium text-gray-700"
-          >
+          <label htmlFor="categories" className="block font-medium mt-6">
             Categories
           </label>
-          <div id="categories" className="flex flex-wrap space-x-1">
+          <div id="categories" className="flex flex-wrap ">
             {categories.map((cat: Category) => {
               return (
                 <SwitchCategory
@@ -232,7 +219,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
           >
             {!isNew && (
               <button
-                className="mt-2 btn btn-link font-normal text-red-700"
+                className="mt-2 btn btn-outline btn-error font-normal"
                 type="button"
                 onClick={deleteMeme}
               >

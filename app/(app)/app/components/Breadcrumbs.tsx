@@ -12,7 +12,7 @@ function Breadcrumbs({ items }: BreadcrumbsProps) {
             {item.href ? (
               <Link href={item.href}>{item.label}</Link>
             ) : (
-              <a>{item.label}</a>
+              <a className="hover:no-underline no-underline">{item.label}</a>
             )}
           </li>
         ))}

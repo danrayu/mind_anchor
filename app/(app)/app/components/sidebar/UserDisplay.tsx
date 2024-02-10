@@ -7,7 +7,7 @@ function UserDisplay() {
   const { status, data: session, update: updateSession } = useSession();
 
   return (
-    <div className="bottom-0 absolute w-full left-0 px-4 pb-4">
+    <div className="bottom-0 absolute w-full left-0 px-4 pb-4 text-base">
       <div className="divider"></div>
       {status === "loading" && <div>Loading...</div>}
       {status === "authenticated" && (

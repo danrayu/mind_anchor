@@ -9,7 +9,7 @@ interface ModalProps {
 function Modal({ title, description, children, className, id }: ModalProps) {
   return (
     <dialog id={id} className={"modal "}>
-      <div className={"modal-box " + className}>
+      <div className={"modal-box top-[100px] " + (className)}>
         <h3 className="font-bold text-lg">{title}</h3>
         {description && <p className="py-4">{description}</p>}
         <div>{children}</div>

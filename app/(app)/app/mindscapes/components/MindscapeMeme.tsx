@@ -30,20 +30,19 @@ function CollectionMeme({ meme, onRemove }: CollectionMemeProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className=" border-b-2 active:border-0 w-full hover:bg-slate-100"
+      className="w-full"
     >
       <div
         className={
-          "flex p-6 py-5 justify-between items-center " +
-          (isOpen && " border-b border-slate-200")
+          "flex p-6 py-5 justify-between items-center "
         }
         onClick={toggleOpen}
       >
         <div className="">
           <span className="text-lg font-semibold">{meme.title}</span>
         </div>
-        <button type="button" className="btn btn-outline" onClick={onRemove2}>
-          X
+        <button type="button" className="btn btn-ghost" onClick={onRemove2}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
       <div className={`${isOpen ? "max-h-96 p-6 pl-7 pr-14" : "hidden"}`}>

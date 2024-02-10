@@ -5,12 +5,13 @@ interface CollapseProps {
 
 function DropdownDescription({ description }: CollapseProps) {
   return (
-    <div className="dropdown">
-      <div tabIndex={0} role="button" className="btn m-1">
+    <div className="collapse bg-base-200 p-0 max-w-2xl">
+      <input type="checkbox" />
+      <div className="collapse-title text-xl font-medium">
         Description
       </div>
-      <div className="dropdown-content z-[1] menu p-4 shadow bg-base-100 rounded-box max-w w-[400px]">
-        <p>{description}</p>
+      <div className="collapse-content">
+        <p className="whitespace-pre-line mb-1 leading-[26px]">{description ? description : "No description"}</p>
       </div>
     </div>
   );
