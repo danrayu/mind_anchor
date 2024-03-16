@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import Searchbar from "../components/Searchbar";
+import Searchbar from "../../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
 import { useCallback, useEffect, useState } from "react";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
@@ -25,11 +25,14 @@ function CategoriesPage() {
 
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
 
-  const filterBySearchString = useCallback((categories: Category[]): Category[] => {
-    return categories.filter((category) =>
-      category.name.toLowerCase().includes(searchString.toLowerCase())
-    );
-  }, [searchString]);
+  const filterBySearchString = useCallback(
+    (categories: Category[]): Category[] => {
+      return categories.filter((category) =>
+        category.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+    },
+    [searchString]
+  );
 
   useEffect(() => {
     if (categoriesValid) {
@@ -50,7 +53,7 @@ function CategoriesPage() {
       </div>
 
       <div className="mt-4">
-        <div className="mb-4 outline p-4 pl-8 outline-slate-350 rounded-xl">
+        <div className="border border-1 mb-4 p-4 pl-8 rounded-xl">
           <CategoryEdit />
         </div>
         {useCatsValid() && renderCategories()}

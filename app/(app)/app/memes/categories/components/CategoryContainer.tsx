@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/app/store/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
+import ItemActionsMenu, { Position } from "../../../components/ItemActionsMenu";
 import { fetchDeleteCategory, fetchUpdateCategory } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
@@ -13,7 +13,7 @@ function CategoryContainer({ category }: CategoryContainerProps) {
   const [title, setTitle] = useState(category.name);
 
   useEffect(() => {
-    setTitle(category.name)
+    setTitle(category.name);
   }, [category.name, setTitle]);
 
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
@@ -73,12 +73,12 @@ function CategoryContainer({ category }: CategoryContainerProps) {
     if (response.ok) {
       setEditMode(false);
     }
-    dispatch(appFetch(Types.Categories))
+    dispatch(appFetch(Types.Categories));
   };
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
-  }
+  };
 
   const handleCancel = () => {
     setEditMode(false);
@@ -111,7 +111,7 @@ function CategoryContainer({ category }: CategoryContainerProps) {
           onDelete={onDelete}
         />
       )}
-      <div className="outline mb-4 outline-slate-350 rounded-xl">
+      <div className="border border-1 mb-4 rounded-xl">
         <div className="flex p-4 flex-grow justify-between items-center flex-nowrap">
           {editMode ? (
             <input

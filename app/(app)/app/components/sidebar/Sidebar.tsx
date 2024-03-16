@@ -31,7 +31,7 @@ function Sidebar() {
               Mindscapes
             </summary>
             <ul>
-             <li
+              <li
                 className="group"
                 onClick={() => {
                   router.push("/app/mindscapes");
@@ -99,22 +99,16 @@ function Sidebar() {
               >
                 <span>View All</span>
               </li>
+              <li
+                className="group"
+                onClick={() => {
+                  router.push("/app/memes/categories");
+                }}
+              >
+                <span>Categories</span>
+              </li>
             </ul>
           </details>
-        </li>
-        <li
-          className="mt-2 text-base"
-          onClick={() => {
-            router.push("/app/categories");
-          }}
-        >
-          <div>
-            <span>
-              <Image src="/logo.png" width={20} height={20} alt="icon" />
-              {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
-            </span>
-            Categories
-          </div>
         </li>
 
         <UserDisplay />
