@@ -115,7 +115,7 @@ function CategoryContainer({ category, onEdit: onEditCat }: CategoryContainerPro
           onDelete={onDelete}
         />
       )}
-      <div className="border border-1 mb-4 rounded-xl">
+      <div className="border border-1 mb-4 rounded-xl cursor-pointer hover:bg-slate-800" onClick={onEdit}>
         <div className="flex p-4 flex-grow justify-between items-center flex-nowrap">
           {editMode ? (
             <input

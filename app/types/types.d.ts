@@ -32,6 +32,10 @@ declare global {
     memes: MindscapeMeme[];
   };
   type Schedule = Array<{ time: DateTime; mindscape: Mindscape }>;
+  type Color = {
+    id: number;
+    classes: string;
+  };
 }
 
 export {};

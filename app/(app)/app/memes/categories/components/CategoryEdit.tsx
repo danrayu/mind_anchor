@@ -1,19 +1,30 @@
-import { fetchUpdateCategory } from '@/app/fetchActions';
-import { appFetch } from '@/app/store/actions';
-import { useAppDispatch } from '@/app/store/hooks';
-import { Types } from '@/app/types/Types';
-import React, { useState } from 'react'
+import { fetchUpdateCategory } from "@/app/fetchActions";
+import { appFetch } from "@/app/store/actions";
+import { useAppDispatch } from "@/app/store/hooks";
+import { Types } from "@/app/types/Types";
+import React, { useEffect, useState } from "react";
+import ColorBubble from "../../../components/ColorBubble";
+import Modal from "../../../components/Modal";
 
 interface Props {
-  category: Category
+  category: Category;
 }
 
-function CategoryEdit({category}: Props) {
-  console.log(category)
+const colors: Color[] = [
+  { id: 1, classes: "bg-green-700 hover:bg-green-600" },
+  { id: 2, classes: "bg-blue-700 hover:bg-blue-600" },
+];
+
+function CategoryEdit({ category }: Props) {
+  console.log(category);
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
 
   const [categoryName, setCategoryName] = useState(category.name);
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  useEffect(() => {
+    setCategoryName(category.name);
+  }, [category]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -26,11 +37,13 @@ function CategoryEdit({category}: Props) {
       return;
     }
 
-    const response = await fetchUpdateCategory(category.id, { name: categoryName });
+    const response = await fetchUpdateCategory(category.id, {
+      name: categoryName,
+    });
     const updatedCat = await response.json();
 
     if (response.ok) {
-      dispatch({ type: "UPDATE_CAT", payload: updatedCat});
+      dispatch({ type: "UPDATE_CAT", payload: updatedCat });
     }
     dispatch(appFetch(Types.Categories));
   };
@@ -47,25 +60,44 @@ function CategoryEdit({category}: Props) {
       save();
     }
   };
+
+  const onSelectColor = (color: Color) => {
+    setSelectedColor(color);
+  }
+
+  const openColorMenu = () => {
+    (document.getElementById("modal-color")! as any).showModal();
+  }
+
   return (
     <>
+      <Modal title="Select Hue" id="modal-color">
+        <div className="flex space-x-2 mt-3">
+          {colors.map((color: Color) => {
+            return <ColorBubble color={color} onClick={onSelectColor}/>
+          })}
+        </div>
+      </Modal>
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
           <div className="mb-4">
             <label htmlFor="title" className="block font-medium">
               Title
             </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={categoryName}
-              onChange={onChange}
-              className="input input-bordered mt-1 p-2 w-full"
-            />
+            <div className="flex space-x-3 items-center">
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={categoryName}
+                onChange={onChange}
+                className="input input-bordered mt-1 p-2 w-full"
+              />
+              <ColorBubble color={selectedColor} onClick={openColorMenu} />
+            </div>
           </div>
           <button type="submit" className="mt-2 btn btn-primary">
-              Save
+            Save
           </button>
         </form>
       </div>
@@ -73,4 +105,4 @@ function CategoryEdit({category}: Props) {
   );
 }
 
-export default CategoryEdit
+export default CategoryEdit;
