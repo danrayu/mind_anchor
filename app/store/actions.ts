@@ -31,6 +31,9 @@ const getDispatchCode = (type: Types, stage: StageTypes) => {
     case Types.Schedule:
       code += "SCHEDULE_";
       break;
+    case Types.Colors:
+      code += "COLORS_";
+      break;
   }
 
   switch (stage) {
@@ -70,6 +73,8 @@ export const load = (
       case Types.Schedule:
         response = await fetchGetSchedule();
         break;
+      default:
+        return;
     }
 
     if (!response.ok) {
@@ -112,6 +117,8 @@ export const appFetch = (
       case Types.Schedule:
         response = await fetchGetSchedule();
         break;
+      default:
+        return;
     }
 
     if (!response.ok) {
@@ -146,13 +153,15 @@ export const loadAll = (): ThunkAction<
     dispatch({ type: "LOAD_CATS_START" });
     dispatch({ type: "LOAD_MINDSCAPES_START" });
     dispatch({ type: "LOAD_SCHEDULE_START" });
+    dispatch({ type: "LOAD_COLORS_START" });
 
-    const [memesResponse, catsResponse, mindscapesResponse, scheduleResponse] = await Promise.all(
+    const [memesResponse, catsResponse, mindscapesResponse, scheduleResponse, colorsResponse] = await Promise.all(
       [
         fetch(url + `/api/memes/?wCats`),
         fetch(url + `/api/categories`),
         fetch(url + `/api/mindscapes`),
-        fetch(url + `/api/schedule`)
+        fetch(url + `/api/schedule`),
+        fetch(url + `/api/colors`),
       ]
     );
 
@@ -233,6 +242,26 @@ export const loadAll = (): ThunkAction<
       })
       .catch((error) => {
         dispatch({ type: getDispatchCode(Types.Schedule, StageTypes.failure), error });
+      });
+    }
+
+    if (!colorsResponse.ok) {
+      const errorData = await colorsResponse.json();
+      dispatch({
+        type: getDispatchCode(Types.Colors, StageTypes.failure),
+        error: errorData.error,
+      });
+    } else {
+      colorsResponse
+      .json()
+      .then((data) => {
+        dispatch({
+          type: getDispatchCode(Types.Colors, StageTypes.success),
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        dispatch({ type: getDispatchCode(Types.Colors, StageTypes.failure), error });
       });
     }
 

@@ -1,6 +1,6 @@
 import { fetchUpdateCategory } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
-import { useAppDispatch } from "@/app/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
 import React, { useEffect, useState } from "react";
 import ColorBubble from "../../../components/ColorBubble";
@@ -10,21 +10,21 @@ interface Props {
   category: Category;
 }
 
-const colors: Color[] = [
-  { id: 1, classes: "bg-green-700 hover:bg-green-600" },
-  { id: 2, classes: "bg-blue-700 hover:bg-blue-600" },
-];
-
 function CategoryEdit({ category }: Props) {
   console.log(category);
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
+  const colors = useAppSelector((state) => state.colors.colors);
 
   const [categoryName, setCategoryName] = useState(category.name);
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [selectedColor, setSelectedColor] = useState(category.color);
   useEffect(() => {
     setCategoryName(category.name);
   }, [category]);
+
+  useEffect(() => {
+    setSelectedColor(category.color);
+  }, [colors]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -63,18 +63,25 @@ function CategoryEdit({ category }: Props) {
 
   const onSelectColor = (color: Color) => {
     setSelectedColor(color);
-  }
+    (document.getElementById("modal-color")! as any).close();
+  };
 
   const openColorMenu = () => {
     (document.getElementById("modal-color")! as any).showModal();
-  }
+  };
 
   return (
     <>
       <Modal title="Select Hue" id="modal-color">
         <div className="flex space-x-2 mt-3">
           {colors.map((color: Color) => {
-            return <ColorBubble color={color} onClick={onSelectColor}/>
+            return (
+              <ColorBubble
+                key={color.id}
+                color={color}
+                onClick={onSelectColor}
+              />
+            );
           })}
         </div>
       </Modal>

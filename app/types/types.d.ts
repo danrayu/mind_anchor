@@ -5,6 +5,7 @@ declare global {
     id: number;
     name: string;
     authorId: number;
+    color: Color;
   };
   type Meme = {
     id: number;

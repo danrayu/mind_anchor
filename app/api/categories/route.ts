@@ -21,9 +21,12 @@ export async function GET(
       return NextResponse.json("User not found", { status: 404 });
     }
     const categories = await prisma.category.findMany({
+      include: {
+        color: true
+      },
       where: {
         authorId: user?.id,
-      }
+      },
     })
     return NextResponse.json(categories);
   } catch (error) {

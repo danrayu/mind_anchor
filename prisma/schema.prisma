@@ -87,8 +87,8 @@ model Category {
   name     String
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
-  // color    Color  @relation(fields: [colorId], references: [id])
-  // colorId  Int
+  color    Color  @relation(fields: [colorId], references: [id])
+  colorId  Int    @default(1)
   memes    Meme[]
 }
 
@@ -107,6 +107,7 @@ model Color {
   id       Int        @id @default(autoincrement())
   title    String     @unique
   classes  String     @db.Text
+  Category Category[]
 }
 
 model MindscapeScheduleConfig {

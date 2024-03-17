@@ -24,6 +24,12 @@ interface ScheduleState {
   error: Error | null;
 }
 
+interface ColorsState {
+  colors: Color[] | undefined;
+  loading: boolean;
+  error: Error | null;
+}
+
 const initialMemesState: MemesState = {
   memes: undefined,
   loading: false,
@@ -43,6 +49,26 @@ function memesReducer(state: MemesState = initialMemesState, action: any) {
       return { ...state, memes: action.payload };
     case "ADD_MEME":
       return { ...state, memes: [...state.memes!, action.payload] };
+    default:
+      return state;
+  }
+}
+
+const initialColorsState: ColorsState = {
+  colors: undefined,
+  loading: false,
+  error: null,
+};
+function colorsReducer(state: ColorsState = initialColorsState, action: any) {
+  // Reducers usually look at the type of action that happened
+  // to decide how to update the state
+  switch (action.type) {
+    case "LOAD_COLORS_START":
+      return { ...state, loading: true };
+    case "LOAD_COLORS_SUCCESS":
+      return { ...state, loading: false, colors: action.payload, error: null };
+    case "LOAD_COLORS_FAILURE":
+      return { ...state, loading: false, error: action.error };
     default:
       return state;
   }
@@ -149,6 +175,7 @@ const store = configureStore({
     categories: categoriesReducer,
     mindscapes: mindscapesReducer,
     schedule: scheduleReducer,
+    colors: colorsReducer,
   },
 });
 

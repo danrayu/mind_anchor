@@ -40,6 +40,16 @@ export function useScheduleValid(): boolean {
   });
 }
 
+export function useColorsValid(): boolean {
+  return useAppSelector((state) => {
+    return (
+      !state.colors.error &&
+      state.colors.colors !== undefined &&
+      !state.colors.loading
+    );
+  });
+}
+
 export function useAllValid(): boolean {
   return useAppSelector(
     (state) =>

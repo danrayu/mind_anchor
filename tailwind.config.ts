@@ -1,18 +1,24 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     // your theme configurations
   },
+  safelist: [
+    {
+      pattern: /bg-(red|green|blue)-(700|600)/,
+      variants: ["hover"],
+    },
+  ],
   daisyui: {
-    themes: ['wireframe','light', 'dark', 'cupcake'],
+    themes: ["wireframe", "light", "dark", "cupcake"],
   },
-  plugins: [require('daisyui')],
-}
+  plugins: [require("daisyui")],
+};
 
-export default config
+export default config;
