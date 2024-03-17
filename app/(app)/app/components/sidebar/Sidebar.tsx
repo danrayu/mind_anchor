@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
 import UserDisplay from "./UserDisplay";
+import { FaBrain, FaLightbulb } from "react-icons/fa"; // Example icon
+
 
 function Sidebar() {
   const router = useRouter();
@@ -25,7 +27,7 @@ function Sidebar() {
           <details open>
             <summary className="group">
               <span>
-                <Image src="/logo.png" width={20} height={20} alt="icon" />
+              <FaBrain className="text-white"/>
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
               </span>
               Mindscapes
@@ -76,8 +78,8 @@ function Sidebar() {
         <li className="mt-2 text-base">
           <details open>
             <summary className="group">
-              <span>
-                <Image src="/logo.png" width={20} height={20} alt="icon" />
+              <span className="">
+              <FaLightbulb className="text-white"/>
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
               </span>
               Memes
