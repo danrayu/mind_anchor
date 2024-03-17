@@ -5,11 +5,21 @@ import ItemActionsMenu, { Position } from "../../../components/ItemActionsMenu";
 import { fetchDeleteCategory, fetchUpdateCategory } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
+import {
+  getBGColorClasses,
+  getBubbleColorClasses,
+} from "@/app/util/colorToClass";
+import ColorBubble from "../../../components/ColorBubble";
+
 interface CategoryContainerProps {
   category: Category;
-  onEdit: (cat: Category) => void
+  onEdit: (cat: Category) => void;
 }
-function CategoryContainer({ category, onEdit: onEditCat }: CategoryContainerProps) {
+
+function CategoryContainer({
+  category,
+  onEdit: onEditCat,
+}: CategoryContainerProps) {
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(category.name);
 
@@ -103,8 +113,6 @@ function CategoryContainer({ category, onEdit: onEditCat }: CategoryContainerPro
     }
   };
 
-
-
   return (
     <>
       {menuVisible && (
@@ -115,53 +123,67 @@ function CategoryContainer({ category, onEdit: onEditCat }: CategoryContainerPro
           onDelete={onDelete}
         />
       )}
-      <div className="border border-1 mb-4 rounded-xl cursor-pointer hover:bg-slate-800" onClick={onEdit}>
-        <div className="flex p-4 flex-grow justify-between items-center flex-nowrap">
-          {editMode ? (
-            <input
-              type="text"
-              value={title}
-              placeholder="Category name"
-              className="input input-ghost font-regular text-[17px] ml-4 p-0 border-0 outline-0 rounded-none focus:outline-0 flex-grow "
-              onChange={handleTitleChange}
-              onKeyDown={handleTitleChange}
-              maxLength={40}
-            />
-          ) : (
-            <span className="font-semibold text-[17px] ml-4 break-words overflow-hidden max-w-[60%] flex-shrink ">
-              {title}
-            </span>
-          )}
+      <div
+        className={
+          "border border-1 mb-4 rounded-xl cursor-pointer hover:bg-slate-800 h-20 "
+        }
+        onClick={onEdit}
+      >
+        <div className="flex h-full">
+          <div
+            id="taglet"
+            className={
+              "w-8 h-full rounded-tl-xl rounded-bl-xl " +
+              getBubbleColorClasses(category.color)
+            }
+          ></div>
+          <div className="flex p-4 pl-0 flex-grow justify-between items-center flex-nowrap">
+            {editMode ? (
+              <input
+                type="text"
+                value={title}
+                placeholder="Category name"
+                className="input input-ghost font-regular text-[17px] ml-4 p-0 border-0 outline-0 rounded-none focus:outline-0 flex-grow "
+                onChange={handleTitleChange}
+                onKeyDown={handleTitleChange}
+                maxLength={40}
+              />
+            ) : (
+              <span className="font-semibold text-[17px] ml-4 break-words overflow-hidden max-w-[60%] flex-shrink ">
+                {title}
+              </span>
+            )}
 
-          <div className="space-x-2 flex-nowrap flex">
-            {!editMode && (
-              <>
-                <button
-                  className="btn btn-outline "
-                  onClick={openMenu}
-                  ref={buttonRef}
-                >
-                  ...
-                </button>
-                <button className="btn btn-primary " onClick={viewMemes}>
-                  View Memes
-                </button>
-              </>
-            )}
-            {editMode && (
-              <>
-                <button
-                  className="btn btn-primary "
-                  onClick={handleSave}
-                  ref={buttonRef}
-                >
-                  Save
-                </button>
-                <button className="btn btn-outline " onClick={handleCancel}>
-                  Cancel
-                </button>
-              </>
-            )}
+            <div className="space-x-2 flex-nowrap flex">
+              {!editMode && (
+                <>
+                  <button
+                    className="btn btn-outline "
+                    onClick={openMenu}
+                    ref={buttonRef}
+                  >
+                    ...
+                  </button>
+                  <button className="btn btn-primary " onClick={viewMemes}>
+                    View Memes
+                  </button>
+                </>
+              )}
+              {editMode && (
+                <>
+                  <button
+                    className="btn btn-primary "
+                    onClick={handleSave}
+                    ref={buttonRef}
+                  >
+                    Save
+                  </button>
+                  <button className="btn btn-outline " onClick={handleCancel}>
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -100,10 +100,12 @@ function categoriesReducer(
     case "ADD_CAT":
       return { ...state, categories: [...state.categories!, action.payload] };
     case "UPDATE_CAT":
-      let cats = state.categories?.filter(
-        (cat) => cat.id !== action.payload.id
+      let catI = state.categories?.findIndex(
+        (cat) => cat.id === action.payload.id
       );
-      return { ...state, categories: [...cats!, action.payload] };
+      let tempCats = [...state.categories!];
+      tempCats[catI!] = action.payload;
+      return { ...state, categories: [...tempCats] };
     default:
       return state;
   }

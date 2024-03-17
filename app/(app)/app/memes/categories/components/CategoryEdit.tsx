@@ -45,6 +45,7 @@ function CategoryEdit({ category }: Props) {
 
     if (response.ok) {
       dispatch({ type: "UPDATE_CAT", payload: updatedCat });
+      (document.getElementById("edit-cat-modal")! as any).close();
     }
     dispatch(appFetch(Types.Categories));
   };
