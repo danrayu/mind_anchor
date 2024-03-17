@@ -6,7 +6,6 @@ interface Props {
 }
 
 function ColorBubble({ onClick, color }: Props) {
-  console.log(getBubbleColorClasses(color));
   const [classes, setClasses] = useState(getBubbleColorClasses(color));
   useEffect(() => {
     setClasses(getBubbleColorClasses(color));

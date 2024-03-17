@@ -11,13 +11,13 @@ interface Props {
 }
 
 function CategoryEdit({ category }: Props) {
-  console.log(category);
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
   const colors = useAppSelector((state) => state.colors.colors);
 
   const [categoryName, setCategoryName] = useState(category.name);
   const [selectedColor, setSelectedColor] = useState(category.color);
+
   useEffect(() => {
     setCategoryName(category.name);
   }, [category]);
@@ -36,9 +36,10 @@ function CategoryEdit({ category }: Props) {
       alert("Please enter a category name");
       return;
     }
-
+    console.log(selectedColor.id);
     const response = await fetchUpdateCategory(category.id, {
       name: categoryName,
+      colorId: selectedColor.id,
     });
     const updatedCat = await response.json();
 

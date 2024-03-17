@@ -55,9 +55,10 @@ export async function PUT(
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const { name } = await request.json();
+  const { name, colorId } = await request.json();
 
-  if (!name) {
+  if (!name || !colorId) {
+    console.log( name, colorId);
     return NextResponse.json("Error: Category data undefined.", {
       status: 400,
     });
@@ -76,13 +77,14 @@ export async function PUT(
       where: { id: parseInt(params.id), authorId: user.id },
       data: {
         ...(name && { name }),
+        ...(colorId && { color: { connect: { id: colorId } } }),
       },
-      include: { author: true },
+      include: { color: true },
     });
     return NextResponse.json(updatedCategory);
   } catch (error) {
     return NextResponse.json(
-      { error: "Error updating the Category." },
+      { error: `Error updating the Category: ${error}` },
       { status: 500 }
     );
   }
