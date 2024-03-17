@@ -7,8 +7,9 @@ import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 interface CategoryContainerProps {
   category: Category;
+  onEdit: (cat: Category) => void
 }
-function CategoryContainer({ category }: CategoryContainerProps) {
+function CategoryContainer({ category, onEdit: onEditCat }: CategoryContainerProps) {
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(category.name);
 
@@ -59,8 +60,9 @@ function CategoryContainer({ category }: CategoryContainerProps) {
   };
 
   const onEdit = () => {
-    setEditMode(true);
-    onClose();
+    onEditCat(category);
+    // setEditMode(true);
+    // onClose();
   };
 
   const handleSave = async () => {
@@ -100,6 +102,8 @@ function CategoryContainer({ category }: CategoryContainerProps) {
       console.error("Error deleting meme:", error);
     }
   };
+
+
 
   return (
     <>

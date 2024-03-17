@@ -73,6 +73,11 @@ function categoriesReducer(
       return { ...state, categories: action.payload };
     case "ADD_CAT":
       return { ...state, categories: [...state.categories!, action.payload] };
+    case "UPDATE_CAT":
+      let cats = state.categories?.filter(
+        (cat) => cat.id !== action.payload.id
+      );
+      return { ...state, categories: [...cats!, action.payload] };
     default:
       return state;
   }

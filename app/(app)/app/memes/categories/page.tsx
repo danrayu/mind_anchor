@@ -4,18 +4,20 @@ import Searchbar from "../../components/Searchbar";
 import CategoryContainer from "./components/CategoryContainer";
 import { useCallback, useEffect, useState } from "react";
 import { useCatsValid } from "@/app/util/stateValidationHooks";
+import Modal from "../../components/Modal";
+import QuickAddCat from "./components/QuickAddCat";
 import CategoryEdit from "./components/CategoryEdit";
 
 function CategoriesPage() {
   const [searchString, setSearchString] = useState("");
+  const [catInEditing, setCatInEditing] = useState<Category | undefined>(undefined);
   const categoriesValid = useCatsValid();
 
   var categoryState = useAppSelector((state) => state.categories);
-  const dispatch = useAppDispatch();
 
   const renderCategories = () => {
     return filteredCategories.map((cat: Category) => {
-      return <CategoryContainer key={cat.id} category={cat} />;
+      return <CategoryContainer key={cat.id} category={cat} onEdit={showEditModal} />;
     });
   };
 
@@ -34,6 +36,12 @@ function CategoriesPage() {
     [searchString]
   );
 
+
+  const showEditModal = (cat: Category) => {
+    setCatInEditing(cat);
+    (document.getElementById("edit-cat-modal")! as any).showModal();
+  }
+
   useEffect(() => {
     if (categoriesValid) {
       setFilteredCategories(filterBySearchString(categoryState.categories));
@@ -41,6 +49,11 @@ function CategoriesPage() {
   }, [categoryState, searchString, categoriesValid, filterBySearchString]);
 
   return (
+    <>
+    <Modal title="Edit Category" id="edit-cat-modal">
+      {catInEditing && <CategoryEdit category={catInEditing!}/>}
+    </Modal>
+    
     <div className="mt-10">
       <h1 className="text-[35px] font-bold">Categories</h1>
       <div className="flex flex-wrap">
@@ -54,11 +67,12 @@ function CategoriesPage() {
 
       <div className="mt-4">
         <div className="border border-1 mb-4 p-4 pl-8 rounded-xl">
-          <CategoryEdit />
+          <QuickAddCat />
         </div>
         {useCatsValid() && renderCategories()}
       </div>
     </div>
+    </>
   );
 }
 

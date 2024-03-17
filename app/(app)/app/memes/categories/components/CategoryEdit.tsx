@@ -1,16 +1,19 @@
-"use client";
-import { fetchCreateCategory } from "@/app/fetchActions";
-import { appFetch } from "@/app/store/actions";
-import { useAppDispatch } from "@/app/store/hooks";
-import { Types } from "@/app/types/Types";
-import React, { useState } from "react";
+import { fetchUpdateCategory } from '@/app/fetchActions';
+import { appFetch } from '@/app/store/actions';
+import { useAppDispatch } from '@/app/store/hooks';
+import { Types } from '@/app/types/Types';
+import React, { useState } from 'react'
 
-function CategoryEdit() {
-  var catName = "";
+interface Props {
+  category: Category
+}
+
+function CategoryEdit({category}: Props) {
+  console.log(category)
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
 
-  const [categoryName, setCategoryName] = useState(catName);
+  const [categoryName, setCategoryName] = useState(category.name);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -23,15 +26,13 @@ function CategoryEdit() {
       return;
     }
 
-    const response = await fetchCreateCategory({ name: categoryName });
-    const newCat = await response.json();
+    const response = await fetchUpdateCategory(category.id, { name: categoryName });
+    const updatedCat = await response.json();
 
-    // Adding the new cat while waiting for the full refetch to happen
     if (response.ok) {
-      dispatch({ type: "ADD_CAT", payload: newCat});
+      dispatch({ type: "UPDATE_CAT", payload: updatedCat});
     }
     dispatch(appFetch(Types.Categories));
-    setCategoryName("");
   };
 
   const onChange = (event: any) => {
@@ -46,39 +47,30 @@ function CategoryEdit() {
       save();
     }
   };
-
   return (
-    <div className="mx-auto">
-      <form onSubmit={handleSubmit}>
-        <h3 className="pb-2">New category</h3>
-        <div className="justify-between flex">
-          <div className="flex space-x-4 items-center">
-            <label className="form-control w-full max-w-xs">
-              <input
-                type="text"
-                id="categoryName"
-                value={categoryName}
-                className="input input-bordered w-full m-0 rounded max-w-xl"
-                onChange={onChange}
-                onKeyDown={onChange}
-                maxLength={40}
-              />
-              <div className={"label  " + (!inputError.length && "hidden")}>
-                <span className="label-text-alt text-error text-base">
-                  {inputError}
-                </span>
-              </div>
+    <>
+      <div className="container mx-auto p-4 mt-6">
+        <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
+          <div className="mb-4">
+            <label htmlFor="title" className="block font-medium">
+              Title
             </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={categoryName}
+              onChange={onChange}
+              className="input input-bordered mt-1 p-2 w-full"
+            />
           </div>
-          <div className="flex justify-end space-x-2">
-            <button className="btn btn-primary" type="submit">
-              Add Category
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+          <button type="submit" className="mt-2 btn btn-primary">
+              Save
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 
-export default CategoryEdit;
+export default CategoryEdit
