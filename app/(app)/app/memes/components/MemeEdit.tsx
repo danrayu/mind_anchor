@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SwitchCategory from "../../components/utility/SwitchCategory";
 import {
   fetchCreateMeme,
@@ -10,7 +10,9 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { useRouter } from "next/navigation";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
-import SuccessAlert from "../../components/SuccessAlert";
+import AlertBody from "../../components/utility/AlertBody";
+import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
+import ErrorAlertBody from "../../components/utility/ErrorAlertBody";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -46,7 +48,8 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   }
 
   const [meme, setMeme] = useState<Meme>({ ...initialMeme });
-  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertSuccess, setAlertSuccess] = useState(false);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -118,12 +121,13 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         dispatch(appFetch(Types.Memes));
         const data = await response.json();
         console.log("Meme saved:", data);
-        setUpdateSuccess(true);
-        setTimeout(() => setUpdateSuccess(false), 2224);
+        setAlertSuccess(true);
+        playAlert();
       }
     } catch (error) {
       console.error("Error saving meme:", error);
-      setUpdateSuccess(false);
+      setAlertSuccess(false);
+      playAlert();
     }
   };
 
@@ -145,15 +149,17 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     }
   };
 
-  useEffect(() => {
-    // setUpdateSuccess(true);
-  }, []);
+  const playAlert = () => {
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 4000);
+  } 
 
   return (
     <>
-      {updateSuccess && (
-        <SuccessAlert message={isNew ? "Meme added" : "Meme updated"} />
-      )}
+      <AlertBody show={showAlert}>
+        {alertSuccess ? <SuccessAlertBody message="Meme updated."/> : <ErrorAlertBody message="Failed to update meme. Please try again later." />}
+        
+      </AlertBody>
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
           <h1 className="text-[35px] font-bold mb-4">

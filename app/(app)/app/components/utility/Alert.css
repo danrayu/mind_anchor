@@ -1,0 +1,19 @@
+@keyframes fadeIn {
+  0% {
+    top: -140px;
+  }
+  10% {
+    top: 20px;
+  }
+  90% {
+    top: 20px;
+  }
+  100% {
+    top: -140px;
+  }
+}
+
+.alert-walk {
+  /* Apply the animation */
+  animation: fadeIn 3s ease-in-out;
+}
