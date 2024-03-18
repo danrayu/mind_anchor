@@ -19,7 +19,7 @@ function ColorBubble({ onClick, color }: Props) {
     <div onClick={onSelect} className="m2">
       <div
         className={
-          "rounded-full border border-1 cursor-pointer w-7 h-7 " + classes
+          "rounded-full cursor-pointer w-7 h-7 " + classes
         }
       />
     </div>

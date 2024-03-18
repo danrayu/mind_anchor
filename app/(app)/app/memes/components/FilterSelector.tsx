@@ -116,6 +116,7 @@ function FilterSelector({
         key={`cat_${category["id"]}`}
         state={filter.state}
         name={category.name}
+        borderColor={category.color}
       />
     );
   }
@@ -134,7 +135,7 @@ function FilterSelector({
       {filterOpen && <div className="max-w-[1px] flex-1 bg-base-content" />}
       <div className={"flex-1" + (filterOpen && "")}>
         <button
-          className={"btn btn-outline " + (filterOpen && "ml-2")}
+          className={"btn btn-neutral " + (filterOpen && "ml-4")}
           onClick={toggleFilter}
         >
           {filterOpen ? "Hide Filter" : "Show Filter"}
@@ -147,7 +148,7 @@ function FilterSelector({
         </button>
         {filterOpen && (
           <>
-            <div className="p-2 pb-0">
+            <div className="p-2 pl-4 pb-0">
               <h5 className="mt-2">Favorites</h5>
               <div className="flex flex-wrap">
                 <FilterItem

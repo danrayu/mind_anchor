@@ -1,6 +1,4 @@
 "use client";
-
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import MindscapeView from "./mindscapes/components/MindscapeView";
 import { useAppSelector } from "@/app/store/hooks";

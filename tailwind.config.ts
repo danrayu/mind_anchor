@@ -11,7 +11,7 @@ const config: Config = {
   },
   safelist: [
     {
-      pattern: /bg-(red|green|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
+      pattern: /(bg|border)-(red|green|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
       variants: ["hover"],
     },
   ],

@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
 import UserDisplay from "./UserDisplay";
-import { FaBrain, FaLightbulb } from "react-icons/fa"; // Example icon
-
+import { FaBrain, FaHome, FaLightbulb, FaPlus } from "react-icons/fa"; // Example icon
 
 function Sidebar() {
   const router = useRouter();
@@ -27,10 +26,10 @@ function Sidebar() {
           <details open>
             <summary className="group">
               <span>
-              <FaBrain className="text-white"/>
+                <FaHome className="text-white" />
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
               </span>
-              Mindscapes
+              General
             </summary>
             <ul>
               <li
@@ -49,13 +48,25 @@ function Sidebar() {
               >
                 <span>Manage</span>
               </li>
+            </ul>
+            <summary className="group">
+              <span>
+                <FaBrain className="text-white" />
+                {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
+              </span>
+              Mindscapes
+            </summary>
+            <ul>
               <li
-                className="group mb-1"
+                className="group"
                 onClick={() => {
                   router.push("/app/mindscapes/new");
                 }}
               >
-                <span>New</span>
+                <span>
+                  <FaPlus className="w-[10px]"/>
+                  New
+                </span>
               </li>
 
               {mindscapesValid &&
@@ -79,7 +90,7 @@ function Sidebar() {
           <details open>
             <summary className="group">
               <span className="">
-              <FaLightbulb className="text-white"/>
+                <FaLightbulb className="text-white" />
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
               </span>
               Memes
@@ -91,7 +102,10 @@ function Sidebar() {
                   router.push("/app/memes/new");
                 }}
               >
-                <span>New</span>
+                <span>
+                  <FaPlus className="w-[10px]"/>
+                  New
+                </span>
               </li>
               <li
                 className="group"

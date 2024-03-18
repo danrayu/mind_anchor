@@ -1,3 +1,4 @@
+import { getBorderColordClasses } from "@/app/util/colorToClass";
 import React from "react";
 
 interface FilterItemProps {
@@ -5,15 +6,16 @@ interface FilterItemProps {
   onRemove: () => any;
   state: number;
   name: string;
+  borderColor?: Color;
 }
 
-function FilterItem({ onAdd, onRemove, state, name }: FilterItemProps) {
+function FilterItem({ onAdd, onRemove, state, name, borderColor }: FilterItemProps) {
   const styleBtn =
-    "font-semibold rounded p-1 px-2.5  rounded-xl focus:outline-none focus:ring-0";
+    "font-semibold rounded p-1 px-2.5 rounded-xl focus:outline-none focus:ring-0";
   const styleAddSelected = " text-green-600 ";
   const styleRemoveSelected = " text-red-600 join-item ";
   return (
-    <div className={`flex items-center badge badge-outline border py-4 my-1 mr-1 space-x-1`}>
+    <div className={`flex items-center badge badge-outline border mr-2 ${borderColor && getBorderColordClasses(borderColor)} py-4 my-1 mr-1 space-x-1`}>
       <button
         className={
           styleBtn +

@@ -10,6 +10,7 @@ import {
   getBubbleColorClasses,
 } from "@/app/util/colorToClass";
 import ColorBubble from "../../../components/ColorBubble";
+import { HiDotsHorizontal } from "react-icons/hi";
 
 interface CategoryContainerProps {
   category: Category;
@@ -113,6 +114,11 @@ function CategoryContainer({
     }
   };
 
+  const onViewMemes = (e: any) => {
+    e.stopPropagation();
+    viewMemes();
+  }
+
   return (
     <>
       {menuVisible && (
@@ -125,7 +131,7 @@ function CategoryContainer({
       )}
       <div
         className={
-          "border border-1 mb-4 rounded-xl cursor-pointer hover:bg-slate-800 h-20 "
+          "bg-base-200 mb-4 rounded-xl cursor-pointer hover:bg-slate-800 h-20 "
         }
         onClick={onEdit}
       >
@@ -154,17 +160,17 @@ function CategoryContainer({
               </span>
             )}
 
-            <div className="space-x-2 flex-nowrap flex">
+            <div className="space-x-2 flex-nowrap flex items-center">
               {!editMode && (
                 <>
                   <button
-                    className="btn btn-outline "
+                    className="btn btn-ghost "
                     onClick={openMenu}
                     ref={buttonRef}
                   >
-                    ...
+                    <HiDotsHorizontal/>
                   </button>
-                  <button className="btn btn-primary " onClick={viewMemes}>
+                  <button className="btn btn-neutral" onClick={onViewMemes}>
                     View Memes
                   </button>
                 </>
@@ -172,7 +178,7 @@ function CategoryContainer({
               {editMode && (
                 <>
                   <button
-                    className="btn btn-primary "
+                    className="btn btn-primary"
                     onClick={handleSave}
                     ref={buttonRef}
                   >

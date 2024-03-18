@@ -124,7 +124,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
             {!editMode && <DropdownDescription description={description} />}
           </div>
 
-          <div className="mt-12 ">
+          <div className="mt-12 space-y-4">
             {!editMode &&
               orderedMemes.map((meme: Meme) => (
                 <MemeContainer key={meme.id} meme={meme} />

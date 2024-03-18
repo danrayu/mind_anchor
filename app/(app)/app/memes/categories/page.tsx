@@ -55,18 +55,14 @@ function CategoriesPage() {
     </Modal>
     
     <div className="mt-10">
+      <div className="flex flex-row justify-between items-center">
       <h1 className="text-[35px] font-bold">Categories</h1>
-      <div className="flex flex-wrap">
-        <div className="mr-auto w-full max-w-[600px]">
-          <Searchbar onChange={onSearchbarChange} />
-        </div>
-        <div className="my-auto">
-          <button className="btn btn-outline h-10">Search</button>
-        </div>
+      <Searchbar onChange={onSearchbarChange} />
       </div>
 
-      <div className="mt-4">
-        <div className="border border-1 mb-4 p-4 pl-8 rounded-xl">
+      <div className="mt-2">
+      
+        <div className="bg-base-200 mb-6 p-4 pl-8 rounded-xl">
           <QuickAddCat />
         </div>
         {useCatsValid() && renderCategories()}

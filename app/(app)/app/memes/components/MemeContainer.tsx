@@ -6,6 +6,7 @@ import { fetchDeleteMeme } from "@/app/fetchActions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
+import { HiDotsHorizontal } from "react-icons/hi";
 
 interface MemeProps {
   meme: Meme;
@@ -101,11 +102,11 @@ function MemeContainer({ meme }: MemeProps) {
             <span className="text-lg font-semibold">{meme.title}</span>
           </div>
           <button
-            className="btn btn-outline "
+            className="btn btn-ghost "
             onClick={openMenu}
             ref={buttonRef}
           >
-            ...
+            <HiDotsHorizontal/>
           </button>
         </div>
         <div

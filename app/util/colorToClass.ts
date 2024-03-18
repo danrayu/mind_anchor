@@ -9,3 +9,7 @@ export function getBGColorClasses(color: Color) {
 export function getBtnColordClasses(color: Color) {
   return `bg-${color.classes}-400 hover:bg-${color.classes}-500`
 }
+
+export function getBorderColordClasses(color: Color) {
+  return `border-${color.classes}-400`
+}

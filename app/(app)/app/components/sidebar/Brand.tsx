@@ -11,7 +11,7 @@ function Brand() {
     }}>
       <div className="flex">
         <Image src="/logo.png" width={30} height={30} className="rounded-xl" alt="MindAnchor logo" />
-        <h2 className="text-xl font-bold mt-1 ml-1">
+        <h2 className="text-xl font-bold mt-1 ml-2">
           MindAnchor
         </h2>
       </div>

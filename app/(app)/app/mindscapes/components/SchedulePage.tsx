@@ -116,7 +116,7 @@ function SchedulePage() {
         <h1 className="text-[35px] font-bold">Schedule</h1>
         <div id="schedule">
           <div className=" mt-4">
-            <table className="table">
+            <table className="table text-base">
               <colgroup>
                 <col className="w-2/12" />
                 <col className="w-7/12" />
@@ -137,13 +137,14 @@ function SchedulePage() {
                   return (
                     <tr
                       key={`id${row.mindscape.id}_${row.time}`}
+                      className={isActive ? "bg-base-200 rounded-xl" : ""}
                     >
                       <td>{row.time}</td>
                       <td className="underline"><Link href={"/app/mindscapes/"+row.mindscape.id}>{row.mindscape.title}</Link></td>
                       <td className="text-primary">{isActive && "Active"}</td>
                       <td className="flex justify-end">
                         <button
-                          className="btn btn-circle btn-outline ml-auto mr-2"
+                          className="btn btn-circle btn-ghost ml-auto mr-2"
                           onClick={() => {
                             removeScheduledMs(row);
                           }}

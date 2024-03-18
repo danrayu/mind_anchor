@@ -163,13 +163,14 @@ function MemesPage({ memes, categories }: MemesPage) {
   }
 
   return (
-    <div className="mt-10">
+    <div className="mt-10 mb-10">
       <h1 className="text-[35px] font-bold">Memes</h1>
       <div className="flex flex-wrap">
         <div className="mr-auto w-full max-w-[600px]">
           <Searchbar onChange={onSearchbarChange} />
         </div>
       </div>
+      
       <FilterSelector filterState={filterState} setFilter={setFilter} resetFilter={resetFilter} />
 
       <div className="mt-8 space-y-4">
