@@ -172,7 +172,7 @@ function MemesPage({ memes, categories }: MemesPage) {
       </div>
       <FilterSelector filterState={filterState} setFilter={setFilter} resetFilter={resetFilter} />
 
-      <div className="mt-4">
+      <div className="mt-8 space-y-4">
         {filteredMemes.map((meme) => {
           return <MemeContainer key={meme.id} meme={meme} />;
         })}

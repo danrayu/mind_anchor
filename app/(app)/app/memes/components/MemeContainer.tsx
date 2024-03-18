@@ -89,10 +89,10 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className="border border-1 mb-4 rounded-xl">
+      <div className="bg-base-300 rounded-xl">
         <div
           className={
-            "flex p-4 px-6 justify-between items-center hover:bg-base-200 hover:cursor-pointer " +
+            "flex p-4 px-6 justify-between rounded-xl items-center hover:bg-base-200 hover:cursor-pointer " +
             (isOpen && "")
           }
           onClick={toggleOpen}
