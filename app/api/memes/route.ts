@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     const memes = await prisma.meme.findMany({
       include: {
         categories: wCats,
+        color: true,
       },
       where: {
         authorId: user?.id,
@@ -36,14 +37,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { title, description, favorite, categoryIds } =
+  const { title, description, favorite, categoryIds, colorId } =
     await request.json();
 
   const session = await getServerSession(authOptions);
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  if (!title || !categoryIds || favorite === undefined) {
+  if (!title || !categoryIds || favorite === undefined || !colorId) {
     return NextResponse.json("Error: Meme data undefined.", { status: 400 });
   }
 
@@ -63,12 +64,12 @@ export async function POST(request: NextRequest) {
         favorite,
         author: { connect: { id: user.id } },
         categories: { connect: categoryIds.map((id: number) => ({ id })) },
+        color: { connect: { id: colorId } },
       },
-      include: { author: true, categories: true },
+      include: { author: true, categories: true, color: true },
     });
     return NextResponse.json(newMeme);
   } catch (error) {
-    // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(
       { error: "Error: Could not create Meme." },
       { status: 500 }

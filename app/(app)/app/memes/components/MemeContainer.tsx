@@ -7,7 +7,6 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
-// import "./MemeContainer.css"
 
 interface MemeProps {
   meme: Meme;
@@ -91,7 +90,7 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className="bg-base-300 rounded-xl">
+      <div className="bg-radial from-amber-800 via-amber-800 to-amber-700 rounded-xl">
         <div
           className={
             "flex p-4 px-6 justify-between rounded-xl items-center hover:bg-base-200 hover:cursor-pointer " +

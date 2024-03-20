@@ -7,11 +7,16 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    // your theme configurations
+    extend: {
+      backgroundImage: {
+        'radial': 'radial-gradient(var(--tw-gradient-stops))',
+      }
+    }
   },
   safelist: [
     {
-      pattern: /(bg|border)-(red|green|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
+      pattern:
+        /(bg|border)-(red|green|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
       variants: ["hover"],
     },
   ],

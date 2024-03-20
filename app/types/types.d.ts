@@ -16,6 +16,7 @@ declare global {
     authorId: number;
     favorite: boolean;
     categories: Category[];
+    color: Color;
   };
   type MindscapeMeme = {
     id: number;

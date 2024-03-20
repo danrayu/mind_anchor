@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Meme` ADD COLUMN `colorId` INTEGER NOT NULL DEFAULT 7;
+
+-- AddForeignKey
+ALTER TABLE `Meme` ADD CONSTRAINT `Meme_colorId_fkey` FOREIGN KEY (`colorId`) REFERENCES `Color`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

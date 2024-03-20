@@ -23,7 +23,8 @@ export async function GET(
     const meme = await prisma.meme.findUnique({
       where: { id: parseInt(params.id), authorId: user.id },
       include: {
-        categories: true, // this will include the categories in the result
+        categories: true, 
+        color: true,
       },
     });
   
@@ -43,7 +44,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { title, description, authorId, favorite, categoryIds } =
+  const { title, description, authorId, favorite, categoryIds, colorId } =
     await request.json();
     const session = await getServerSession(authOptions);
   if (!session?.user?.email)
@@ -66,6 +67,7 @@ export async function PUT(
         ...(description && { description }),
         ...(favorite !== undefined && { favorite }),
         ...(authorId && { author: { connect: { id: authorId } } }),
+        ...(colorId && { color: { connect: { id: colorId } } }),
         ...(categoryIds && {
           categories: {
             set: [],
@@ -73,7 +75,7 @@ export async function PUT(
           },
         }),
       },
-      include: { author: true, categories: true },
+      include: { author: true, categories: true, color: true },
     });
     return NextResponse.json(updatedMeme);
   } catch (error) {

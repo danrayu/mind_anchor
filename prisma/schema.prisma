@@ -71,6 +71,8 @@ model Meme {
   favorite        Boolean
   categories      Category[]
   collectionMemes MindscapeMeme[]
+  color           Color           @relation(fields: [colorId], references: [id])
+  colorId         Int             @default(7)
 }
 
 model MindscapeMeme {
@@ -108,6 +110,7 @@ model Color {
   title    String     @unique
   classes  String     @db.Text
   Category Category[]
+  Meme     Meme[]
 }
 
 model MindscapeScheduleConfig {

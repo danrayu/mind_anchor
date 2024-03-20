@@ -13,3 +13,7 @@ export function getBtnColordClasses(color: Color) {
 export function getBorderColordClasses(color: Color) {
   return `border-${color.classes}-400`
 }
+
+export function getGradientBgClasses(color: Color) {
+  return `bg-radial from-${color.classes}-800 via-${color.classes}-800 to-${color.classes}-700`;
+}
