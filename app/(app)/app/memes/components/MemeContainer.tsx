@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
+// import "./MemeContainer.css"
 
 interface MemeProps {
   meme: Meme;

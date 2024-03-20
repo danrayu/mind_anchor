@@ -163,7 +163,6 @@ function FilterSelector({
                 {categories.map((category: any) => FilterCategory(category))}
               </div>
             </div>
-            {/* <div className="divider mt-0"></div> */}
           </>
         )}
       </div>
