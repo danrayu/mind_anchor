@@ -2,7 +2,7 @@
 import React from "react";
 import MemeEdit from "../../components/MemeEdit";
 import { useAppSelector } from "@/app/store/hooks";
-import { useCatsValid, useMemesValid } from "@/app/util/stateValidationHooks";
+import { useCatsValid, useColorsValid, useMemesValid } from "@/app/util/stateValidationHooks";
 
 interface EditMemePageProps {
   params: { id: string };
@@ -12,6 +12,7 @@ function EditMemePage({ params: { id } }: EditMemePageProps) {
   const memeState = useAppSelector((state) => state.memes);
   const categoryState = useAppSelector((state) => state.categories);
   const catsValid = useCatsValid();
+  const colorsValid = useColorsValid();
 
   var meme: Meme | undefined = undefined;
   if (useMemesValid()) {
@@ -27,7 +28,7 @@ function EditMemePage({ params: { id } }: EditMemePageProps) {
           <span className="loading loading-dots loading-lg "></span>
         </div>
       )}
-      {meme !== undefined && catsValid && (
+      {meme !== undefined && colorsValid && catsValid && (
         <MemeEdit meme={meme!} categories={categories} />
       )}
     </div>

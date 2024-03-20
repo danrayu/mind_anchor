@@ -6,13 +6,15 @@ import {
   fetchDeleteMeme,
   fetchUpdateMeme,
 } from "@/app/fetchActions";
-import { useAppDispatch } from "@/app/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { useRouter } from "next/navigation";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import AlertBody from "../../components/utility/AlertBody";
 import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
 import ErrorAlertBody from "../../components/utility/ErrorAlertBody";
+import Modal from "../../components/Modal";
+import ColorBubble from "../../components/ColorBubble";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -25,7 +27,7 @@ export type CategoryState = {
   active: boolean;
 };
 
-function createEmptyMeme(): Meme {
+function createEmptyMeme(defaultColor: Color): Meme {
   return {
     id: 0,
     title: "",
@@ -35,21 +37,24 @@ function createEmptyMeme(): Meme {
     categories: [],
     createdAt: new Date(),
     updatedAt: new Date(),
+    color: defaultColor,
   };
 }
 
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   const router = useRouter();
+  const colors = useAppSelector(state => state.colors.colors);
   const dispatch = useAppDispatch();
   let isNew = false;
   if (initialMeme === undefined) {
     isNew = true;
-    initialMeme = createEmptyMeme();
+    initialMeme = createEmptyMeme(colors[0]);
   }
 
   const [meme, setMeme] = useState<Meme>({ ...initialMeme });
   const [showAlert, setShowAlert] = useState(false);
   const [alertSuccess, setAlertSuccess] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(initialMeme.color);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -59,7 +64,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     }
     await saveMeme(meme);
     if (isNew) {
-      setMeme(createEmptyMeme());
+      setMeme(createEmptyMeme(colors[0]));
     }
   };
 
@@ -108,6 +113,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       favorite: meme.favorite,
       authorId: meme.authorId,
       categoryIds: meme.categories.map((cat: Category) => cat.id),
+      colorId: selectedColor.id,
     };
     const request = isNew ? fetchCreateMeme : fetchUpdateMeme;
     try {
@@ -154,12 +160,34 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     setTimeout(() => setShowAlert(false), 4000);
   } 
 
+  const onSelectColor = (color: Color) => {
+    setSelectedColor(color);
+    (document.getElementById("modal-color")! as any).close();
+  };
+
+  const openColorMenu = () => {
+    (document.getElementById("modal-color")! as any).showModal();
+  };
+
   return (
     <>
       <AlertBody show={showAlert}>
         {alertSuccess ? <SuccessAlertBody message="Meme updated."/> : <ErrorAlertBody message="Failed to update meme. Please try again later." />}
         
       </AlertBody>
+      <Modal title="Select Hue" id="modal-color">
+        <div className="flex space-x-2 mt-3">
+          {colors.map((color: Color) => {
+            return (
+              <ColorBubble
+                key={color.id}
+                color={color}
+                onClick={onSelectColor}
+              />
+            );
+          })}
+        </div>
+      </Modal>
       <div className="container mx-auto p-4 mt-6">
         <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto">
           <h1 className="text-[35px] font-bold mb-4">
@@ -203,6 +231,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               checked={meme.favorite}
             />
           </div>
+          <ColorBubble color={selectedColor} onClick={openColorMenu} />
           <label htmlFor="categories" className="block font-medium mt-6">
             Categories
           </label>

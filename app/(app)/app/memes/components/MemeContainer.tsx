@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { getGradientBgClasses, getHoverBgClass } from "@/app/util/colorToClass";
 
 interface MemeProps {
   meme: Meme;
@@ -90,11 +91,11 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className="bg-radial from-amber-800 via-amber-800 to-amber-700 rounded-xl">
+      <div className={`${getGradientBgClasses(meme.color)} text-white rounded-xl`}>
         <div
           className={
-            "flex p-4 px-6 justify-between rounded-xl items-center hover:bg-base-200 hover:cursor-pointer " +
-            (isOpen && "")
+            `flex p-4 px-6 justify-between rounded-xl items-center ${getHoverBgClass(meme.color)} hover:cursor-pointer ` +
+            (!isOpen ? "" : "pb-2")
           }
           onClick={toggleOpen}
         >
@@ -106,12 +107,12 @@ function MemeContainer({ meme }: MemeProps) {
             onClick={openMenu}
             ref={buttonRef}
           >
-            <HiDotsHorizontal/>
+            <HiDotsHorizontal size={16}/>
           </button>
         </div>
         <div
           className={`${
-            isOpen ? "max-h-96 max-w-2xl p-4 pl-6 pr-14" : "hidden"
+            isOpen ? "max-h-96 max-w-2xl p-4 pt-0 pl-6 pr-14" : "hidden"
           }`}
         >
           <span className="whitespace-pre-line mb-2">{meme.description ? meme.description : "No description"}</span>
