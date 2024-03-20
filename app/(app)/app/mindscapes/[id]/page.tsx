@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useAppSelector } from "@/app/store/hooks";
-import { useMindscapesValid } from "@/app/util/stateValidationHooks";
+import { useColorsValid, useMindscapesValid } from "@/app/util/stateValidationHooks";
 import MindscapeView from "../components/MindscapeView";
 
 interface EditPageProps {
@@ -11,6 +11,7 @@ interface EditPageProps {
 function Page({ params: { id } }: EditPageProps) {
   const mindscapeState = useAppSelector((state) => state.mindscapes);
   const mindscapesValid = useMindscapesValid();
+  const colorsValid = useColorsValid();
 
   var mindscape: Mindscape | undefined = undefined;
   if (mindscapesValid) {
@@ -26,7 +27,7 @@ function Page({ params: { id } }: EditPageProps) {
           <span className="loading loading-dots loading-lg "></span>
         </div>
       )}
-      {mindscape !== undefined && mindscapesValid && (
+      {mindscape !== undefined && mindscapesValid && colorsValid && (
         <MindscapeView mindscape={mindscape!} />
       )}
     </div>

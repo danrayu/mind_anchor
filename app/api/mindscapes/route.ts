@@ -22,7 +22,11 @@ export async function GET(request: NextRequest) {
       include: {
         memes: {
           include: {
-            meme: true,
+            meme: {
+              include: {
+                color: true
+              }
+            }
           },
         }
       },
