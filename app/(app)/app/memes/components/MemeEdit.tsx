@@ -205,6 +205,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               value={meme.title}
               onChange={changedTitle}
               className="input input-bordered mt-1 p-2 w-full"
+              maxLength={100}
             />
           </div>
 
@@ -219,6 +220,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               onChange={changedDescription}
               spellCheck="false"
               className="mt-1 p-2 textarea textarea-bordered w-full h-40"
+              maxLength={1200}
             ></textarea>
           </div>
 
