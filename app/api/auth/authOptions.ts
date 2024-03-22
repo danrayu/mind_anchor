@@ -51,40 +51,4 @@ export const authOptions = {
 
 const signInCallback = async (message: any) => {
   console.log(message);
-  const providerId: string = message.account.providerAccountId;
-  const accountExists = await prisma.account.findUnique({ where: { id: providerId } });
-  // data: {
-  //   title,
-  //   description: description ? description : "",
-  //   favorite,
-  //   author: { connect: { id: user.id } },
-  //   categories: { connect: categoryIds.map((id: number) => ({ id })) },
-  //   color: { connect: { id: colorId } },
-  // },
-  // include: { author: true, categories: true, color: true },
-
-
-  // model Account {
-  //   id                String  @id @default(cuid())
-  //   userId            String
-  //   type              String
-  //   provider          String
-  //   providerAccountId String
-  //   refresh_token     String? @db.Text
-  //   access_token      String? @db.Text
-  //   expires_at        Int?
-  //   token_type        String?
-  //   scope             String?
-  //   id_token          String? @db.Text
-  //   session_state     String?
-  if (!accountExists) {
-    prisma.account.create({
-      data: {
-        userId: message.user.id,
-        type: message.account.type,
-        provider: message.account.provider,
-        
-      }
-    })
-  }
 }
