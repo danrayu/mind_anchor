@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-// import {auth} from "./auth"
-// export { auth as default } from "auth"
+import { auth } from "./auth"
 
-export { default } from "next-auth/middleware";
-
-export function middleware(request: NextRequest) {
-  // const loggedIn = request.
-}
+export default auth((req) => {
+  const user = req.auth?.user;
+  if (!user) {
+    
+  }
+})
 
 // automatically used for all middleware functions
 export const config = {

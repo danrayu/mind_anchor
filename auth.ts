@@ -1,3 +1,9 @@
-// import NextAuth from "next-auth"
-// import GitHub from "next-auth/providers/github"
-// export const { auth, handlers } = NextAuth({ providers: [ GitHub ] })
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import authConfig from "./auth.config";
+
+export const {
+  handlers: { GET, POST },
+
+  auth,
+} = NextAuth({...authConfig, adapter: PrismaAdapter()});
