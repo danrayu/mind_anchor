@@ -38,18 +38,19 @@ model Session {
 }
 
 model User {
-  id            String                   @id @default(cuid())
-  name          String?
-  email         String?                  @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role                     @default(USER)
-  accounts      Account[]
-  sessions      Session[]
-  Meme          Meme[]
-  Category      Category[]
-  Mindscape     Mindscape[]
-  Schedule      MindscapeScheduleConfig?
+  id             String                   @id @default(cuid())
+  name           String?
+  email          String?                  @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  role           Role                     @default(USER)
+  accounts       Account[]
+  sessions       Session[]
+  Meme           Meme[]
+  Category       Category[]
+  Mindscape      Mindscape[]
+  Schedule       MindscapeScheduleConfig?
 }
 
 model VerificationToken {
@@ -66,7 +67,7 @@ model Meme {
   updatedAt       DateTime        @default(now()) @updatedAt
   title           String
   description     String          @db.Text
-  author          User            @relation(fields: [authorId], references: [id])
+  author          User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId        String
   favorite        Boolean
   categories      Category[]
@@ -87,7 +88,7 @@ model MindscapeMeme {
 model Category {
   id       Int    @id @default(autoincrement())
   name     String
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
   color    Color  @relation(fields: [colorId], references: [id])
   colorId  Int    @default(1)
@@ -100,7 +101,7 @@ model Mindscape {
   description String          @db.Text
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @default(now()) @updatedAt
-  author      User            @relation(fields: [authorId], references: [id])
+  author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   memes       MindscapeMeme[]
 }
@@ -116,7 +117,7 @@ model Color {
 model MindscapeScheduleConfig {
   id       Int    @id @default(autoincrement())
   config   String @db.Text
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String @unique
 }
 

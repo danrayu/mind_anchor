@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       backgroundImage: {
         'radial': 'radial-gradient(var(--tw-gradient-stops))',
-      }
+      },
     }
   },
   safelist: [
