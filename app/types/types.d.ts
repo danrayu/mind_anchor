@@ -1,5 +1,3 @@
-import { DateTime } from "next-auth/providers/kakao";
-
 declare global {
   type Category = {
     id: number;
