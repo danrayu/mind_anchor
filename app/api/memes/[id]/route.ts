@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/authOptions";
+import { auth } from "@/auth";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -46,7 +45,7 @@ export async function PUT(
 ) {
   const { title, description, authorId, favorite, categoryIds, colorId } =
     await request.json();
-    const session = await getServerSession(authOptions);
+    const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 

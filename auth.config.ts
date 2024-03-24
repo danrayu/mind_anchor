@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "@auth/core/providers/credentials";
+import GoogleProvider from "@auth/core/providers/google"
 
 export default {
   providers: [
@@ -30,7 +30,5 @@ export default {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+  
 } satisfies NextAuthConfig
