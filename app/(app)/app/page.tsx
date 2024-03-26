@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import MindscapeView from "./mindscapes/components/MindscapeView";
 import { useAppSelector } from "@/app/store/hooks";
+import { useRouter } from "next/navigation";
 
 function AppPage() {
   const schedule = useAppSelector((state) => state.schedule.schedule);
+  const router = useRouter();
 
   const [activeMindscape, setActiveMindscape] = useState<Mindscape>();
   const scheduleRef = useRef(schedule);
@@ -54,12 +56,24 @@ function AppPage() {
       clearInterval(interval);
     };
   }, []);
+
   return (
     <div className="mt-10">
       {activeMindscape && <MindscapeView mindscape={activeMindscape} />}
       {!activeMindscape && (
-        <div className="flex items-center justify-center h-screen pb-[200px]">
-          <span className="loading loading-dots loading-lg "></span>
+        <div className="flex flex-nowrap flex-col space-y-4">
+            <span className="text-3xl font-bold ">
+              No mindscapes added to schedule.
+            </span>
+            <span className="text-3xl font-bold "></span>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                router.push("/app/mindscapes/manage");
+              }}
+            >
+              Schedule Mindscape
+            </button>
         </div>
       )}
     </div>

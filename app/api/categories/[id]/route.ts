@@ -76,9 +76,8 @@ export async function PUT(
       where: { id: parseInt(params.id), authorId: user.id },
       data: {
         ...(name && { name }),
-        ...(colorId && { color: { connect: { id: colorId } } }),
+        ...(colorId && { colorId }),
       },
-      include: { color: true },
     });
     return NextResponse.json(updatedCategory);
   } catch (error) {

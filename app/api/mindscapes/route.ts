@@ -21,11 +21,7 @@ export async function GET(request: NextRequest) {
       include: {
         memes: {
           include: {
-            meme: {
-              include: {
-                color: true
-              }
-            }
+            meme: true
           },
         }
       },

@@ -45,6 +45,7 @@ interface MemesPage {
 }
 
 function MemesPage({ memes, categories }: MemesPage) {
+  console.log("reached memes")
   const params = useSearchParams();
 
   const [filterState, setFilter] = useState<MemeFilter>(

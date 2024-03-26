@@ -3,7 +3,6 @@ import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 
 const inflateSchedule = (schedule: any, mindscapes: any) => {
-  schedule = schedule["config"];
   let scheduleExpired = false;
   schedule = schedule.filter((row: any) => {
     const ms = mindscapes.find((ms: Mindscape) => ms.id === row.id);
@@ -77,7 +76,6 @@ export async function GET(request: NextRequest) {
         },
         include: { author: true },
       });
-      console.log(inflateSchedule(JSON.parse(newConfig.config), mindscapes));
       return NextResponse.json(
         inflateSchedule(JSON.parse(newConfig.config), mindscapes)
       );

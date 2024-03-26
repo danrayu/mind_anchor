@@ -6,24 +6,16 @@ import { Types } from "@/app/types/Types";
 import React, { useEffect, useState } from "react";
 import Modal from "../../../components/Modal";
 import ColorBubble from "../../../components/ColorBubble";
-import { useColorsValid } from "@/app/util/stateValidationHooks";
+import { colors } from "@/app/util/colors";
 
 function QuickAddCat() {
   var catName = "";
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
-  const colors = useAppSelector((state) => state.colors.colors);
-  const colorsValid = useColorsValid();
 
   const [categoryName, setCategoryName] = useState(catName);
 
-  const [selectedColor, setSelectedColor] = useState<Color>();
-
-  useEffect(() => {
-    if (colorsValid) {
-      setSelectedColor(colors[0]);
-    }
-  }, [colors]);
+  const [selectedColor, setSelectedColor] = useState(1);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -38,7 +30,7 @@ function QuickAddCat() {
 
     const response = await fetchCreateCategory({
       name: categoryName,
-      colorId: selectedColor!.id,
+      colorId: selectedColor,
     });
     const newCat = await response.json();
 
@@ -63,8 +55,8 @@ function QuickAddCat() {
     }
   };
 
-  const onSelectColor = (color: Color) => {
-    setSelectedColor(color);
+  const onSelectColor = (colorId: number) => {
+    setSelectedColor(colorId);
     (document.getElementById("cat-pick-color")! as any).close();
   };
 
@@ -81,7 +73,7 @@ function QuickAddCat() {
               return (
                 <ColorBubble
                   key={color.id}
-                  color={color}
+                  colorId={color.id}
                   onClick={onSelectColor}
                 />
               );
@@ -105,7 +97,7 @@ function QuickAddCat() {
                   maxLength={40}
                 />
                 {selectedColor && (
-                  <ColorBubble color={selectedColor!} onClick={openColorMenu} />
+                  <ColorBubble colorId={selectedColor} onClick={openColorMenu} />
                 )}
 
                 <div className={"label  " + (!inputError.length && "hidden")}>

@@ -1,18 +1,18 @@
-import { getBubbleColorClasses } from "@/app/util/colorToClass";
+import { getBubbleColorClasses } from "@/app/util/colors";
 import React, { useEffect, useState } from "react";
 interface Props {
-  onClick?: (color: Color) => void;
-  color: Color;
+  onClick?: (colorId: number) => void;
+  colorId: number;
 }
 
-function ColorBubble({ onClick, color }: Props) {
-  const [classes, setClasses] = useState(getBubbleColorClasses(color));
+function ColorBubble({ onClick, colorId }: Props) {
+  const [classes, setClasses] = useState(getBubbleColorClasses(colorId));
   useEffect(() => {
-    setClasses(getBubbleColorClasses(color));
-  }, [color]);
+    setClasses(getBubbleColorClasses(colorId));
+  }, [colorId]);
   const onSelect = () => {
     if (onClick) {
-      onClick(color);
+      onClick(colorId);
     }
   };
   return (

@@ -17,9 +17,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json("User not found", { status: 404 });
     }
     const categories = await prisma.category.findMany({
-      include: {
-        color: true,
-      },
       where: {
         authorId: user?.id,
       },
@@ -59,9 +56,9 @@ export async function POST(request: NextRequest) {
       data: {
         name: name,
         author: { connect: { id: user.id } },
-        color: { connect: { id: colorId } },
+        colorId
       },
-      include: { author: true, color: true },
+      include: { author: true },
     });
     return NextResponse.json(updatedMeme);
   } catch (error) {

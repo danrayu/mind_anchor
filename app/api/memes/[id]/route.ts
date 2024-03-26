@@ -23,7 +23,6 @@ export async function GET(
       where: { id: parseInt(params.id), authorId: user.id },
       include: {
         categories: true, 
-        color: true,
       },
     });
   
@@ -66,7 +65,7 @@ export async function PUT(
         ...(description && { description }),
         ...(favorite !== undefined && { favorite }),
         ...(authorId && { author: { connect: { id: authorId } } }),
-        ...(colorId && { color: { connect: { id: colorId } } }),
+        ...(colorId && { colorId }),
         ...(categoryIds && {
           categories: {
             set: [],
@@ -74,7 +73,7 @@ export async function PUT(
           },
         }),
       },
-      include: { author: true, categories: true, color: true },
+      include: { author: true, categories: true },
     });
     return NextResponse.json(updatedMeme);
   } catch (error) {

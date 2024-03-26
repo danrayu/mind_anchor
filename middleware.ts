@@ -11,6 +11,9 @@ export default auth((req) => {
   if (!authenticated && !isLoginPage && nextUrl.pathname.startsWith('/app')) {
     return NextResponse.redirect(new URL('/app/auth/signin', req.url));
   }
+  if (nextUrl.pathname === '/app/mindscapes') {
+    return NextResponse.redirect(new URL('/app', req.url));
+  }
 })
 
 export const config = {

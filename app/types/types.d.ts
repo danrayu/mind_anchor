@@ -3,7 +3,7 @@ declare global {
     id: number;
     name: string;
     authorId: number;
-    color: Color;
+    colorId: number;
   };
   type Meme = {
     id: number;
@@ -14,7 +14,7 @@ declare global {
     authorId: number;
     favorite: boolean;
     categories: Category[];
-    color: Color;
+    colorId: number;
   };
   type MindscapeMeme = {
     id: number;

@@ -15,7 +15,7 @@ model Account {
   userId            String
   type              String
   provider          String
-  providerAccountId String
+  providerAccountId String @map("google")
   refresh_token     String? @db.Text
   access_token      String? @db.Text
   expires_at        Int?
@@ -72,7 +72,6 @@ model Meme {
   favorite        Boolean
   categories      Category[]
   collectionMemes MindscapeMeme[]
-  color           Color           @relation(fields: [colorId], references: [id])
   colorId         Int             @default(7)
 }
 
@@ -90,7 +89,6 @@ model Category {
   name     String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
-  color    Color  @relation(fields: [colorId], references: [id])
   colorId  Int    @default(1)
   memes    Meme[]
 }
@@ -104,14 +102,6 @@ model Mindscape {
   author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   memes       MindscapeMeme[]
-}
-
-model Color {
-  id       Int        @id @default(autoincrement())
-  title    String     @unique
-  classes  String     @db.Text
-  Category Category[]
-  Meme     Meme[]
 }
 
 model MindscapeScheduleConfig {

@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import Brand from "./Brand";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/store/hooks";
 import { useMindscapesValid } from "@/app/util/stateValidationHooks";
-// import UserDisplay from "./UserDisplay";
+import UserDisplay from "./UserDisplay";
 import { FaBrain, FaHome, FaLightbulb, FaPlus } from "react-icons/fa"; // Example icon
 
 function Sidebar() {
@@ -127,7 +126,7 @@ function Sidebar() {
           </details>
         </li>
 
-        {/* <UserDisplay /> */}
+        <UserDisplay />
       </ul>
     </div>
   );

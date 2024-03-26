@@ -6,10 +6,8 @@ import { fetchDeleteCategory, fetchUpdateCategory } from "@/app/fetchActions";
 import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import {
-  getBGColorClasses,
   getBubbleColorClasses,
-} from "@/app/util/colorToClass";
-import ColorBubble from "../../../components/ColorBubble";
+} from "@/app/util/colors";
 import { HiDotsHorizontal } from "react-icons/hi";
 
 interface CategoryContainerProps {
@@ -140,7 +138,7 @@ function CategoryContainer({
             id="taglet"
             className={
               "w-8 h-full rounded-tl-xl rounded-bl-xl " +
-              getBubbleColorClasses(category.color)
+              getBubbleColorClasses(category.colorId)
             }
           ></div>
           <div className="flex p-4 pl-0 flex-grow justify-between items-center flex-nowrap">

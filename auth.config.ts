@@ -1,32 +1,42 @@
 import type { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "@auth/core/providers/credentials";
-import GoogleProvider from "@auth/core/providers/google"
+import { LoginSchema } from "./schemas/LoginSchema";
+import bycrypt from "bcryptjs"
+import Google from "@auth/core/providers/google";
 
 export default {
   providers: [
-    GoogleProvider({
+    Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: {
-          label: "Email",
+        email: {
+          email: "Email",
           type: "email",
           placeholder: "jsmith@example.com",
         },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" };
+        const validatedFields = LoginSchema.safeParse(credentials);
+        if (validatedFields.success) {
+          const {email, password} = validatedFields.data;
+          const user = await prismadb?.user.findUnique({where: {
+            email: email
+          }});
 
-        if (user) {
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+          if (!user || !user.hashedPassword) {
+            return null;
+          }
+
+          if (await bycrypt.compare(password, user.hashedPassword)) {
+            return user;
+          }
         }
+        return null;
       },
     }),
   ],
