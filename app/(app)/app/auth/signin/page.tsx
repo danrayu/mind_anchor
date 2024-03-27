@@ -41,6 +41,9 @@ function page() {
         } else if (res.error) {
           setFormFeedback({ message: res.error, isError: true });
         }
+
+        if (res.awaitingVerification) {
+        }
       });
     });
   };
@@ -102,8 +105,8 @@ function page() {
             Don't have an account yet?
           </Link>
         </form>
-        <div className="divider">OR</div>
-        <GoogleSigninBtn />
+        {/* <div className="divider">OR</div>
+        <GoogleSigninBtn /> */}
       </div>
     </div>
   );

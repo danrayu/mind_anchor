@@ -1,8 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "@auth/core/providers/credentials";
 import { LoginSchema } from "./schemas/LoginSchema";
-import bycrypt from "bcryptjs"
-import Google from "@auth/core/providers/google";
+import bycrypt from "bcryptjs";
+import Google from "next-auth/providers/google";
 
 export default {
   providers: [

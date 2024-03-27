@@ -5,7 +5,6 @@ import React, { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { LoginSchema } from "@/schemas/LoginSchema";
 import { FaPerson, FaUnlockKeyhole } from "react-icons/fa6";
 import { FaEnvelope } from "react-icons/fa";
 import FormError from "../../components/utility/FormError";
@@ -13,6 +12,8 @@ import FormSuccess from "../../components/utility/FormSuccess";
 import { signup } from "@/actions/authenticate";
 import { RegisterSchema } from "@/schemas/RegisterSchema";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import email from "next-auth/providers/email";
 
 type FormFeedback = {
   isError: boolean;
@@ -20,14 +21,16 @@ type FormFeedback = {
 };
 
 function page() {
+  const router = useRouter();
   const [formFeedback, setFormFeedback] = useState<FormFeedback>();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
@@ -38,6 +41,9 @@ function page() {
       signup(e).then((res) => {
         if (res.success) {
           setFormFeedback({ message: res.success, isError: false });
+          setTimeout(() => {
+            router.push(`/app/auth/validate-email?waitingFor=${res.email}`);
+          }, 2000)
         } else if (res.error) {
           setFormFeedback({ message: res.error, isError: true });
         }

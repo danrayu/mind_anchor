@@ -5,8 +5,16 @@ import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { generateVerificationToken } from "./verificationToken";
 
-export const signin = async (values: any) => {
+type AuthActionReturnType = {
+  success?: string;
+  error?: string;
+  awaitingVerification?: boolean;
+  email?: string;
+};
+
+export const signin = async (values: any): Promise<AuthActionReturnType> => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields) {
@@ -20,13 +28,13 @@ export const signin = async (values: any) => {
   });
 
   if (!user) {
-    return { error: "This email is not signed up yet." };
+    return { error: "Invalid credentials." };
   } else if (user && (await bcrypt.compare(password, user.hashedPassword!))) {
     try {
       await signIn("credentials", {
         email,
         password,
-        redirectTo: "/app"
+        redirectTo: "/app",
       });
       return { success: "Login successful" };
     } catch (error) {
@@ -35,12 +43,15 @@ export const signin = async (values: any) => {
       }
       throw error;
     }
+  } else if (!user.emailVerified) {
+    await generateVerificationToken(user.email!);
+    return { error: "Email verification required", awaitingVerification: true };
   } else {
-    return { error: "Wrong password." };
+    return { error: "Invalid credentials." };
   }
 };
 
-export const signup = async (values: any) => {
+export const signup = async (values: any): Promise<AuthActionReturnType> => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields) {
@@ -56,8 +67,7 @@ export const signup = async (values: any) => {
   if (userExists) {
     return { error: "Email already in use" };
   }
-
-  const newUser = await prisma?.user.create({
+  await prisma?.user.create({
     data: {
       name,
       email,
@@ -65,11 +75,18 @@ export const signup = async (values: any) => {
       image: "/default-user.png",
     },
   });
+
+  await generateVerificationToken(email);
+  return {
+    success: "Confirmation email sent",
+    awaitingVerification: true,
+    email,
+  };
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/app"
+      redirectTo: "/app",
     });
     return { success: "Sign up successful" };
   } catch (error) {
