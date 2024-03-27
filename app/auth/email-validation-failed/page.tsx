@@ -33,10 +33,10 @@ function page() {
     if (email) {
       startTransition(async () => {
         const emailSent = await generateVerificationToken(email);
-        router.push(`/app/auth/validate-email?waitingFor=${email}`);
+        router.push(`/auth/validate-email?waitingFor=${email}`);
       });
     } else {
-      router.push("/app/auth/signup");
+      router.push("/auth/signup");
     }
   };
   return (

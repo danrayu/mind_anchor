@@ -8,11 +8,10 @@ import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/schemas/LoginSchema";
 import { FaUnlockKeyhole } from "react-icons/fa6";
 import { FaEnvelope } from "react-icons/fa";
-import FormError from "../../components/utility/FormError";
-import FormSuccess from "../../components/utility/FormSuccess";
 import { signin } from "@/actions/authenticate";
 import Link from "next/link";
-import GoogleSigninBtn from "../components/GoogleSigninBtn";
+import FormError from "@/app/(app)/app/components/utility/FormError";
+import FormSuccess from "@/app/(app)/app/components/utility/FormSuccess";
 
 type FormFeedback = {
   isError: boolean;
@@ -101,7 +100,7 @@ function page() {
             Sign in
           </button>
           <div className="h-2"></div>
-          <Link href={"/app/auth/signup"} className="text-right text-sm">
+          <Link href={"/auth/signup"} className="text-right text-sm">
             Don't have an account yet?
           </Link>
         </form>
