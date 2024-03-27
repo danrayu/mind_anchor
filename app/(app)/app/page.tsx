@@ -20,6 +20,7 @@ function AppPage() {
 
   const getActiveMindscape = (schedule: Schedule): Mindscape => {
     const currentTime = new Date();
+    console.log(schedule)
     for (let i = 0; i < schedule.length; i++) {
       if (i === schedule.length - 1) {
         return schedule[i].mindscape;
@@ -61,13 +62,13 @@ function AppPage() {
     <div className="mt-10">
       {activeMindscape && <MindscapeView mindscape={activeMindscape} />}
       {!activeMindscape && (
-        <div className="flex flex-nowrap flex-col space-y-4">
+        <div className="flex flex-nowrap flex-col space-y-4 max-w-[700px] m-auto">
             <span className="text-3xl font-bold ">
               No mindscapes added to schedule.
             </span>
             <span className="text-3xl font-bold "></span>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary max-w-[200px]"
               onClick={() => {
                 router.push("/app/mindscapes/manage");
               }}
