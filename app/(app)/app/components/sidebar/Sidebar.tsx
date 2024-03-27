@@ -14,13 +14,17 @@ function Sidebar() {
 
   return (
     <div className="drawer-side">
-      <label htmlFor="app-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+      <label
+        htmlFor="app-drawer"
+        aria-label="close sidebar"
+        className="drawer-overlay"
+      ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
         <Brand />
         <li className="mt-2 text-base">
           <details open>
-            <summary className="group">
-              <span>
+            <summary className="group z-2">
+              <span className="z-2">
                 <FaHome className="text-white" />
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
               </span>
@@ -28,23 +32,23 @@ function Sidebar() {
             </summary>
             <ul>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/mindscapes");
                 }}
               >
-                <span>Home</span>
+                <span className="z-2">Home</span>
               </li>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/mindscapes/manage");
                 }}
               >
-                <span>Manage</span>
+                <span className="z-2">Manage</span>
               </li>
             </ul>
-            <summary className="group">
+            <summary className="group z-2">
               <span>
                 <FaBrain className="text-white" />
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
@@ -53,13 +57,13 @@ function Sidebar() {
             </summary>
             <ul>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/mindscapes/new");
                 }}
               >
                 <span>
-                  <FaPlus className="w-[10px]"/>
+                  <FaPlus className="w-[10px]" />
                   New
                 </span>
               </li>
@@ -68,7 +72,7 @@ function Sidebar() {
                 mindscapes.mindscapes.map((mindscape: Mindscape) => {
                   return (
                     <li
-                      className="group"
+                      className="group z-2"
                       key={"ms_" + mindscape.id}
                       onClick={() => {
                         router.push("/app/mindscapes/" + mindscape.id);
@@ -83,7 +87,7 @@ function Sidebar() {
         </li>
         <li className="mt-2 text-base">
           <details open>
-            <summary className="group">
+            <summary className="group z-2">
               <span className="">
                 <FaLightbulb className="text-white" />
                 {/* <svg className="text-orange-400 h-5 w-5"></svg> */}
@@ -92,18 +96,18 @@ function Sidebar() {
             </summary>
             <ul>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/memes/new");
                 }}
               >
                 <span>
-                  <FaPlus className="w-[10px]"/>
+                  <FaPlus className="w-[10px]" />
                   New
                 </span>
               </li>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/memes");
                 }}
@@ -111,7 +115,7 @@ function Sidebar() {
                 <span>View All</span>
               </li>
               <li
-                className="group"
+                className="group z-2"
                 onClick={() => {
                   router.push("/app/memes/categories");
                 }}

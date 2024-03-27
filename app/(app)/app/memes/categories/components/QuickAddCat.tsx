@@ -82,30 +82,33 @@ function QuickAddCat() {
       )}
       <div className="mx-auto">
         <form onSubmit={handleSubmit}>
-        <h3 className="pb-2 ">Add Category</h3>
+          <h3 className="pb-2 ">Add Category</h3>
           <div className="justify-between flex">
-            <div className="flex space-x-4 items-center">
-              <label className="flex items-center flex-row space-x-6 form-control w-full max-w-xs">
-                <input
-                  type="text"
-                  id="categoryName"
-                  value={categoryName}
-                  className="input input-bordered w-full m-0 rounded max-w-xl"
-                  onChange={onChange}
-                  onKeyDown={onChange}
-                  maxLength={40}
-                />
-                {selectedColor && (
+            <div className="flex space-x-4 items-center flex-wrap">
+              <div className="flex items-center">
+                <label className="flex items-center flex-row space-x-6 form-control w-full max-w-xs">
+                  <input
+                    type="text"
+                    id="categoryName"
+                    value={categoryName}
+                    className="input input-bordered w-full m-0 rounded max-w-xl"
+                    onChange={onChange}
+                    onKeyDown={onChange}
+                    maxLength={40}
+                  />
+
+                  <div className={"label  " + (!inputError.length && "hidden")}>
+                    <span className="label-text-alt text-error text-base">
+                      {inputError}
+                    </span>
+                  </div>
+                </label>
+              </div>
+              {selectedColor && (
                   <ColorBubble colorId={selectedColor} onClick={openColorMenu} />
                 )}
-
-                <div className={"label  " + (!inputError.length && "hidden")}>
-                  <span className="label-text-alt text-error text-base">
-                    {inputError}
-                  </span>
-                </div>
-              </label>
             </div>
+
             <div className="flex justify-end space-x-2">
               <button className="btn btn-primary" type="submit">
                 Add Category

@@ -58,7 +58,7 @@ function CategoriesPage() {
       </Modal>
 
       <div className="mt-10">
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between items-center flex-wrap">
           <h1 className="text-[35px] font-bold">Categories</h1>
           <Searchbar onChange={onSearchbarChange} />
         </div>
