@@ -20,6 +20,7 @@ function AppPage() {
 
   const getActiveMindscape = (schedule: Schedule): Mindscape => {
     const currentTime = new Date();
+    console.log(schedule)
     for (let i = 0; i < schedule.length; i++) {
       if (i === schedule.length - 1) {
         return schedule[i].mindscape;
