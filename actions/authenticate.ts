@@ -72,7 +72,6 @@ export const signup = async (values: any): Promise<AuthActionReturnType> => {
       name,
       email,
       hashedPassword: hashedPwd,
-      image: "/default-user.png",
     },
   });
 
