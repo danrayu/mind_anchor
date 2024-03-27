@@ -11,7 +11,7 @@ export const {
   signOut,
 } = NextAuth({
   pages: {
-    signIn: '/app/auth/signin'
+    signIn: '/auth/signin'
   },
   adapter: PrismaAdapter(prismadb),
   session: { strategy: "jwt" },
