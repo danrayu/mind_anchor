@@ -49,19 +49,6 @@ function MindscapeForm({
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
 
-  const changedTitle = (event: any) => {
-    setTitleInputError(() => {
-      if (event.target!.value.length === event.target.maxLength) {
-        return "Max length 80 characters.";
-      } else {
-        return "";
-      }
-    });
-    setMindscape((oldState) => {
-      return { ...oldState, title: event.target!.value };
-    });
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     await saveMindscape(mindscape);
@@ -94,7 +81,6 @@ function MindscapeForm({
       } else {
         dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
-        console.log("Mindscape saved:", data);
         if (isNew) {
           router.push("/app/mindscapes/" + data.mindscape.id);
         }
@@ -103,7 +89,6 @@ function MindscapeForm({
         // setTimeout(() => setUpdateSuccess(false), 3000);
       }
     } catch (error) {
-      console.error("Error saving mindscape:", error);
       // display failure
       // setUpdateSuccess(false);
     }
@@ -118,7 +103,6 @@ function MindscapeForm({
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
           dispatch(load(Types.Mindscapes));
-          console.log("Mindscape deleted", response);
           router.back();
         }
       }
@@ -131,10 +115,22 @@ function MindscapeForm({
     setTitleInputError("");
   };
 
+  const changedTitle = (event: any) => {
+    setTitleInputError(() => {
+      if (event.target!.value.length === event.target.maxLength) {
+        return "Max length 80 characters.";
+      } else {
+        return "";
+      }
+    });
+    setMindscape((oldState) => {
+      return { ...oldState, title: event.target!.value };
+    });
+  };
+
   const changedDescription = (event: any) => {
     setMindscape((oldState) => {
-      oldState.description = event.target.value;
-      return oldState;
+      return { ...oldState, description: event.target!.value };
     });
   };
 

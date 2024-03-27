@@ -17,7 +17,6 @@ function StoreInitializer({ children }: StoreInitializerProps) {
 
   useEffect(() => {
     if (!allValid && !!session?.user) {
-      console.log("loaded all");
       dispatch(loadAll());
     }
   }, [allValid, dispatch, !!session]);

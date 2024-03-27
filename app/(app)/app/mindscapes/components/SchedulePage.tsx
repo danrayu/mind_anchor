@@ -18,27 +18,6 @@ function SchedulePage() {
   const scheduleRef = useRef(initSchedule);
 
   useEffect(() => {
-    scheduleRef.current = schedule;
-    const fetchUpdate = async () => {
-      const data = schedule.map((row) => {
-        return {
-          id: row.mindscape.id,
-          time: row.time,
-        };
-      });
-      const response = await fetchUpdateSchedule({ config: data });
-      if (response.ok) {
-        dispatch({ type: "SET_SCHEDULE", payload: schedule});
-
-      }
-      console.log(response);
-      dispatch(appFetch(Types.Schedule));
-    };
-
-    fetchUpdate();
-  }, [schedule]);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       setActiveMindscape(getIsMindscapeActive(new Date(), scheduleRef.current));
     }, 20 * 1000); // every 20 seconds
@@ -50,6 +29,25 @@ function SchedulePage() {
   useEffect(() => {
     setActiveMindscape(getIsMindscapeActive(new Date(), scheduleRef.current));
   }, [schedule]);
+
+  const saveSchedule = (schedule: Schedule) => {
+    scheduleRef.current = schedule;
+    const fetchUpdate = async () => {
+      const data = schedule.map((row) => {
+        return {
+          id: row.mindscape.id,
+          time: row.time,
+        };
+      });
+      const response = await fetchUpdateSchedule({ config: data });
+      if (response.ok) {
+        dispatch({ type: "SET_SCHEDULE", payload: schedule });
+      }
+      dispatch(appFetch(Types.Schedule));
+    };
+
+    fetchUpdate();
+  };
 
   const getIsMindscapeActive = (
     currentTime: Date,
@@ -81,7 +79,8 @@ function SchedulePage() {
   const addToSortedSchedule = (value: { time: any; mindscape: Mindscape }) => {
     setSchedule((oldState) => {
       oldState = [...oldState, value];
-      return oldState.sort((a, b) => {
+
+      const newState = oldState.sort((a, b) => {
         const [hours0, minutes0] = a.time.split(":").map(Number);
         const [hours1, minutes1] = b.time.split(":").map(Number);
         const date0 = new Date();
@@ -95,12 +94,16 @@ function SchedulePage() {
 
         return date0.getTime() - date1.getTime();
       });
+      saveSchedule(newState);
+      return newState;
     });
   };
 
   const removeScheduledMs = (targetRow: any) => {
     const index = schedule.findIndex((row) => row === targetRow);
-    setSchedule(schedule.filter((_, i) => index !== i));
+    const newState = schedule.filter((_, i) => index !== i);
+    setSchedule(newState);
+    saveSchedule(newState);
   };
 
   return (
@@ -132,7 +135,6 @@ function SchedulePage() {
 
               <tbody>
                 {schedule.map((row, index) => {
-                  console.log("row", row)
                   const isActive = row.mindscape.id === activeMindscape;
                   return (
                     <tr
@@ -140,7 +142,11 @@ function SchedulePage() {
                       className={isActive ? "bg-base-200 rounded-xl" : ""}
                     >
                       <td>{row.time}</td>
-                      <td className="underline"><Link href={"/app/mindscapes/"+row.mindscape.id}>{row.mindscape.title}</Link></td>
+                      <td className="underline">
+                        <Link href={"/app/mindscapes/" + row.mindscape.id}>
+                          {row.mindscape.title}
+                        </Link>
+                      </td>
                       <td className="text-primary">{isActive && "Active"}</td>
                       <td className="flex justify-end">
                         <button

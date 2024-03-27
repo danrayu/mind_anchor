@@ -43,7 +43,6 @@ function QuickAddCat() {
   };
 
   const onChange = (event: any) => {
-    console.log(!inputError.length && "hidden");
     if (event.target.value.length === event.target.maxLength) {
       setInputError("Max length 40 characters.");
     } else {

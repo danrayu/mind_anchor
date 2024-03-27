@@ -20,7 +20,6 @@ function AppPage() {
 
   const getActiveMindscape = (schedule: Schedule): Mindscape => {
     const currentTime = new Date();
-    console.log(schedule)
     for (let i = 0; i < schedule.length; i++) {
       if (i === schedule.length - 1) {
         return schedule[i].mindscape;
@@ -49,7 +48,6 @@ function AppPage() {
       const currentMs = getActiveMindscape(schedule);
       if (activeMindscape) {
         if (currentMs.id !== activeMindscape.id) {
-          console.log("reload to get the currently scheduled mindscape");
         }
       }
     }, 60 * 1000);

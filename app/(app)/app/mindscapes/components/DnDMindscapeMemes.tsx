@@ -29,11 +29,9 @@ function DnDMindscapeMemes({
   };
 
   const onRemoveMeme = (id: number) => {
-    console.log(id);
     setOrderedMemes((state) => {
       const i = state.findIndex((meme) => meme.id === id);
       state.splice(i, 1);
-      console.log("state", state.slice());
       return state.slice();
     });
   };

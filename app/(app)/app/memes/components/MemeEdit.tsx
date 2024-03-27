@@ -81,7 +81,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   };
 
   const changedFavorite = (event: any) => {
-    console.log("favorite", meme.favorite);
     setMeme((oldState) => {
       return { ...oldState, favorite: !oldState.favorite };
     });
@@ -126,7 +125,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       } else {
         dispatch(appFetch(Types.Memes));
         const data = await response.json();
-        console.log("Meme saved:", data);
         setAlertSuccess(true);
         playAlert();
       }
@@ -146,7 +144,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
           dispatch(load(Types.Memes));
-          console.log("Meme deleted", response);
           router.back();
         }
       }

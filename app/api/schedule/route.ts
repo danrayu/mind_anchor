@@ -3,6 +3,8 @@ import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 
 const inflateSchedule = (schedule: any, mindscapes: any) => {
+  console.log(schedule);
+
   let scheduleExpired = false;
   schedule = schedule.filter((row: any) => {
     const ms = mindscapes.find((ms: Mindscape) => ms.id === row.id);
@@ -31,7 +33,7 @@ const updateSchedule = async (schedule: any) => {
       email: session.user.email,
     },
   });
-  const updatedConfig = await prisma.mindscapeScheduleConfig.update({
+  await prisma.mindscapeScheduleConfig.update({
     where: { authorId: user!.id },
     data: {
       config: JSON.stringify({ config: schedule }),
@@ -96,7 +98,8 @@ export async function PUT(request: NextRequest) {
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const config = await request.json();
+  const {config} = await request.json();
+  console.log("config", config);
 
   if (!config) {
     return NextResponse.json("Error: Error: Config data undefined.", {
@@ -119,18 +122,9 @@ export async function PUT(request: NextRequest) {
         config: JSON.stringify(config),
       },
     });
-    const mindscapes = await prisma.mindscape.findMany({
-      include: {
-        memes: {
-          include: {
-            meme: true,
-          },
-        },
-      },
-      where: { authorId: user.id },
-    });
+    
     return NextResponse.json(
-      inflateSchedule(JSON.parse(updatedConfig.config), mindscapes)
+      {config}
     );
   } catch (error) {
     console.log(error);

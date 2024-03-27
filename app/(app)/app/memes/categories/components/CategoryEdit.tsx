@@ -32,7 +32,6 @@ function CategoryEdit({ category }: Props) {
       alert("Please enter a category name");
       return;
     }
-    console.log(selectedColor);
     const response = await fetchUpdateCategory(category.id, {
       name: categoryName,
       colorId: selectedColor,
@@ -47,7 +46,6 @@ function CategoryEdit({ category }: Props) {
   };
 
   const onChange = (event: any) => {
-    console.log(!inputError.length && "hidden");
     if (event.target.value.length === event.target.maxLength) {
       setInputError("Max length 40 characters.");
     } else {

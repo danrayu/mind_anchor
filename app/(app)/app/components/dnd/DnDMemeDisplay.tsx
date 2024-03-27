@@ -41,7 +41,6 @@ function DnDMemeDisplay({ memes }: DnDMemeDisplayProps) {
   }, [memes, memesOk]);
 
   const onDragEnd = (event: DragEndEvent) => {
-    console.log("drag end", event);
     const { active, over } = event;
 
     if (over && active.id === over.id) {

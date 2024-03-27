@@ -47,7 +47,6 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
         memes: memeData || mindscape.memes,
       };
       const response = await fetchUpdateMindscape(data);
-      console.log("ok", response.ok);
       if (response.ok) {
         dispatch(appFetch(Types.Mindscapes));
       }
@@ -71,11 +70,9 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       try {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
-          console.log("deleted");
           dispatch(appFetch(Types.Mindscapes));
         }
       } catch (error) {
-        console.log(error);
       }
     }
   };

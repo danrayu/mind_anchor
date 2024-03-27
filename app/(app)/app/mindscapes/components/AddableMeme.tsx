@@ -21,7 +21,6 @@ function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
   const [isAdded, setAdded] = useState(initIsAdded);
 
   const onSwitch = () => {
-    console.log("switched");
     onChange(meme.id);
     setAdded((state) => !state);
   };

@@ -20,7 +20,6 @@ function CollectionMeme({ meme, onRemove }: CollectionMemeProps) {
 
   const onRemove2 = (event: any) => {
     event.stopPropagation();
-    console.log("clicked")
     onRemove(meme.id)
   }
 
