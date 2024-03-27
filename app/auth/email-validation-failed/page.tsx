@@ -3,7 +3,7 @@ import { generateVerificationToken } from "@/actions/verificationToken";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useTransition } from "react";
 
-function page() {
+function Page() {
   const router = useRouter();
   const params = useSearchParams();
   const email = params.get("email");
@@ -32,7 +32,7 @@ function page() {
   const resendValidationEmail = async () => {
     if (email) {
       startTransition(async () => {
-        const emailSent = await generateVerificationToken(email);
+        await generateVerificationToken(email);
         router.push(`/auth/validate-email?waitingFor=${email}`);
       });
     } else {
@@ -61,4 +61,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

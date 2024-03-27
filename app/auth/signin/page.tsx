@@ -18,7 +18,8 @@ type FormFeedback = {
   message: string;
 };
 
-function page() {
+function Page() {
+  "use client";
   const [formFeedback, setFormFeedback] = useState<FormFeedback>();
   const [isPending, startTransition] = useTransition();
 
@@ -101,7 +102,7 @@ function page() {
           </button>
           <div className="h-2"></div>
           <Link href={"/auth/signup"} className="text-right text-sm">
-            Don't have an account yet?
+            Don&apos;t have an account yet?
           </Link>
         </form>
         {/* <div className="divider">OR</div>
@@ -111,4 +112,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

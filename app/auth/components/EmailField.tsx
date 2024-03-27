@@ -1,4 +1,4 @@
-function page() {
+function Page() {
   const onSubmit = (e: any) => {};
   return (
     <div className="flex items-center justify-center">
@@ -57,4 +57,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

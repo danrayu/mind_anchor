@@ -57,7 +57,6 @@ export async function PUT(
   const { name, colorId } = await request.json();
 
   if (!name || !colorId) {
-    console.log( name, colorId);
     return NextResponse.json("Error: Category data undefined.", {
       status: 400,
     });

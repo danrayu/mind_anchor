@@ -3,6 +3,7 @@ import CredentialsProvider from "@auth/core/providers/credentials";
 import { LoginSchema } from "./schemas/LoginSchema";
 import bycrypt from "bcryptjs";
 import Google from "next-auth/providers/google";
+import prisma from "@/prisma/client";
 
 export default {
   providers: [
@@ -24,7 +25,7 @@ export default {
         const validatedFields = LoginSchema.safeParse(credentials);
         if (validatedFields.success) {
           const {email, password} = validatedFields.data;
-          const user = await prismadb?.user.findUnique({where: {
+          const user = await prisma?.user.findUnique({where: {
             email: email
           }});
 

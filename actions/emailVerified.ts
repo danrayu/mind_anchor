@@ -1,8 +1,9 @@
-
 "use server"
+import prisma from "@/prisma/client";
+
 export const getIsEmailVerified = async (email: string) => {
   try {
-    const user = await prismadb?.user.findUnique({ where: { email } });
+    const user = await prisma?.user.findUnique({ where: { email } });
     if (user?.emailVerified) {
       return true;
     }

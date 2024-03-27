@@ -3,7 +3,7 @@ import { getIsEmailVerified } from "@/actions/emailVerified";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function page() {
+function Page() {
   const router = useRouter();
   const params = useSearchParams();
   const email = params.get("waitingFor");
@@ -38,7 +38,7 @@ function page() {
         {!isWaiting && (
           <>
             <span className="text-lg">
-              Success! Redirecting you to login page...
+              Success! Redirecting you to login P...
             </span>
             <span className="loading loading-spinner loading-lg text-primary"></span>
           </>
@@ -48,4 +48,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

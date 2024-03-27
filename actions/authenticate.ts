@@ -26,10 +26,13 @@ export const signin = async (values: any): Promise<AuthActionReturnType> => {
       email: email,
     },
   });
+  console.log("pwd", await bcrypt.compare(password, user!.hashedPassword!))
 
   if (!user) {
+    console.log("nouser");
     return { error: "Invalid credentials." };
-  } else if (user && (await bcrypt.compare(password, user.hashedPassword!))) {
+    } else if (user && (await bcrypt.compare(password, user.hashedPassword!))) {
+      console.log("+++++++++++++++++++++++++++");
     try {
       await signIn("credentials", {
         email,
@@ -38,6 +41,7 @@ export const signin = async (values: any): Promise<AuthActionReturnType> => {
       });
       return { success: "Login successful" };
     } catch (error) {
+      console.log("=============================", error);
       if (error instanceof AuthError) {
         return { error: "Could not authenticate." };
       }
@@ -52,6 +56,7 @@ export const signin = async (values: any): Promise<AuthActionReturnType> => {
 };
 
 export const signup = async (values: any): Promise<AuthActionReturnType> => {
+  "use server";
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields) {

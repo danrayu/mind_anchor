@@ -80,8 +80,6 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(newMindscape);
   } catch (error) {
-    console.log(error);
-    // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(
       { error: "Error: Could not create Mindscape." },
       { status: 500 }

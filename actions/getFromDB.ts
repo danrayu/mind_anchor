@@ -1,4 +1,6 @@
 "use server"
+import prisma from "@/prisma/client";
+
 export const getUserById = async (id: string) => {
-  return await prismadb?.user.findUnique({ where: { id } });
+  return await prisma?.user.findUnique({ where: { id } });
 };

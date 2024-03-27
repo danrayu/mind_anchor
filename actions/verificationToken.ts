@@ -1,10 +1,11 @@
 "use server"
 import { v4 as uuidv4 } from "uuid";
 import { sendVerificationEmail } from "./verificationEmail";
+import prisma from "@/prisma/client";
 
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
-    const verificationToken = await prismadb!.verificationToken.findFirst({
+    const verificationToken = await prisma!.verificationToken.findFirst({
       where: { email },
     });
     return verificationToken;
@@ -15,7 +16,7 @@ export const getVerificationTokenByEmail = async (email: string) => {
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {
-    const verificationToken = await prismadb!.verificationToken.findUnique({
+    const verificationToken = await prisma!.verificationToken.findUnique({
       where: { token },
     });
     return verificationToken;
@@ -28,7 +29,7 @@ export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
   const expires = new Date(new Date().getTime() + 1800 * 1000);
 
-  await prismadb?.verificationToken.deleteMany({
+  await prisma?.verificationToken.deleteMany({
     where: {
       email,
     },
@@ -36,7 +37,7 @@ export const generateVerificationToken = async (email: string) => {
 
   await sendVerificationEmail(token, email);
 
-  const newToken = await prismadb?.verificationToken.create({
+  const newToken = await prisma?.verificationToken.create({
     data: {
       token,
       expires,

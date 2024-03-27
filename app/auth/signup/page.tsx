@@ -19,7 +19,7 @@ type FormFeedback = {
   message: string;
 };
 
-function page() {
+function Page() {
   const router = useRouter();
   const [formFeedback, setFormFeedback] = useState<FormFeedback>();
   const [isPending, startTransition] = useTransition();
@@ -129,4 +129,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
