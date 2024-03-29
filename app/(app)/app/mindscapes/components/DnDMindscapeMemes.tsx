@@ -9,11 +9,13 @@ import CollectionMeme from "./MindscapeMeme";
 interface DndMindscapeMemesProps {
   orderedMemes: Meme[];
   setOrderedMemes: React.Dispatch<React.SetStateAction<Meme[]>>;
+  dndMode: boolean;
 }
 
 function DnDMindscapeMemes({
   orderedMemes,
   setOrderedMemes,
+  dndMode,
 }: DndMindscapeMemesProps) {
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -61,6 +63,7 @@ function DnDMindscapeMemes({
                   meme={meme}
                   key={meme.id}
                   onRemove={onRemoveMeme}
+                  dndMode={dndMode}
                 />
               ))}
             </SortableContext>

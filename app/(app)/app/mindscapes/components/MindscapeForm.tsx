@@ -7,7 +7,7 @@ import { appFetch, load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
 import Modal from "../../components/Modal";
 import DnDMindscapeMemes from "./DnDMindscapeMemes";
@@ -29,7 +29,7 @@ type AlertState = {
   showAlert: boolean;
   actionSuccess: boolean;
   alertMessage: string;
-}
+};
 
 function createEmptyMindscape(): Mindscape {
   return {
@@ -53,36 +53,45 @@ function MindscapeForm({
   const [mindscape, setMindscape] = useState<Mindscape>(
     initialMindscape || createEmptyMindscape()
   );
+  const [dndMode, setDndMode] = useState<boolean>(false);
+  const onSwitchDndMode = (e: ChangeEvent<HTMLInputElement>) => {
+    setDndMode(e.target.checked);
+  }
   const [titleInputError, setTitleInputError] = useState<string>("");
-  const [alertState, setAlertState] = useState<AlertState>({showAlert: false, actionSuccess: false, alertMessage: ""});
+  const [alertState, setAlertState] = useState<AlertState>({
+    showAlert: false,
+    actionSuccess: false,
+    alertMessage: "",
+  });
 
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
 
 
-const playAlert = () => {
-  setAlertState((prevState: AlertState) => {
-    return { ...prevState, showAlert: true };
-  });
-  setTimeout(() => {
+
+  const playAlert = () => {
     setAlertState((prevState: AlertState) => {
-      return { ...prevState, showAlert: false };
+      return { ...prevState, showAlert: true };
     });
-  }, 4000);
-};
+    setTimeout(() => {
+      setAlertState((prevState: AlertState) => {
+        return { ...prevState, showAlert: false };
+      });
+    }, 4000);
+  };
 
-const setAlertSuccessful = (actionSuccess: boolean) => {
-  setAlertState((prevState: AlertState) => {
-    return { ...prevState, actionSuccess };
-  });
-}
+  const setAlertSuccessful = (actionSuccess: boolean) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, actionSuccess };
+    });
+  };
 
-const setAlertMessage = (message: string) => {
-  setAlertState((prevState: AlertState) => {
-    return { ...prevState, alertMessage: message };
-  });
-}
+  const setAlertMessage = (message: string) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, alertMessage: message };
+    });
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -108,9 +117,8 @@ const setAlertMessage = (message: string) => {
     const request = isNew ? fetchCreateMindscape : fetchUpdateMindscape;
     try {
       const response = await request(requestData);
-      
+
       if (!response.ok) {
-        console.log("!response.ok")
         setAlertMessage("There was a problem. Please try again.");
         setAlertSuccessful(false);
         playAlert();
@@ -118,19 +126,16 @@ const setAlertMessage = (message: string) => {
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
-        
-        
         dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
         if (isNew) {
-          //router.push("/app/mindscapes/" + data.id);
+          router.push("/app/mindscapes/" + data.id);
         }
         setAlertMessage("Success! Added mindscape.");
         setAlertSuccessful(true);
         playAlert();
       }
     } catch (error) {
-      console.log(error)
       setAlertMessage("There was a problem. Please try again.");
       setAlertSuccessful(false);
       playAlert();
@@ -234,7 +239,14 @@ const setAlertMessage = (message: string) => {
           value={mindscape.description}
           onChange={changedDescription}
         ></textarea>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Edit Meme Order</span>
+            <input type="checkbox" className="toggle" onChange={onSwitchDndMode} />
+          </label>
+        </div>
         <DnDMindscapeMemes
+          dndMode={dndMode}
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
         />
