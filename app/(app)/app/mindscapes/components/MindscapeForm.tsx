@@ -53,10 +53,6 @@ function MindscapeForm({
   const [mindscape, setMindscape] = useState<Mindscape>(
     initialMindscape || createEmptyMindscape()
   );
-  const [dndMode, setDndMode] = useState<boolean>(false);
-  const onSwitchDndMode = (e: ChangeEvent<HTMLInputElement>) => {
-    setDndMode(e.target.checked);
-  }
   const [titleInputError, setTitleInputError] = useState<string>("");
   const [alertState, setAlertState] = useState<AlertState>({
     showAlert: false,
@@ -239,14 +235,7 @@ function MindscapeForm({
           value={mindscape.description}
           onChange={changedDescription}
         ></textarea>
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">Edit Meme Order</span>
-            <input type="checkbox" className="toggle" onChange={onSwitchDndMode} />
-          </label>
-        </div>
         <DnDMindscapeMemes
-          dndMode={dndMode}
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
         />

@@ -38,10 +38,6 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
     actionSuccess: false,
     alertMessage: "",
   });
-  const [dndMode, setDndMode] = useState<boolean>(false);
-  const onSwitchDndMode = (e: ChangeEvent<HTMLInputElement>) => {
-    setDndMode(e.target.checked);
-  };
   const playAlert = () => {
     setAlertState((prevState: AlertState) => {
       return { ...prevState, showAlert: true };
@@ -193,13 +189,11 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
               <input
                 type="checkbox"
                 className="toggle"
-                onChange={onSwitchDndMode}
               />
             </label>
           </div>
           {editMode && (
             <DnDMindscapeMemes
-              dndMode={dndMode}
               orderedMemes={orderedMemes}
               setOrderedMemes={setOrderedMemes}
             />
