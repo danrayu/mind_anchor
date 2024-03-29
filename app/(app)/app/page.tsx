@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import MindscapeView from "./mindscapes/components/MindscapeView";
 import { useAppSelector } from "@/app/store/hooks";
+import { useRouter } from "next/navigation";
 
 function AppPage() {
   const schedule = useAppSelector((state) => state.schedule.schedule);
+  const router = useRouter();
 
   const [activeMindscape, setActiveMindscape] = useState<Mindscape>();
   const scheduleRef = useRef(schedule);
@@ -18,6 +20,7 @@ function AppPage() {
 
   const getActiveMindscape = (schedule: Schedule): Mindscape => {
     const currentTime = new Date();
+    console.log(schedule)
     for (let i = 0; i < schedule.length; i++) {
       if (i === schedule.length - 1) {
         return schedule[i].mindscape;
@@ -46,7 +49,6 @@ function AppPage() {
       const currentMs = getActiveMindscape(schedule);
       if (activeMindscape) {
         if (currentMs.id !== activeMindscape.id) {
-          console.log("reload to get the currently scheduled mindscape");
         }
       }
     }, 60 * 1000);
@@ -54,12 +56,24 @@ function AppPage() {
       clearInterval(interval);
     };
   }, []);
+
   return (
     <div className="mt-10">
       {activeMindscape && <MindscapeView mindscape={activeMindscape} />}
       {!activeMindscape && (
-        <div className="flex items-center justify-center h-screen pb-[200px]">
-          <span className="loading loading-dots loading-lg "></span>
+        <div className="flex flex-nowrap flex-col space-y-4 max-w-[700px] m-auto">
+            <span className="text-3xl font-bold ">
+              No mindscapes added to schedule.
+            </span>
+            <span className="text-3xl font-bold "></span>
+            <button
+              className="btn btn-primary max-w-[200px]"
+              onClick={() => {
+                router.push("/app/mindscapes/manage");
+              }}
+            >
+              Schedule Mindscape
+            </button>
         </div>
       )}
     </div>

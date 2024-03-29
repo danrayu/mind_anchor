@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/authOptions";
+import { auth } from "@/auth";
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -18,9 +17,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json("User not found", { status: 404 });
     }
     const categories = await prisma.category.findMany({
-      include: {
-        color: true,
-      },
       where: {
         authorId: user?.id,
       },
@@ -36,7 +32,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const { name, colorId } = await request.json();
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
@@ -60,9 +56,9 @@ export async function POST(request: NextRequest) {
       data: {
         name: name,
         author: { connect: { id: user.id } },
-        color: { connect: { id: colorId } },
+        colorId
       },
-      include: { author: true, color: true },
+      include: { author: true },
     });
     return NextResponse.json(updatedMeme);
   } catch (error) {

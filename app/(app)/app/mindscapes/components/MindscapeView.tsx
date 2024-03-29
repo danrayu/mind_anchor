@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { fetchDeleteMindscape, fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";
@@ -11,10 +11,18 @@ import DnDMindscapeMemes from "./DnDMindscapeMemes";
 import Modal from "../../components/Modal";
 import MemeCatalogModal from "./MemeCatalogModal";
 import MemeContainer from "../../memes/components/MemeContainer";
+import AlertBody from "../../components/utility/AlertBody";
+import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
 }
+
+type AlertState = {
+  showAlert: boolean;
+  actionSuccess: boolean;
+  alertMessage: string;
+};
 
 function MindscapeView({ mindscape }: MindscapeViewProps) {
   const breadcrumbs = [{ label: "Mindscapes" }];
@@ -25,11 +33,43 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
+  const [alertState, setAlertState] = useState<AlertState>({
+    showAlert: false,
+    actionSuccess: false,
+    alertMessage: "",
+  });
+  const [dndMode, setDndMode] = useState<boolean>(false);
+  const onSwitchDndMode = (e: ChangeEvent<HTMLInputElement>) => {
+    setDndMode(e.target.checked);
+  };
+  const playAlert = () => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, showAlert: true };
+    });
+    setTimeout(() => {
+      setAlertState((prevState: AlertState) => {
+        return { ...prevState, showAlert: false };
+      });
+    }, 4000);
+  };
+
+  const setAlertSuccessful = (actionSuccess: boolean) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, actionSuccess };
+    });
+  };
+
+  const setAlertMessage = (message: string) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, alertMessage: message };
+    });
+  };
 
   const handleOnEdit = async () => {
+    console.log("pressed");
     // If saving
     if (editMode) {
-      if (!title) {
+      if (!title || title === "") {
         alert("Please enter a title for the mindscape.");
         return;
       }
@@ -47,9 +87,15 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
         memes: memeData || mindscape.memes,
       };
       const response = await fetchUpdateMindscape(data);
-      console.log("ok", response.ok);
       if (response.ok) {
+        console.log("success");
         dispatch(appFetch(Types.Mindscapes));
+        setAlertMessage("");
+        setAlertSuccessful(true);
+        playAlert();
+      } else {
+        setAlertSuccessful(false);
+        playAlert();
       }
     }
     setEditMode((state) => !state);
@@ -71,17 +117,27 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       try {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
-          console.log("deleted");
           dispatch(appFetch(Types.Mindscapes));
+          dispatch(appFetch(Types.Schedule));
+          setAlertSuccessful(true);
+          playAlert();
         }
       } catch (error) {
-        console.log(error);
+        setAlertSuccessful(false);
+        playAlert();
       }
     }
   };
 
   return (
     <>
+      <AlertBody show={alertState.showAlert}>
+        {alertState.actionSuccess ? (
+          <SuccessAlertBody message="Success." />
+        ) : (
+          <SuccessAlertBody message="Failed to update meme. Please try again later." />
+        )}
+      </AlertBody>
       <Modal
         title={"Meme Catalog"}
         id={"meme-catalog"}
@@ -131,8 +187,19 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
               ))}
             {!editMode && orderedMemes && <p>Empty... No memes to display.</p>}
           </div>
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">Edit Meme Order</span>
+              <input
+                type="checkbox"
+                className="toggle"
+                onChange={onSwitchDndMode}
+              />
+            </label>
+          </div>
           {editMode && (
             <DnDMindscapeMemes
+              dndMode={dndMode}
               orderedMemes={orderedMemes}
               setOrderedMemes={setOrderedMemes}
             />

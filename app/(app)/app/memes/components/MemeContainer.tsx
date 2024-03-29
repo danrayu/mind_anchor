@@ -7,7 +7,7 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { getGradientBgClasses, getHoverBgClass } from "@/app/util/colorToClass";
+import { getGradientBgClasses, getHoverBgClass } from "@/app/util/colors";
 
 interface MemeProps {
   meme: Meme;
@@ -91,10 +91,10 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className={`${getGradientBgClasses(meme.color)} text-white rounded-xl`}>
+      <div className={`${getGradientBgClasses(meme.colorId)} text-white rounded-xl`}>
         <div
           className={
-            `flex p-4 px-6 justify-between rounded-xl items-center ${getHoverBgClass(meme.color)} hover:cursor-pointer ` +
+            `flex p-4 px-6 justify-between rounded-xl items-center ${getHoverBgClass(meme.colorId)} hover:cursor-pointer ` +
             (!isOpen ? "" : "pb-2")
           }
           onClick={toggleOpen}

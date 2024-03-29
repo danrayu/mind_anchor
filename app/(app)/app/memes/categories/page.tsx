@@ -10,14 +10,18 @@ import CategoryEdit from "./components/CategoryEdit";
 
 function CategoriesPage() {
   const [searchString, setSearchString] = useState("");
-  const [catInEditing, setCatInEditing] = useState<Category | undefined>(undefined);
+  const [catInEditing, setCatInEditing] = useState<Category | undefined>(
+    undefined
+  );
   const categoriesValid = useCatsValid();
 
   var categoryState = useAppSelector((state) => state.categories);
 
   const renderCategories = () => {
     return filteredCategories.map((cat: Category) => {
-      return <CategoryContainer key={cat.id} category={cat} onEdit={showEditModal} />;
+      return (
+        <CategoryContainer key={cat.id} category={cat} onEdit={showEditModal} />
+      );
     });
   };
 
@@ -36,11 +40,10 @@ function CategoriesPage() {
     [searchString]
   );
 
-
   const showEditModal = (cat: Category) => {
     setCatInEditing(cat);
     (document.getElementById("edit-cat-modal")! as any).showModal();
-  }
+  };
 
   useEffect(() => {
     if (categoriesValid) {
@@ -50,24 +53,28 @@ function CategoriesPage() {
 
   return (
     <>
-    <Modal title="Edit Category" id="edit-cat-modal">
-      {catInEditing && <CategoryEdit category={catInEditing!}/>}
-    </Modal>
-    
-    <div className="mt-10">
-      <div className="flex flex-row justify-between items-center">
-      <h1 className="text-[35px] font-bold">Categories</h1>
-      <Searchbar onChange={onSearchbarChange} />
-      </div>
+      <Modal title="Edit Category" id="edit-cat-modal">
+        {catInEditing && <CategoryEdit category={catInEditing!} />}
+      </Modal>
 
-      <div className="mt-2">
-      
-        <div className="bg-base-200 mb-6 p-4 pl-8 rounded-xl">
-          <QuickAddCat />
+      <div className="mt-10">
+        <div className="flex flex-row justify-between items-center flex-wrap">
+          <h1 className="text-[35px] font-bold">Categories</h1>
+          <Searchbar onChange={onSearchbarChange} />
         </div>
-        {useCatsValid() && renderCategories()}
+
+        <div className="mt-2">
+          <div className="bg-base-200 mb-6 p-4 pl-8 rounded-xl">
+            <QuickAddCat />
+          </div>
+          {useCatsValid() && renderCategories()}
+          {filteredCategories.length === 0 && (
+            <div className="mt-7">
+              <span className="text-lg">No categories were found</span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 }

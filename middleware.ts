@@ -1,13 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import authConfig from "./auth.config";
+import { NextResponse } from "next/server";
 
-export { default } from "next-auth/middleware";
+const {auth} = NextAuth(authConfig);
 
-export function middleware(request: NextRequest) {
-  return NextResponse.redirect(new URL('/custom-page', request.url));
-}
+export default auth((req) => {
+  const authenticated = !!req.auth;
+  const {nextUrl} = req;
+  if (!authenticated && nextUrl.pathname.startsWith('/app')) {
+    return NextResponse.redirect(new URL('/auth/signin', req.url));
+  }
+  if (nextUrl.pathname === '/app/mindscapes') {
+    return NextResponse.redirect(new URL('/app', req.url));
+  }
+})
 
-// automatically used for all middleware functions
 export const config = {
-  // * zero & more, + 1 & more, ? zero or one
-  matcher: ["/page-you-don-t-want-accessed/:id?"]
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"]
 }

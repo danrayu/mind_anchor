@@ -6,24 +6,16 @@ import { Types } from "@/app/types/Types";
 import React, { useEffect, useState } from "react";
 import Modal from "../../../components/Modal";
 import ColorBubble from "../../../components/ColorBubble";
-import { useColorsValid } from "@/app/util/stateValidationHooks";
+import { colors } from "@/app/util/colors";
 
 function QuickAddCat() {
   var catName = "";
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
-  const colors = useAppSelector((state) => state.colors.colors);
-  const colorsValid = useColorsValid();
 
   const [categoryName, setCategoryName] = useState(catName);
 
-  const [selectedColor, setSelectedColor] = useState<Color>();
-
-  useEffect(() => {
-    if (colorsValid) {
-      setSelectedColor(colors[0]);
-    }
-  }, [colors]);
+  const [selectedColor, setSelectedColor] = useState(1);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -38,7 +30,7 @@ function QuickAddCat() {
 
     const response = await fetchCreateCategory({
       name: categoryName,
-      colorId: selectedColor!.id,
+      colorId: selectedColor,
     });
     const newCat = await response.json();
 
@@ -51,7 +43,6 @@ function QuickAddCat() {
   };
 
   const onChange = (event: any) => {
-    console.log(!inputError.length && "hidden");
     if (event.target.value.length === event.target.maxLength) {
       setInputError("Max length 40 characters.");
     } else {
@@ -63,8 +54,8 @@ function QuickAddCat() {
     }
   };
 
-  const onSelectColor = (color: Color) => {
-    setSelectedColor(color);
+  const onSelectColor = (colorId: number) => {
+    setSelectedColor(colorId);
     (document.getElementById("cat-pick-color")! as any).close();
   };
 
@@ -81,7 +72,7 @@ function QuickAddCat() {
               return (
                 <ColorBubble
                   key={color.id}
-                  color={color}
+                  colorId={color.id}
                   onClick={onSelectColor}
                 />
               );
@@ -91,30 +82,33 @@ function QuickAddCat() {
       )}
       <div className="mx-auto">
         <form onSubmit={handleSubmit}>
-        <h3 className="pb-2 ">Add Category</h3>
+          <h3 className="pb-2 ">Add Category</h3>
           <div className="justify-between flex">
-            <div className="flex space-x-4 items-center">
-              <label className="flex items-center flex-row space-x-6 form-control w-full max-w-xs">
-                <input
-                  type="text"
-                  id="categoryName"
-                  value={categoryName}
-                  className="input input-bordered w-full m-0 rounded max-w-xl"
-                  onChange={onChange}
-                  onKeyDown={onChange}
-                  maxLength={40}
-                />
-                {selectedColor && (
-                  <ColorBubble color={selectedColor!} onClick={openColorMenu} />
-                )}
+            <div className="flex space-x-4 items-center flex-wrap">
+              <div className="flex items-center">
+                <label className="flex items-center flex-row space-x-6 form-control w-full max-w-xs">
+                  <input
+                    type="text"
+                    id="categoryName"
+                    value={categoryName}
+                    className="input input-bordered w-full m-0 rounded max-w-xl"
+                    onChange={onChange}
+                    onKeyDown={onChange}
+                    maxLength={40}
+                  />
 
-                <div className={"label  " + (!inputError.length && "hidden")}>
-                  <span className="label-text-alt text-error text-base">
-                    {inputError}
-                  </span>
-                </div>
-              </label>
+                  <div className={"label  " + (!inputError.length && "hidden")}>
+                    <span className="label-text-alt text-error text-base">
+                      {inputError}
+                    </span>
+                  </div>
+                </label>
+              </div>
+              {selectedColor && (
+                  <ColorBubble colorId={selectedColor} onClick={openColorMenu} />
+                )}
             </div>
+
             <div className="flex justify-end space-x-2">
               <button className="btn btn-primary" type="submit">
                 Add Category

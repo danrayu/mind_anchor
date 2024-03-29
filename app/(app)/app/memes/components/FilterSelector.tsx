@@ -116,7 +116,7 @@ function FilterSelector({
         key={`cat_${category["id"]}`}
         state={filter.state}
         name={category.name}
-        borderColor={category.color}
+        borderColorId={category.colorId}
       />
     );
   }

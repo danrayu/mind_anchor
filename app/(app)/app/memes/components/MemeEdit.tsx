@@ -15,6 +15,7 @@ import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
 import ErrorAlertBody from "../../components/utility/ErrorAlertBody";
 import Modal from "../../components/Modal";
 import ColorBubble from "../../components/ColorBubble";
+import { colors } from "@/app/util/colors";
 
 // Import additional libraries as needed, e.g., for fetching and updating data
 interface NewMemeProps {
@@ -27,7 +28,7 @@ export type CategoryState = {
   active: boolean;
 };
 
-function createEmptyMeme(defaultColor: Color): Meme {
+function createEmptyMeme(): Meme {
   return {
     id: 0,
     title: "",
@@ -37,24 +38,23 @@ function createEmptyMeme(defaultColor: Color): Meme {
     categories: [],
     createdAt: new Date(),
     updatedAt: new Date(),
-    color: defaultColor,
+    colorId: 1,
   };
 }
 
 function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   const router = useRouter();
-  const colors = useAppSelector(state => state.colors.colors);
   const dispatch = useAppDispatch();
   let isNew = false;
   if (initialMeme === undefined) {
     isNew = true;
-    initialMeme = createEmptyMeme(colors[0]);
+    initialMeme = createEmptyMeme();
   }
 
   const [meme, setMeme] = useState<Meme>({ ...initialMeme });
   const [showAlert, setShowAlert] = useState(false);
   const [alertSuccess, setAlertSuccess] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(initialMeme.color);
+  const [selectedColor, setSelectedColor] = useState(initialMeme.colorId);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -64,7 +64,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     }
     await saveMeme(meme);
     if (isNew) {
-      setMeme(createEmptyMeme(colors[0]));
+      setMeme(createEmptyMeme());
     }
   };
 
@@ -81,7 +81,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
   };
 
   const changedFavorite = (event: any) => {
-    console.log("favorite", meme.favorite);
     setMeme((oldState) => {
       return { ...oldState, favorite: !oldState.favorite };
     });
@@ -113,7 +112,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       favorite: meme.favorite,
       authorId: meme.authorId,
       categoryIds: meme.categories.map((cat: Category) => cat.id),
-      colorId: selectedColor.id,
+      colorId: selectedColor,
     };
     const request = isNew ? fetchCreateMeme : fetchUpdateMeme;
     try {
@@ -126,7 +125,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
       } else {
         dispatch(appFetch(Types.Memes));
         const data = await response.json();
-        console.log("Meme saved:", data);
         setAlertSuccess(true);
         playAlert();
       }
@@ -146,7 +144,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         const response = await fetchDeleteMeme(meme.id);
         if (response.ok) {
           dispatch(load(Types.Memes));
-          console.log("Meme deleted", response);
           router.back();
         }
       }
@@ -160,8 +157,8 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     setTimeout(() => setShowAlert(false), 4000);
   } 
 
-  const onSelectColor = (color: Color) => {
-    setSelectedColor(color);
+  const onSelectColor = (colorId: number) => {
+    setSelectedColor(colorId);
     (document.getElementById("modal-color")! as any).close();
   };
 
@@ -173,7 +170,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     <>
       <AlertBody show={showAlert}>
         {alertSuccess ? <SuccessAlertBody message="Meme updated."/> : <ErrorAlertBody message="Failed to update meme. Please try again later." />}
-        
       </AlertBody>
       <Modal title="Select Hue" id="modal-color">
         <div className="flex space-x-2 mt-3">
@@ -181,7 +177,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
             return (
               <ColorBubble
                 key={color.id}
-                color={color}
+                colorId={color.id}
                 onClick={onSelectColor}
               />
             );
@@ -233,7 +229,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
               checked={meme.favorite}
             />
           </div>
-          <ColorBubble color={selectedColor} onClick={openColorMenu} />
+          <ColorBubble colorId={selectedColor} onClick={openColorMenu} />
           <label htmlFor="categories" className="block font-medium mt-6">
             Categories
           </label>

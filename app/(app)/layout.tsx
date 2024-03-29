@@ -6,6 +6,7 @@ import MainView from "./app/components/Main";
 import StateProvider from "./app/components/StateProvider";
 import StoreInitializer from "./app/components/StoreInitializer";
 import AuthProvider from "./app/components/AuthProvider";
+import Header from "./app/components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,13 +34,8 @@ export default function RootLayout({
                     className="drawer-toggle"
                   />
                   <div className="drawer-content flex flex-col items-center">
+                    <Header />
                     <MainView>{children}</MainView>
-                    <label
-                      htmlFor="app-drawer"
-                      className="btn btn-primary drawer-button lg:hidden"
-                    >
-                      Open drawer
-                    </label>
                   </div>
                   <Sidebar />
                 </div>

@@ -7,10 +7,13 @@ import { appFetch, load } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { Types } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
 import Modal from "../../components/Modal";
 import DnDMindscapeMemes from "./DnDMindscapeMemes";
+import AlertBody from "../../components/utility/AlertBody";
+import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
+import ErrorAlertBody from "../../components/utility/ErrorAlertBody";
 
 interface CMindscapeFormInterface {
   mindscape?: Mindscape;
@@ -20,6 +23,12 @@ type CMemeModel = {
   indexInMindscape: number;
   memeId: number;
   mindscapeId: number;
+};
+
+type AlertState = {
+  showAlert: boolean;
+  actionSuccess: boolean;
+  alertMessage: string;
 };
 
 function createEmptyMindscape(): Mindscape {
@@ -44,21 +53,43 @@ function MindscapeForm({
   const [mindscape, setMindscape] = useState<Mindscape>(
     initialMindscape || createEmptyMindscape()
   );
+  const [dndMode, setDndMode] = useState<boolean>(false);
+  const onSwitchDndMode = (e: ChangeEvent<HTMLInputElement>) => {
+    setDndMode(e.target.checked);
+  }
   const [titleInputError, setTitleInputError] = useState<string>("");
+  const [alertState, setAlertState] = useState<AlertState>({
+    showAlert: false,
+    actionSuccess: false,
+    alertMessage: "",
+  });
+
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
 
-  const changedTitle = (event: any) => {
-    setTitleInputError(() => {
-      if (event.target!.value.length === event.target.maxLength) {
-        return "Max length 80 characters.";
-      } else {
-        return "";
-      }
+
+
+  const playAlert = () => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, showAlert: true };
     });
-    setMindscape((oldState) => {
-      return { ...oldState, title: event.target!.value };
+    setTimeout(() => {
+      setAlertState((prevState: AlertState) => {
+        return { ...prevState, showAlert: false };
+      });
+    }, 4000);
+  };
+
+  const setAlertSuccessful = (actionSuccess: boolean) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, actionSuccess };
+    });
+  };
+
+  const setAlertMessage = (message: string) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, alertMessage: message };
     });
   };
 
@@ -88,24 +119,26 @@ function MindscapeForm({
       const response = await request(requestData);
 
       if (!response.ok) {
+        setAlertMessage("There was a problem. Please try again.");
+        setAlertSuccessful(false);
+        playAlert();
         throw new Error(
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
         dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
-        console.log("Mindscape saved:", data);
         if (isNew) {
-          router.push("/app/mindscapes/" + data.mindscape.id);
+          router.push("/app/mindscapes/" + data.id);
         }
-        // display success
-        // setUpdateSuccess(true);
-        // setTimeout(() => setUpdateSuccess(false), 3000);
+        setAlertMessage("Success! Added mindscape.");
+        setAlertSuccessful(true);
+        playAlert();
       }
     } catch (error) {
-      console.error("Error saving mindscape:", error);
-      // display failure
-      // setUpdateSuccess(false);
+      setAlertMessage("There was a problem. Please try again.");
+      setAlertSuccessful(false);
+      playAlert();
     }
   };
 
@@ -117,13 +150,17 @@ function MindscapeForm({
       if (proceed) {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
+          setAlertMessage("Deleted.");
+          setAlertSuccessful(true);
+          playAlert();
           dispatch(load(Types.Mindscapes));
-          console.log("Mindscape deleted", response);
           router.back();
         }
       }
     } catch (error) {
-      console.error("Error deleting Mindscape:", error);
+      setAlertMessage("There was a problem. Please try again.");
+      setAlertSuccessful(false);
+      playAlert();
     }
   };
 
@@ -131,10 +168,22 @@ function MindscapeForm({
     setTitleInputError("");
   };
 
+  const changedTitle = (event: any) => {
+    setTitleInputError(() => {
+      if (event.target!.value.length === event.target.maxLength) {
+        return "Max length 80 characters.";
+      } else {
+        return "";
+      }
+    });
+    setMindscape((oldState) => {
+      return { ...oldState, title: event.target!.value };
+    });
+  };
+
   const changedDescription = (event: any) => {
     setMindscape((oldState) => {
-      oldState.description = event.target.value;
-      return oldState;
+      return { ...oldState, description: event.target!.value };
     });
   };
 
@@ -146,6 +195,14 @@ function MindscapeForm({
           setOrderedMemes={setOrderedMemes}
         />
       </Modal>
+
+      <AlertBody show={alertState.showAlert}>
+        {alertState.actionSuccess ? (
+          <SuccessAlertBody message={alertState.alertMessage} />
+        ) : (
+          <ErrorAlertBody message={alertState.alertMessage} />
+        )}
+      </AlertBody>
       <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto mt-10">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} mindscape
@@ -182,7 +239,14 @@ function MindscapeForm({
           value={mindscape.description}
           onChange={changedDescription}
         ></textarea>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Edit Meme Order</span>
+            <input type="checkbox" className="toggle" onChange={onSwitchDndMode} />
+          </label>
+        </div>
         <DnDMindscapeMemes
+          dndMode={dndMode}
           orderedMemes={orderedMemes}
           setOrderedMemes={setOrderedMemes}
         />

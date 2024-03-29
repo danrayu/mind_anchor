@@ -5,6 +5,7 @@ import { Types } from "@/app/types/Types";
 import React, { useEffect, useState } from "react";
 import ColorBubble from "../../../components/ColorBubble";
 import Modal from "../../../components/Modal";
+import { colors } from "@/app/util/colors";
 
 interface Props {
   category: Category;
@@ -13,18 +14,13 @@ interface Props {
 function CategoryEdit({ category }: Props) {
   const [inputError, setInputError] = useState("");
   const dispatch = useAppDispatch();
-  const colors = useAppSelector((state) => state.colors.colors);
 
   const [categoryName, setCategoryName] = useState(category.name);
-  const [selectedColor, setSelectedColor] = useState(category.color);
+  const [selectedColor, setSelectedColor] = useState(category.colorId);
 
   useEffect(() => {
     setCategoryName(category.name);
   }, [category]);
-
-  useEffect(() => {
-    setSelectedColor(category.color);
-  }, [colors]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -36,10 +32,9 @@ function CategoryEdit({ category }: Props) {
       alert("Please enter a category name");
       return;
     }
-    console.log(selectedColor.id);
     const response = await fetchUpdateCategory(category.id, {
       name: categoryName,
-      colorId: selectedColor.id,
+      colorId: selectedColor,
     });
     const updatedCat = await response.json();
 
@@ -51,7 +46,6 @@ function CategoryEdit({ category }: Props) {
   };
 
   const onChange = (event: any) => {
-    console.log(!inputError.length && "hidden");
     if (event.target.value.length === event.target.maxLength) {
       setInputError("Max length 40 characters.");
     } else {
@@ -63,8 +57,8 @@ function CategoryEdit({ category }: Props) {
     }
   };
 
-  const onSelectColor = (color: Color) => {
-    setSelectedColor(color);
+  const onSelectColor = (colorId: number) => {
+    setSelectedColor(colorId);
     (document.getElementById("modal-color")! as any).close();
   };
 
@@ -80,7 +74,7 @@ function CategoryEdit({ category }: Props) {
             return (
               <ColorBubble
                 key={color.id}
-                color={color}
+                colorId={color.id}
                 onClick={onSelectColor}
               />
             );
@@ -102,7 +96,7 @@ function CategoryEdit({ category }: Props) {
                 onChange={onChange}
                 className="input input-bordered mt-1 p-2 w-full"
               />
-              <ColorBubble color={selectedColor} onClick={openColorMenu} />
+              <ColorBubble colorId={selectedColor} onClick={openColorMenu} />
             </div>
           </div>
           <button type="submit" className="mt-2 btn btn-primary">

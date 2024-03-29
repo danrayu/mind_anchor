@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/authOptions";
+import { auth } from "@/auth";
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -22,11 +21,7 @@ export async function GET(request: NextRequest) {
       include: {
         memes: {
           include: {
-            meme: {
-              include: {
-                color: true
-              }
-            }
+            meme: true
           },
         }
       },
@@ -48,7 +43,7 @@ export async function POST(request: NextRequest) {
   const { title, description, memes } =
     await request.json();
 
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -85,8 +80,6 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(newMindscape);
   } catch (error) {
-    console.log(error);
-    // Handle specific errors (e.g., non-existing meme)
     return NextResponse.json(
       { error: "Error: Could not create Mindscape." },
       { status: 500 }

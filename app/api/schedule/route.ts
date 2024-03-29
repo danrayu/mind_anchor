@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/authOptions";
+import { auth } from "@/auth";
 
 const inflateSchedule = (schedule: any, mindscapes: any) => {
-  schedule = schedule["config"];
+  if (!schedule.schedule) {
+    return [];
+  }
   let scheduleExpired = false;
   schedule = schedule.filter((row: any) => {
     const ms = mindscapes.find((ms: Mindscape) => ms.id === row.id);
@@ -24,7 +25,7 @@ const inflateSchedule = (schedule: any, mindscapes: any) => {
 };
 
 const updateSchedule = async (schedule: any) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -33,7 +34,7 @@ const updateSchedule = async (schedule: any) => {
       email: session.user.email,
     },
   });
-  const updatedConfig = await prisma.mindscapeScheduleConfig.update({
+  await prisma.mindscapeScheduleConfig.update({
     where: { authorId: user!.id },
     data: {
       config: JSON.stringify({ config: schedule }),
@@ -42,7 +43,7 @@ const updateSchedule = async (schedule: any) => {
 };
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
@@ -78,7 +79,6 @@ export async function GET(request: NextRequest) {
         },
         include: { author: true },
       });
-      console.log(inflateSchedule(JSON.parse(newConfig.config), mindscapes));
       return NextResponse.json(
         inflateSchedule(JSON.parse(newConfig.config), mindscapes)
       );
@@ -95,11 +95,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json("Not authenticated", { status: 401 });
 
-  const config = await request.json();
+  const {config} = await request.json();
 
   if (!config) {
     return NextResponse.json("Error: Error: Config data undefined.", {
@@ -122,21 +122,11 @@ export async function PUT(request: NextRequest) {
         config: JSON.stringify(config),
       },
     });
-    const mindscapes = await prisma.mindscape.findMany({
-      include: {
-        memes: {
-          include: {
-            meme: true,
-          },
-        },
-      },
-      where: { authorId: user.id },
-    });
+    
     return NextResponse.json(
-      inflateSchedule(JSON.parse(updatedConfig.config), mindscapes)
+      {config}
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { error: "Error updating the schedule config." },
       { status: 500 }
