@@ -11,6 +11,9 @@ import React, { useState } from "react";
 import MemeCatalogModal from "./MemeCatalogModal";
 import Modal from "../../components/Modal";
 import DnDMindscapeMemes from "./DnDMindscapeMemes";
+import AlertBody from "../../components/utility/AlertBody";
+import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
+import ErrorAlertBody from "../../components/utility/ErrorAlertBody";
 
 interface CMindscapeFormInterface {
   mindscape?: Mindscape;
@@ -21,6 +24,12 @@ type CMemeModel = {
   memeId: number;
   mindscapeId: number;
 };
+
+type AlertState = {
+  showAlert: boolean;
+  actionSuccess: boolean;
+  alertMessage: string;
+}
 
 function createEmptyMindscape(): Mindscape {
   return {
@@ -45,9 +54,35 @@ function MindscapeForm({
     initialMindscape || createEmptyMindscape()
   );
   const [titleInputError, setTitleInputError] = useState<string>("");
+  const [alertState, setAlertState] = useState<AlertState>({showAlert: false, actionSuccess: false, alertMessage: ""});
+
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
+
+
+const playAlert = () => {
+  setAlertState((prevState: AlertState) => {
+    return { ...prevState, showAlert: true };
+  });
+  setTimeout(() => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, showAlert: false };
+    });
+  }, 4000);
+};
+
+const setAlertSuccessful = (actionSuccess: boolean) => {
+  setAlertState((prevState: AlertState) => {
+    return { ...prevState, actionSuccess };
+  });
+}
+
+const setAlertMessage = (message: string) => {
+  setAlertState((prevState: AlertState) => {
+    return { ...prevState, alertMessage: message };
+  });
+}
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -73,24 +108,32 @@ function MindscapeForm({
     const request = isNew ? fetchCreateMindscape : fetchUpdateMindscape;
     try {
       const response = await request(requestData);
-
+      
       if (!response.ok) {
+        console.log("!response.ok")
+        setAlertMessage("There was a problem. Please try again.");
+        setAlertSuccessful(false);
+        playAlert();
         throw new Error(
           `HTTP error status: ${response.status} - ${response.statusText}`
         );
       } else {
+        
+        
         dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
         if (isNew) {
-          router.push("/app/mindscapes/" + data.mindscape.id);
+          //router.push("/app/mindscapes/" + data.id);
         }
-        // display success
-        // setUpdateSuccess(true);
-        // setTimeout(() => setUpdateSuccess(false), 3000);
+        setAlertMessage("Success! Added mindscape.");
+        setAlertSuccessful(true);
+        playAlert();
       }
     } catch (error) {
-      // display failure
-      // setUpdateSuccess(false);
+      console.log(error)
+      setAlertMessage("There was a problem. Please try again.");
+      setAlertSuccessful(false);
+      playAlert();
     }
   };
 
@@ -102,12 +145,17 @@ function MindscapeForm({
       if (proceed) {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
+          setAlertMessage("Deleted.");
+          setAlertSuccessful(true);
+          playAlert();
           dispatch(load(Types.Mindscapes));
           router.back();
         }
       }
     } catch (error) {
-      console.error("Error deleting Mindscape:", error);
+      setAlertMessage("There was a problem. Please try again.");
+      setAlertSuccessful(false);
+      playAlert();
     }
   };
 
@@ -142,6 +190,14 @@ function MindscapeForm({
           setOrderedMemes={setOrderedMemes}
         />
       </Modal>
+
+      <AlertBody show={alertState.showAlert}>
+        {alertState.actionSuccess ? (
+          <SuccessAlertBody message={alertState.alertMessage} />
+        ) : (
+          <ErrorAlertBody message={alertState.alertMessage} />
+        )}
+      </AlertBody>
       <form onSubmit={handleSubmit} className="max-w-[800px] mx-auto mt-10">
         <h1 className="text-[35px] font-bold mb-4">
           {isNew && "Add"} {!isNew && "Edit"} mindscape

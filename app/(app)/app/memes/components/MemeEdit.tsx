@@ -170,7 +170,6 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
     <>
       <AlertBody show={showAlert}>
         {alertSuccess ? <SuccessAlertBody message="Meme updated."/> : <ErrorAlertBody message="Failed to update meme. Please try again later." />}
-        
       </AlertBody>
       <Modal title="Select Hue" id="modal-color">
         <div className="flex space-x-2 mt-3">

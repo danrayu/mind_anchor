@@ -33,7 +33,7 @@ function CollectionMeme({ meme, onRemove }: CollectionMemeProps) {
     >
       <div
         className={
-          "flex p-6 py-5 justify-between items-center "
+          "flex p-6 py-5 justify-between items-center bg-base-200 rounded-xl"
         }
         onClick={toggleOpen}
       >

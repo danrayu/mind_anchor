@@ -49,7 +49,7 @@ function DnDMindscapeMemes({
           <span className="text-base">+</span> Meme
         </button>
       </div>
-      <div className="mt-2 border border-base-content rounded-xl">
+      <div className="mt-2 rounded-xl">
         {orderedMemes && (
           <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
             <SortableContext

@@ -11,9 +11,17 @@ import DnDMindscapeMemes from "./DnDMindscapeMemes";
 import Modal from "../../components/Modal";
 import MemeCatalogModal from "./MemeCatalogModal";
 import MemeContainer from "../../memes/components/MemeContainer";
+import AlertBody from "../../components/utility/AlertBody";
+import SuccessAlertBody from "../../components/utility/SuccessAlertBody";
 
 interface MindscapeViewProps {
   mindscape: Mindscape;
+}
+
+type AlertState = {
+  showAlert: boolean;
+  actionSuccess: boolean;
+  alertMessage: string;
 }
 
 function MindscapeView({ mindscape }: MindscapeViewProps) {
@@ -25,11 +33,36 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
+  const [alertState, setAlertState] = useState<AlertState>({showAlert: false, actionSuccess: false, alertMessage: ""});
+
+  const playAlert = () => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, showAlert: true };
+    });
+    setTimeout(() => {
+      setAlertState((prevState: AlertState) => {
+        return { ...prevState, showAlert: false };
+      });
+    }, 4000);
+  };
+
+  const setAlertSuccessful = (actionSuccess: boolean) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, actionSuccess };
+    });
+  }
+
+  const setAlertMessage = (message: string) => {
+    setAlertState((prevState: AlertState) => {
+      return { ...prevState, alertMessage: message };
+    });
+  }
 
   const handleOnEdit = async () => {
+    console.log("pressed")
     // If saving
     if (editMode) {
-      if (!title) {
+      if (!title || title === "") {
         alert("Please enter a title for the mindscape.");
         return;
       }
@@ -48,7 +81,14 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       };
       const response = await fetchUpdateMindscape(data);
       if (response.ok) {
+        console.log("success")
         dispatch(appFetch(Types.Mindscapes));
+        setAlertMessage("")
+        setAlertSuccessful(true);
+        playAlert();
+      } else {
+        setAlertSuccessful(false);
+        playAlert();
       }
     }
     setEditMode((state) => !state);
@@ -71,14 +111,26 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
         const response = await fetchDeleteMindscape(mindscape.id);
         if (response.ok) {
           dispatch(appFetch(Types.Mindscapes));
+          dispatch(appFetch(Types.Schedule));
+          setAlertSuccessful(true);
+          playAlert();
         }
       } catch (error) {
+        setAlertSuccessful(false);
+        playAlert();
       }
     }
   };
 
   return (
     <>
+      <AlertBody show={alertState.showAlert}>
+        {alertState.actionSuccess ? (
+          <SuccessAlertBody message="Success." />
+        ) : (
+          <SuccessAlertBody message="Failed to update meme. Please try again later." />
+        )}
+      </AlertBody>
       <Modal
         title={"Meme Catalog"}
         id={"meme-catalog"}
