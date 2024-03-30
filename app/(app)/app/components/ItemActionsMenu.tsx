@@ -40,7 +40,7 @@ function ItemActionsMenu({ onClose, onEdit, onDelete, position }: ItemActionsMen
 
   return (
     <ul
-      className="menu bg-base-200 w-56 rounded-box"
+      className="menu bg-base-200 rounded-box"
       style={{
         position: "absolute",
         top: position.top,

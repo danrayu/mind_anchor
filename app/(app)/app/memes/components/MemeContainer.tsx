@@ -28,7 +28,7 @@ function MemeContainer({ meme }: MemeProps) {
     if (button) {
       let offset = 59;
       if (window.innerWidth - button.right < 250) {
-        offset = -224;
+        offset = -112;
       }
       setPosition({
         top: button.top + window.scrollY,
