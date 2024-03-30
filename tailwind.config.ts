@@ -18,7 +18,7 @@ const config: Config = {
     "bg-gradient-to-b",
     {
       pattern:
-        /(bg|border|from|to)-(red|green|gray|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
+        /(text|border-t|bg|border|from|to)-(red|green|gray|blue|pink|purple|orange|amber|yellow|lime|emerald|cyan)-(950|900|800|700|600|500|400)/,
       variants: ["hover"],
     },
   ],

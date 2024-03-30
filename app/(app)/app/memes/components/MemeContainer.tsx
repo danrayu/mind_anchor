@@ -7,7 +7,7 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { appFetch, load } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { getGradientBgClasses, getHoverBgClass } from "@/app/util/colors";
+import { getHighlightClass, getTextColor } from "@/app/util/colors";
 
 interface MemeProps {
   meme: Meme;
@@ -91,19 +91,19 @@ function MemeContainer({ meme }: MemeProps) {
           onDelete={onDelete}
         />
       )}
-      <div className={`${getGradientBgClasses(meme.colorId)} text-white rounded-xl`}>
+      <div className={`bg-base-200 rounded-xl border border-base-300 border-t-1 ${getHighlightClass(meme.colorId)}`}>
         <div
           className={
-            `flex p-4 px-6 justify-between rounded-xl items-center ${getHoverBgClass(meme.colorId)} hover:cursor-pointer ` +
+            `flex p-4 px-6 justify-between rounded-xl items-center hover:cursor-pointer ` +
             (!isOpen ? "" : "pb-2")
           }
           onClick={toggleOpen}
         >
           <div className="">
-            <span className="text-lg font-semibold">{meme.title}</span>
+            <span className={`text-slate-300 text-lg font-semibold`}>{meme.title}</span>
           </div>
           <button
-            className="btn btn-ghost "
+            className="btn btn-ghost ml-2"
             onClick={openMenu}
             ref={buttonRef}
           >

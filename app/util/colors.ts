@@ -53,6 +53,16 @@ const getColorFromId = (id: number) => {
   return colors.find((color) => color.id === id);
 }
 
+export function getTextColor(colorId: number) {
+  const color = getColorFromId(colorId)!;
+  return `text-${color.classes}-500`;
+}
+
+export function getHighlightClass(colorId: number) {
+  const color = getColorFromId(colorId)!;
+  return `border-t-${color.classes}-500`;
+}
+
 export function getBubbleColorClasses(colorId: number) {
   const color = getColorFromId(colorId)!;
   if (color.classes === "base") {
