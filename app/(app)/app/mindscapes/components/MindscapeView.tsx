@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { fetchDeleteMindscape, fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";

@@ -1,26 +1,33 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import '../globals.css'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "../globals.css";
+import AuthProvider from "../(app)/app/components/AuthProvider";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'MindAnchor',
-  description: 'MindAnchor: Secure and revisit your core beliefs',
-}
+  title: "MindAnchor",
+  description: "MindAnchor: Never lose sight of your mental compass",
+};
 
 export default function SiteLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className} >
-        <div>
-        {children}
-        </div>
-      </body>
-    </html>
-  )
+    <AuthProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <div>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </div>
+        </body>
+      </html>
+    </AuthProvider>
+  );
 }

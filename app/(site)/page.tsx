@@ -1,21 +1,24 @@
-"use client"
-import { useRouter } from 'next/navigation'
-import React from 'react'
+import React from "react";
+import PageTitle from "./components/PageTitle";
+import Subtitle from "./components/Subtitle";
+import GoToAppButton from "./components/GoToAppButton";
 
 function SiteMainPage() {
-  const router = useRouter();
-  const goToApp = () => {
-    router.push('/app/memes');
-
-  }
   return (
     <div>
-      <h2>
-        here why my app is so awesome
-      </h2>
-      <button className='btn btn-primary' onClick={goToApp}> go to app </button>
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mt-8">
+          <PageTitle />
+        </div>
+        <div className="mt-[70px]">
+          <Subtitle />
+        </div>
+        <div className="flex items-center justify-center mt-[50px]">
+          <GoToAppButton />
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default SiteMainPage
+export default SiteMainPage;
