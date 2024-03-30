@@ -124,6 +124,7 @@ function MemeEdit({ categories, meme: initialMeme }: NewMemeProps) {
         );
       } else {
         dispatch(appFetch(Types.Memes));
+        dispatch(appFetch(Types.Mindscapes));
         const data = await response.json();
         setAlertSuccess(true);
         playAlert();
