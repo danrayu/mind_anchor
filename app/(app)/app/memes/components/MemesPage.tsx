@@ -137,7 +137,7 @@ function MemesPage({ memes, categories }: MemesPage) {
   );
 
   const filter = useCallback(() => {
-    if (memes.length !== 0) {
+    if (memes.length !== undefined) {
       setFilteredMemes(
         filterBySearchString(filterByFavorites(filterByCategories([...memes])))
       );
@@ -153,6 +153,9 @@ function MemesPage({ memes, categories }: MemesPage) {
   useEffect(() => {
     filter();
   }, [filter]);
+
+  useEffect(() => {
+  }, [filteredMemes])
 
   const onSearchbarChange = (value: string) => {
     setFilter({ ...filterState, searchString: value });
