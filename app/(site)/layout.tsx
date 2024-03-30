@@ -22,9 +22,11 @@ export default function SiteLayout({
       <html lang="en">
         <body className={inter.className}>
           <div>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
+          {children}
+            {/* <Navbar />
+            <main>
+            </main>
+            <Footer /> */}
           </div>
         </body>
       </html>

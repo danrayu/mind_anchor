@@ -18,6 +18,17 @@ body {
 }
 
 @layer components {
+  .heroBackground {
+    background-image: url('/starry-sky-anchor.webp');
+    background-size: cover;
+    background-position: center;
+    width: 1400px;
+    height: auto;
+  }
+
+  .starry-sky-bg {
+    background-color: #010101 !important;
+  }
 }
 
 @layer base {

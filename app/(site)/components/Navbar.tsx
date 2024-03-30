@@ -4,7 +4,7 @@ import Brand from "./Brand";
 
 function Navbar() {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar">
       <div className="max-w-[1600px] mx-auto w-full">
         <div className="flex-1">
           {/* <a className="btn btn-ghost text-xl">daisyUI</a> */}
