@@ -157,7 +157,7 @@ function MemeCatalogModal({
     <div>
       <Searchbar onChange={onSearchbarChange} />
       <FilterSelector filterState={filterState} setFilter={setFilter} resetFilter={resetFilter} />
-      <div className="mt-4">
+      <div className="mt-4 space-y-2">
         {filteredMemes.map((meme: Meme) => (
           <AddableMeme
             key={meme.id}

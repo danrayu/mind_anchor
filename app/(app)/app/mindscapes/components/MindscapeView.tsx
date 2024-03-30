@@ -181,16 +181,7 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
               orderedMemes.map((meme: Meme) => (
                 <MemeContainer key={meme.id} meme={meme} />
               ))}
-            {!editMode && orderedMemes && <p>Empty... No memes to display.</p>}
-          </div>
-          <div className="form-control">
-            <label className="label cursor-pointer">
-              <span className="label-text">Edit Meme Order</span>
-              <input
-                type="checkbox"
-                className="toggle"
-              />
-            </label>
+            {!editMode && orderedMemes.length === 0 && <p>Empty... No memes to display.</p>}
           </div>
           {editMode && (
             <DnDMindscapeMemes

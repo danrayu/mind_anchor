@@ -27,7 +27,7 @@ function AddableMeme({ meme, initIsAdded, onChange }: AddableMemeProps) {
 
   return (
     <div
-      className={"border border-base-content mb-2 rounded-xl " + (isAdded && "bg-primary-content")}
+      className={"bg-base-200 mb-2 rounded-xl " + (isAdded && "bg-gray-700")}
     >
       <div
         className={

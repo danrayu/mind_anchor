@@ -81,7 +81,7 @@ export function getGradientBgClasses(colorId: number) {
   if (color.classes === "gray") {
     return `bg-gray-700`;
   }
-  return `bg-gradient-to-b from-${color.classes}-800 to-${color.classes}-700`;
+  return `bg-gradient-to-b from-${color.classes}-700 to-${color.classes}-700`;
 }
 
 export function getHoverBgClass(colorId: number) {
