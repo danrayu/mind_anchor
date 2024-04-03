@@ -36,6 +36,13 @@ declare global {
     id: number;
     classes: string;
   };
+  type NextImage = {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+  }
 }
+
 
 export {};
