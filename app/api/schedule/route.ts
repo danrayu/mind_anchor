@@ -3,19 +3,14 @@ import prisma from "@/prisma/client";
 import { auth } from "@/auth";
 
 const inflateSchedule = (schedule: any, mindscapes: any) => {
-  if (!schedule.schedule) {
+  if (!schedule) {
     return [];
   }
-  let scheduleExpired = false;
   schedule = schedule.filter((row: any) => {
     const ms = mindscapes.find((ms: Mindscape) => ms.id === row.id);
-    if (!ms) scheduleExpired = true;
+    if (!ms) updateSchedule(schedule);
     return !!ms;
   });
-  if (scheduleExpired) {
-    updateSchedule(schedule);
-  }
-
   schedule.map((row: any) => {
     const id = row.id;
     row.mindscape = mindscapes.find((ms: Mindscape) => ms.id === id);
