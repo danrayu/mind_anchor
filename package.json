@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start-local": "next start -H 25.38.147.227",
     "lint": "next lint"
   },
   "dependencies": {

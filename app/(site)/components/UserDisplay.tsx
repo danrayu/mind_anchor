@@ -15,7 +15,7 @@ function UserDisplay() {
             <summary className="font-semibold text-lg">
               {session.user!.name}
             </summary>
-            <ul className="p-2 bg-base-100 rounded-t-none">
+            <ul className="p-2 pt-0 !mt-0 bg-base-100">
               <li>
                 <Link className="underline" href={"/api/auth/signout"}>
                   Logout

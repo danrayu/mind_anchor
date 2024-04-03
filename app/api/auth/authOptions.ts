@@ -1,7 +1,7 @@
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 const prisma = new PrismaClient()
 
@@ -26,7 +26,7 @@ export const authOptions = {
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const user = await prisma.user.findUnique({ where: { email: credentials!.email } })
+        const user = await prisma.user.findUnique({ where: { email: (credentials!.email as string) } })
   
         if (user) {
           return user
