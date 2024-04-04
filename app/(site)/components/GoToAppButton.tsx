@@ -8,7 +8,7 @@ function GoToAppButton() {
     router.push("/app");
   }
   return (
-    <button className='btn btn-lg btn-wide btn-warning' onClick={onClick}>Try it out</button>
+    <button className='btn btn-lg btn-wide btn-primary rounded-full' onClick={onClick}>Try it out</button>
   )
 }
 

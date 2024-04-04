@@ -1,5 +1,6 @@
 import { useAppSelector } from "@/app/store/hooks";
 import React, { useEffect, useState } from "react";
+import TimePicker from "./TimePicker";
 interface MindscapeSchedulerProps {
   handleSave: (value: {time: any, mindscape: Mindscape}) => void
 }
@@ -75,6 +76,7 @@ function MindscapeScheduler({handleSave: onSave}: MindscapeSchedulerProps) {
           onChange={handleSelectTime}
         />
       </div>
+      <TimePicker />
       <div className="flex justify-end mt-5 -mb-3">
         <form method="dialog">
           <button

@@ -19,7 +19,7 @@ export default function SiteLayout({
   return (
     <AuthProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={inter.className} data-theme="sunset">
           <div>
           {children}
             <Footer />

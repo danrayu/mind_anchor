@@ -1,14 +1,14 @@
-import React from 'react'
-interface SegmentTitleInterface {
-  text: string
+import React from "react";
+interface TitleSegmentProps {
+  text: string;
 }
 
-function SegmentTitle({text}: SegmentTitleInterface) {
+function SegmentTitle({ text }: TitleSegmentProps) {
   return (
-    <div className='text-center'>
-      <h1 className='text-4xl text-white font-semibold line-h leading-[1.2em]'>{text}</h1>
-    </div>
-  )
+    <h1 className="text-5xl text-primary font-semibold line-h leading-[1.2em]">
+      {text}
+    </h1>
+  );
 }
 
-export default SegmentTitle
+export default SegmentTitle;

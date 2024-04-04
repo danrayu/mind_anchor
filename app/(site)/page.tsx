@@ -4,6 +4,8 @@ import Subtitle from "./components/Subtitle";
 import GoToAppButton from "./components/GoToAppButton";
 import Navbar from "./components/Navbar";
 import Image from "next/image";
+import SegmentSubtitle from "./components/SegmentSubtitle";
+import Segments from "./components/Segments";
 import SegmentTitle from "./components/SegmentTitle";
 
 function SiteMainPage() {
@@ -30,19 +32,43 @@ function SiteMainPage() {
           </div>
         </div>
       </div>
-      <div className="bg-gradient-to-b from-[#010101] to-base-transparent h-[100px]">
+      <div className="bg-gradient-to-b from-[#010101] to-[#010101] h-[100px]">
         <span></span>
       </div>
-      <div className="mt-[50px]">
-        <Image
-          src={"/mindscape-morning.png"}
-          alt={"Application showing mindscape page example"}
-          width={1413}
-          height={867}
-          className="h-[560px] w-auto cursor-default mt-2 mb-2 mx-auto "
-        />
-        <div>
-        </div>
+      <div className="mt-16">
+        <Segments>
+          <SegmentTitle text="A Web App for recording your Ideas" />
+        </Segments>
+        <Segments>
+          <SegmentSubtitle text="Write down your values and thoughts" />
+          <Image
+            src={"/add-meme.png"}
+            alt={'Image of the "add new meme" page'}
+            width={1440}
+            height={1000}
+            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
+          />
+        </Segments>
+        <Segments>
+          <SegmentSubtitle text="Categorize them in your own way" />
+          <Image
+            src={"/categories.png"}
+            alt={"Image of the categories page"}
+            width={1440}
+            height={1150}
+            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
+          />
+        </Segments>
+        <Segments>
+          <SegmentSubtitle text="Add them to Mindscapes" />
+          <Image
+            src={"/mindscape-morning.png"}
+            alt={"an example of a mindscape"}
+            width={1413}
+            height={867}
+            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
+          />
+        </Segments>
       </div>
     </div>
   );
