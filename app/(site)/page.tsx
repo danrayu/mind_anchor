@@ -11,8 +11,8 @@ import SegmentImage from "./components/SegmentImage";
 
 function SiteMainPage() {
   return (
-    <div className="mb-16">
-      <div className="starry-sky-bg w-full">
+    <div className="">
+      <div className="starry-sky-bg px-4 w-full">
         <Navbar />
         <div className="mx-auto max-w-[1200px]  pt-[30px]">
           <div className="mt-8">
@@ -23,7 +23,7 @@ function SiteMainPage() {
             alt={"Starry sky with anchor background"}
             width={1792}
             height={1024}
-            className="h-[500px] w-auto mt-2 mb-2 mx-auto "
+            className="max-h-[500px] h-full w-auto mt-2 mb-2 mx-auto "
           />
           <div className="">
             <Subtitle />
@@ -36,7 +36,7 @@ function SiteMainPage() {
       <div className="bg-gradient-to-b from-[#010101] to-[#010101] h-[100px]">
         <span></span>
       </div>
-      <div className="mt-16">
+      <div className="mt-16 mx-4">
         <Segments>
           <SegmentTitle text="A Web App for recording your Ideas" />
         </Segments>

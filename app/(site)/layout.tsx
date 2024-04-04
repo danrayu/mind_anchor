@@ -22,6 +22,7 @@ export default function SiteLayout({
         <body className={inter.className} data-theme="sunset">
           <div>
           {children}
+          <div className="h-20">{" "}</div>
             <Footer />
           </div>
         </body>
