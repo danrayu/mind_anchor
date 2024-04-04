@@ -21,7 +21,7 @@ function CarouselSegment({ images }: CarouselSegmentProps) {
     <>
       {images.map((image: NextImage, index: number) => {
         return (
-          <div id={"slide" + index} className="carousel-item relative w-full">
+          <div id={"slide" + index} key={index} className="carousel-item relative w-full">
             <Image
               alt={image.alt}
               width={image.width}

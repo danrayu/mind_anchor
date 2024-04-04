@@ -3,7 +3,7 @@ import { FaBars } from "react-icons/fa";
 
 function Header() {
   return (
-    <div className="flex lg:hidden top-0 left-0 fixed justify-end">
+    <div className="flex lg:hidden top-0 left-0 fixed justify-end w-full">
       <div className="px-4">
         <label
           htmlFor="app-drawer"

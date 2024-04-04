@@ -43,28 +43,28 @@ function SiteMainPage() {
         <Segments>
           <SegmentSubtitle text="Write down your values and thoughts" />
           <SegmentImage image={{
-            src:"/add-meme.png",
+            src:"/add-meme.webp",
             alt:'Image of the "add new meme" page',
-            width:1440,
-            height:1000
+            width:1490,
+            height:1396
           }}/>
         </Segments>
         <Segments>
           <SegmentSubtitle text="Categorize them in your own way" />
           <SegmentImage image={{
-            src:"/categories.png",
+            src:"/categories.webp",
             alt:'Image of the categories page',
-            width:1440,
-            height:1150
+            width:1490,
+            height:1289
           }}/>
         </Segments>
         <Segments>
           <SegmentSubtitle text="Add them to Mindscapes" />
           <SegmentImage image={{
-            src:"/mindscape-morning.png",
+            src:"/mindscape-morning.webp",
             alt:'an example of a mindscape',
-            width:1413,
-            height:867
+            width:1490,
+            height:1050
           }}/>
         </Segments>
       </div>
