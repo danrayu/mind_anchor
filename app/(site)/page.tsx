@@ -7,10 +7,11 @@ import Image from "next/image";
 import SegmentSubtitle from "./components/SegmentSubtitle";
 import Segments from "./components/Segments";
 import SegmentTitle from "./components/SegmentTitle";
+import SegmentImage from "./components/SegmentImage";
 
 function SiteMainPage() {
   return (
-    <div>
+    <div className="mb-16">
       <div className="starry-sky-bg w-full">
         <Navbar />
         <div className="mx-auto max-w-[1200px]  pt-[30px]">
@@ -41,33 +42,30 @@ function SiteMainPage() {
         </Segments>
         <Segments>
           <SegmentSubtitle text="Write down your values and thoughts" />
-          <Image
-            src={"/add-meme.png"}
-            alt={'Image of the "add new meme" page'}
-            width={1440}
-            height={1000}
-            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
-          />
+          <SegmentImage image={{
+            src:"/add-meme.png",
+            alt:'Image of the "add new meme" page',
+            width:1440,
+            height:1000
+          }}/>
         </Segments>
         <Segments>
           <SegmentSubtitle text="Categorize them in your own way" />
-          <Image
-            src={"/categories.png"}
-            alt={"Image of the categories page"}
-            width={1440}
-            height={1150}
-            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
-          />
+          <SegmentImage image={{
+            src:"/categories.png",
+            alt:'Image of the categories page',
+            width:1440,
+            height:1150
+          }}/>
         </Segments>
         <Segments>
           <SegmentSubtitle text="Add them to Mindscapes" />
-          <Image
-            src={"/mindscape-morning.png"}
-            alt={"an example of a mindscape"}
-            width={1413}
-            height={867}
-            className="w-full h-auto cursor-default mt-8 mb-2 mx-auto "
-          />
+          <SegmentImage image={{
+            src:"/mindscape-morning.png",
+            alt:'an example of a mindscape',
+            width:1413,
+            height:867
+          }}/>
         </Segments>
       </div>
     </div>
