@@ -62,8 +62,6 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   };
 
   const handleOnEdit = async () => {
-    console.log("pressed");
-    // If saving
     if (editMode) {
       if (!title || title === "") {
         alert("Please enter a title for the mindscape.");
@@ -84,7 +82,6 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
       };
       const response = await fetchUpdateMindscape(data);
       if (response.ok) {
-        console.log("success");
         dispatch(appFetch(Types.Mindscapes));
         setAlertMessage("");
         setAlertSuccessful(true);
