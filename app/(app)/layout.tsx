@@ -33,8 +33,10 @@ export default function RootLayout({
                     type="checkbox"
                     className="drawer-toggle"
                   />
-                  <div className="drawer-content flex flex-col items-center">
+
+                  <div className="drawer-content flex flex-col">
                     <Header />
+                    <div className="h-6">{" "}</div>
                     <MainView>{children}</MainView>
                   </div>
                   <Sidebar />
