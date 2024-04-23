@@ -11,9 +11,12 @@ MindAnchor is a Next.js app that allows users to create and categorize ideas, as
 
 ## Installation
 
+The project dependencies are maintained using npm. For any other node tools, please consult their respective documentation.
+
 1. First, run `npm install` to install all the project's dependencies.
 
-2. Create a .env file in the root dir:
+2. Create a .env file in the root dir. 
+Only MYSQL dbs work. For other dbs, modifications in prisma/schema.prisma are required.
 
 ```
 DATABASE_URL="database url"
@@ -25,20 +28,14 @@ CONFIRMATION_EMAIL_PWD="Password for the email"
 SMTP_SERVER="smtp.gmail.com"
 ```
 
-3. After the DB is up run `npx prisma migrate dev`
+3. After the DB is up run `npx prisma db push`
 
-First, run the development server:
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<i>Note: building the project with next.js is untested and may have issues.</i>
 
-## Structure
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
