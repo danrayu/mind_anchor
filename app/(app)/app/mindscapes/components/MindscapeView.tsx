@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { fetchDeleteMindscape, fetchUpdateMindscape } from "@/app/fetchActions";
 import DropdownDescription from "./DropdownDescription";
@@ -33,6 +33,14 @@ function MindscapeView({ mindscape }: MindscapeViewProps) {
   const [orderedMemes, setOrderedMemes] = useState<Meme[]>(
     mindscape.memes.map((meme: MindscapeMeme) => meme.meme)
   );
+
+  useEffect(() => {
+    setTitle(mindscape.title)
+    setDescription(mindscape.description)
+    setOrderedMemes(mindscape.memes.map((meme: MindscapeMeme) => meme.meme))
+    setEditMode(false)
+  }, [mindscape])
+
   const [alertState, setAlertState] = useState<AlertState>({
     showAlert: false,
     actionSuccess: false,
