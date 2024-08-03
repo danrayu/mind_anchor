@@ -298,3 +298,20 @@ export const fetchAll = (): ThunkAction<
       });
   };
 };
+
+  
+export const setDebug = (doDebug: boolean): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  Action<string>
+> => {
+  return async (dispatch: Dispatch): Promise<void> => {
+    if (doDebug) {
+      dispatch({ type: "DEBUG_ON"});
+    }
+    else {
+      dispatch({ type: "DEBUG_OFF" });
+    }
+  };
+};

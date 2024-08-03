@@ -1,5 +1,5 @@
 "use client";
-import { loadAll } from "@/app/store/actions";
+import { loadAll, setDebug } from "@/app/store/actions";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useAllValid } from "@/app/util/stateValidationHooks";
 import { useSession } from "next-auth/react";
@@ -16,6 +16,8 @@ function StoreInitializer({ children }: StoreInitializerProps) {
   const { status, data: session, update: updateSession } = useSession();
 
   useEffect(() => {
+    const isDebugMode = process.env.NEXT_PUBLIC_DEBUG_MODE === 'true';
+    dispatch(setDebug(isDebugMode))
     if (!allValid && !!session?.user) {
       dispatch(loadAll());
     }

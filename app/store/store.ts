@@ -24,6 +24,10 @@ interface ScheduleState {
   error: Error | null;
 }
 
+interface DebugState {
+  doDebug: boolean
+}
+
 const initialMemesState: MemesState = {
   memes: undefined,
   loading: false,
@@ -45,6 +49,23 @@ function memesReducer(state: MemesState = initialMemesState, action: any) {
       return { ...state, memes: [...state.memes!, action.payload] };
     default:
       return state;
+  }
+}
+
+const initialDebugState: DebugState = {
+  doDebug: false
+};
+
+function debugReducer(state: DebugState = initialDebugState, action: any) {
+  // Reducers usually look at the type of action that happened
+  // to decide how to update the state
+  switch (action.type) {
+    case "DEBUG_ON":
+      return { ...state, doDebug: true };
+    case "DEBUG_OFF":
+      return { ...state, doDebug: false };
+    default:
+      return {...state}
   }
 }
 
@@ -151,6 +172,7 @@ const store = configureStore({
     categories: categoriesReducer,
     mindscapes: mindscapesReducer,
     schedule: scheduleReducer,
+    debug: debugReducer,
   },
 });
 
