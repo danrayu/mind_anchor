@@ -5,7 +5,7 @@ interface SegmentsProps {
 
 function Segments({children}: SegmentsProps) {
   return (
-    <div className='max-w-[900px] mx-auto mt-14'>{children}</div>
+    <div className='max-w-[600px] mx-auto mt-14'>{children}</div>
   )
 }
 

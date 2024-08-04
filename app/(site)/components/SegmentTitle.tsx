@@ -5,7 +5,7 @@ interface TitleSegmentProps {
 
 function SegmentTitle({ text }: TitleSegmentProps) {
   return (
-    <h1 className="md:text-5xl text-4xl text-center text-primary font-semibold line-h leading-[1.2em]">
+    <h1 className="md:text-4xl text-3xl text-center text-white font-semibold line-h leading-[1.2em]">
       {text}
     </h1>
   );

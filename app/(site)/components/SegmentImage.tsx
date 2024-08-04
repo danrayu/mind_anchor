@@ -11,7 +11,7 @@ function SegmentImage({image}: SegmentImageProps) {
             alt={image.alt}
             width={image.width}
             height={image.height}
-            className="w-full h-auto cursor-default mt-4 mb-2 mx-auto rounded-3xl"
+            className="w-full h-auto cursor-default mt-4 mb-2 rounded-3xl max-w-[600px]"
           />
   )
 }

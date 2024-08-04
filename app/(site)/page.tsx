@@ -15,15 +15,13 @@ function SiteMainPage() {
       <div className="starry-sky-bg px-4 w-full">
         <Navbar />
         <div className="mx-auto max-w-[1200px]  pt-[30px]">
-          <div className="mt-8">
-            <PageTitle />
-          </div>
+          <PageTitle />
           <Image
             src={"/starry-sky-anchor.webp"}
             alt={"Starry sky with anchor background"}
             width={1792}
             height={1024}
-            className="max-h-[500px] h-full w-auto mt-2 mb-2 mx-auto "
+            className="max-h-[400px] h-full w-auto mt-2 mb-2 mx-auto "
           />
           <div className="">
             <Subtitle />
