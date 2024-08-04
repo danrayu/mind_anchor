@@ -1,5 +1,6 @@
 "use client";
 import { generateVerificationToken } from "@/actions/verificationToken";
+import { sendVerificationEmail } from "@/actions/authEmails";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useTransition } from "react";
 
@@ -32,7 +33,8 @@ function Page() {
   const resendValidationEmail = async () => {
     if (email) {
       startTransition(async () => {
-        await generateVerificationToken(email);
+        const newToken = await generateVerificationToken(email);
+        await sendVerificationEmail(newToken.token, email)
         router.push(`/auth/validate-email?waitingFor=${email}`);
       });
     } else {
