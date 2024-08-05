@@ -7,6 +7,7 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { generateVerificationToken } from "./verificationToken";
 import { sendVerificationEmail } from "./authEmails";
+import { RecoverSchema } from "@/schemas/RecoverSchema";
 
 type AuthActionReturnType = {
   success?: string;
@@ -90,17 +91,59 @@ export const signup = async (values: any): Promise<AuthActionReturnType> => {
     awaitingVerification: true,
     email,
   };
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: "/app",
-    });
-    return { success: "Sign up successful" };
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: "Could not authenticate." };
-    }
-    throw error;
+  // try {
+  //   await signIn("credentials", {
+  //     email,
+  //     password,
+  //     redirectTo: "/app",
+  //   });
+  //   return { success: "Sign up successful" };
+  // } catch (error) {
+  //   if (error instanceof AuthError) {
+  //     return { error: "Could not authenticate." };
+  //   }
+  //   throw error;
+  // }
+};
+
+export const recover = async (values: any): Promise<AuthActionReturnType> => {
+  "use server";
+  const validatedFields = RecoverSchema.safeParse(values);
+
+  if (!validatedFields) {
+    return { error: "Invalid fields" };
   }
+
+  const { email, password, repeat_password } = values;
+  if (password !== repeat_password) {
+    return { error: "Passwords don't match." };
+  }
+
+  const hashedPwd = await bcrypt.hash(password, 10);
+  const userExists = await prisma?.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (!userExists) {
+    return { error: "There is no user with this email." };
+  }
+  const match = await bcrypt.compare(hashedPwd, userExists.hashedPassword || "");
+
+  if (match) {
+    console.log("there is a match")
+    return { error: "You are trying to use your current password." };
+  }
+  await prisma?.user.update({
+    where: {
+      email
+    },
+    data: {
+      hashedPassword: hashedPwd,
+    }
+  });
+
+  return {
+    success: "Password changed",
+  };
 };

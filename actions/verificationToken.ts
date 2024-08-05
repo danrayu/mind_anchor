@@ -1,6 +1,5 @@
-"use server"
+"use server";
 import { v4 as uuidv4 } from "uuid";
-import { sendVerificationEmail } from "./authEmails";
 import prisma from "@/prisma/client";
 
 export const getVerificationTokenByEmail = async (email: string) => {
@@ -44,4 +43,20 @@ export const generateVerificationToken = async (email: string) => {
   });
 
   return newToken;
+};
+
+export const verificationTokenValid = async (
+  email: string,
+  token: string
+) => {
+  const foundToken = await prisma?.verificationToken.findFirst({where: {email}});
+  const now = new Date();
+
+  if (foundToken?.token !== token) return false;
+
+  if (now > foundToken.expires) {
+    return false
+  }
+
+  return true;
 };

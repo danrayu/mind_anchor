@@ -41,8 +41,13 @@ declare global {
     width: number;
     height: number;
     alt: string;
-  }
+  };
+  type VerificationToken = {
+    identifier: string;
+    email: string;
+    token: string;
+    expires: Date;
+  };
 }
-
 
 export {};

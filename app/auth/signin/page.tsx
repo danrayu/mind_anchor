@@ -101,9 +101,14 @@ function Page() {
             Sign in
           </button>
           <div className="h-2"></div>
-          <Link href={"/auth/signup"} className="text-right text-sm">
-            Don&apos;t have an account yet?
-          </Link>
+          <div className="flex flex-col items-start">
+            <Link href={"/auth/signup"} className="text-right text-sm hover:text-primary hover:underline">
+              Don&apos;t have an account yet?
+            </Link>
+            <Link href={"/auth/recover"} className="text-right text-sm hover:text-primary hover:underline">
+              Forgot your password?
+            </Link>
+          </div>
         </form>
         {/* <div className="divider">OR</div>
         <GoogleSigninBtn /> */}

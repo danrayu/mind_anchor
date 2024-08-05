@@ -22,7 +22,7 @@ function Page() {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  });
 
   return (
     <div className="flex items-center justify-center h-full">
@@ -38,7 +38,7 @@ function Page() {
         {!isWaiting && (
           <>
             <span className="text-lg">
-              Success! Redirecting you to login P...
+              Success! Redirecting you to login Page...
             </span>
             <span className="loading loading-spinner loading-lg text-primary"></span>
           </>
@@ -49,3 +49,5 @@ function Page() {
 }
 
 export default Page;
+
+

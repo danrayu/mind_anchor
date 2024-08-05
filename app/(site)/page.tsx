@@ -24,7 +24,8 @@ function SiteMainPage() {
             className="max-h-[400px] h-full w-auto mt-2 mb-2 mx-auto "
           />
           <div className="">
-            <Subtitle />
+            <Subtitle>Record your thoughts.</Subtitle>
+            <Subtitle>Organize your mind.</Subtitle>
           </div>
           <div className="flex items-center justify-center mt-8">
             <GoToAppButton />
