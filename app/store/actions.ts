@@ -133,7 +133,7 @@ export const appFetch = (
   };
 };
 
-const url = "http://localhost:3000";
+const url = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const loadAll = (): ThunkAction<
   void,

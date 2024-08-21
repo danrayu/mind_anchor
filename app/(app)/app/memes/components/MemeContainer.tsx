@@ -3,11 +3,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ItemActionsMenu, { Position } from "../../components/ItemActionsMenu";
 import { fetchDeleteMeme } from "@/app/fetchActions";
-import { useAppDispatch } from "@/app/store/hooks";
-import { appFetch, load } from "@/app/store/actions";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { appFetch } from "@/app/store/actions";
 import { Types } from "@/app/types/Types";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { getHighlightClass, getTextColor } from "@/app/util/colors";
+import { getHighlightClass } from "@/app/util/colors";
 
 interface MemeProps {
   meme: Meme;
@@ -15,6 +15,7 @@ interface MemeProps {
 
 function MemeContainer({ meme }: MemeProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const doDebug = useAppSelector((state) => state.debug.doDebug);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
@@ -66,6 +67,9 @@ function MemeContainer({ meme }: MemeProps) {
   };
 
   const onDelete = async () => {
+    if (doDebug) {
+      console.log("On delete called")
+    }
     try {
       var proceed = confirm(
         `Are you sure you want to delete meme ${meme!.title}?`

@@ -88,11 +88,13 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const doDebug = process.env.NEXT_PUBLIC_DEBUG_MODE === 'true';
+
+  const id = parseInt(params.id)
+
   const meme = await prisma.meme.findUnique({
-    where: {
-      id: parseInt(params.id),
-    },
-  });
+    where: { id }
+  })
 
   if (!meme) {
     return NextResponse.json(
@@ -102,6 +104,11 @@ export async function DELETE(
   }
 
   try {
+    const mindscapeMemesDeleted = await prisma.mindscapeMeme.deleteMany({
+      where: {
+        memeId: id
+      },
+    })
     const deleted = await prisma.meme.delete({
       where: {
         id: meme.id,
@@ -109,6 +116,9 @@ export async function DELETE(
     });
     return NextResponse.json(deleted);
   } catch (error) {
+    if (doDebug) {
+      console.log(error)
+    }
     return NextResponse.json(
       { error: "Error deleting the Meme." },
       { status: 500 }

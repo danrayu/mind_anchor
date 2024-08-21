@@ -1,4 +1,4 @@
-const url = "http://localhost:3000";
+const url = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function fetchGetMemes() {
   return await fetch(url + `/api/memes/?wCats`)
